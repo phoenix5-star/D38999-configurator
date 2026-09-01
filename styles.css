@@ -142,36 +142,36 @@ a:visited {
     padding-bottom: 0;
 }
 
-.tab-btn {
+.tab-container .tab-btn {
     padding: 12px 24px;
     border: none;
     border-bottom: 3px solid transparent;
     border-radius: 8px 8px 0 0;
-    background: transparent;
-    color: #8892b0;
+    background: transparent !important;
+    color: #8892b0 !important;
     font-size: 15px;
     font-weight: 500;
     cursor: pointer;
     transition: all var(--transition-speed) ease;
-    width: auto;
+    width: auto !important;
     display: inline-flex;
     align-items: center;
     gap: 8px;
     opacity: 0.75;
 }
 
-.tab-btn:hover {
-    color: var(--text-color);
-    background: var(--filter-bg);
+.tab-container .tab-btn:hover {
+    color: var(--text-color) !important;
+    background: var(--filter-bg) !important;
     opacity: 1;
 }
 
-.tab-btn.active {
-    background: var(--card-bg);
-    color: var(--accent);
+.tab-container .tab-btn.active {
+    background: var(--card-bg) !important;
+    color: var(--accent) !important;
     font-weight: 700;
     font-size: 15px;
-    border-bottom: 3px solid var(--accent);
+    border-bottom: 3px solid var(--accent) !important;
     box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
     opacity: 1;
 }
@@ -383,16 +383,28 @@ tfoot td {
     align-items: center;
     gap: 10px;
     margin: 0 auto;
+    flex-wrap: nowrap;
+    max-width: 600px;
 }
 
 .decoder-input-fitted {
     width: 320px !important;
-    max-width: 100%;
+    min-width: 240px;
+    max-width: 380px !important;
+    flex: 0 1 320px !important;
     text-align: center;
     font-family: monospace;
     font-size: 14px;
     font-weight: bold;
     letter-spacing: 0.5px;
+    box-sizing: border-box;
+}
+
+#pnDecodeApplyBtn {
+    width: auto !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    padding: 8px 18px !important;
 }
 
 .pn-decode-result {
