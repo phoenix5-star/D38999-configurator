@@ -1701,6 +1701,7 @@ function openImageModal(imgSrc, title) {
     if (modal && modalImg) {
         modalImg.src = imgSrc;
         if (modalTitle) modalTitle.textContent = title || 'Diagram Preview';
+        modal.style.display = 'flex';
         modal.classList.add('active');
     }
 }
@@ -1708,6 +1709,7 @@ function openImageModal(imgSrc, title) {
 function closeImageModal() {
     const modal = document.getElementById('imageModal');
     if (modal) {
+        modal.style.display = 'none';
         modal.classList.remove('active');
         const modalImg = document.getElementById('modalImageSrc');
         if (modalImg) modalImg.src = '';
