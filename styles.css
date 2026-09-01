@@ -209,7 +209,7 @@ a:visited {
 }
 
 .solution-card.primary-card {
-    background: var(--primary-card-bg);
+    background: var(--card-bg);
     border-left: 4px solid var(--accent);
 }
 
