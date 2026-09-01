@@ -133,6 +133,49 @@ a:visited {
     transform: rotate(0deg) scale(1);
 }
 
+/* Standard Switcher Tabs */
+.tab-container {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--card-border);
+    padding-bottom: 0;
+}
+
+.tab-btn {
+    padding: 12px 24px;
+    border: none;
+    border-bottom: 3px solid transparent;
+    border-radius: 8px 8px 0 0;
+    background: transparent;
+    color: #8892b0;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+    width: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.75;
+}
+
+.tab-btn:hover {
+    color: var(--text-color);
+    background: var(--filter-bg);
+    opacity: 1;
+}
+
+.tab-btn.active {
+    background: var(--card-bg);
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 15px;
+    border-bottom: 3px solid var(--accent);
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
+    opacity: 1;
+}
+
 .card { 
     background: var(--card-bg); 
     padding: 24px; 
@@ -334,36 +377,65 @@ tfoot td {
     font-style: italic;
 }
 
+.decoder-controls-centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin: 0 auto;
+}
+
+.decoder-input-fitted {
+    width: 320px !important;
+    max-width: 100%;
+    text-align: center;
+    font-family: monospace;
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
 .pn-decode-result {
-    margin-top: 8px;
-    padding: 8px 12px;
+    margin-top: 14px;
+    padding: 10px 14px;
     background: var(--filter-bg);
     border: 1px solid var(--card-border);
     border-radius: 6px;
     font-size: 13px;
-    line-height: 1.4;
+}
+
+.pn-decode-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
 .pn-decode-chips {
     display: flex;
+    flex-direction: row;
     flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 6px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 .pn-decode-chip {
     display: inline-flex;
     align-items: center;
-    padding: 2px 8px;
+    white-space: nowrap;
+    padding: 4px 10px;
     border-radius: 4px;
     font-size: 12px;
     background: var(--card-bg);
     border: 1px solid var(--card-border);
     color: var(--text-color);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
 }
 
 .pn-decode-chip strong {
-    margin-right: 4px;
+    margin-right: 5px;
     color: var(--accent);
 }
 
