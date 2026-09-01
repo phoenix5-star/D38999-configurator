@@ -1217,12 +1217,12 @@ function renderSolutionPairHTML(pair, index) {
                 <div class="diagram-section">
                     <div class="diagram-box">
                         <label>Insert Diagram:</label>
-                        <a href="${pri.diagramImg}" target="_blank"><img class="preview-img" src="${pri.diagramImg}" alt="Insert Diagram" onerror="this.parentElement.style.display='none'"></a>
+                        <a href="javascript:void(0)" onclick="openImageModal('${pri.diagramImg}', 'Insert Diagram - ${pri.shellLabel}')"><img class="preview-img" src="${pri.diagramImg}" alt="Insert Diagram" onerror="this.parentElement.style.display='none'"></a>
                     </div>
                     ${pri.shellType !== 'Plug' ? `
                     <div class="diagram-box">
                         <label>Panel Cutout:</label>
-                        <a href="${pri.cutoutImg}" target="_blank"><img class="preview-img" src="${pri.cutoutImg}" alt="Panel Cutout" onerror="this.parentElement.style.display='none'"></a>
+                        <a href="javascript:void(0)" onclick="openImageModal('${pri.cutoutImg}', 'Panel Cutout - Shell ${pri.shellSize}')"><img class="preview-img" src="${pri.cutoutImg}" alt="Panel Cutout" onerror="this.parentElement.style.display='none'"></a>
                     </div>` : ''}
                 </div>
 
@@ -1278,12 +1278,12 @@ function renderSolutionPairHTML(pair, index) {
                 <div class="diagram-section">
                     <div class="diagram-box">
                         <label>Insert Diagram:</label>
-                        <a href="${mat ? mat.diagramImg : '#'}" target="_blank"><img class="preview-img" src="${mat ? mat.diagramImg : ''}" alt="Mating Insert Diagram" onerror="this.parentElement.style.display='none'"></a>
+                        <a href="javascript:void(0)" onclick="openImageModal('${mat ? mat.diagramImg : ''}', 'Insert Diagram - ${mat ? mat.shellLabel : ''}')"><img class="preview-img" src="${mat ? mat.diagramImg : ''}" alt="Mating Insert Diagram" onerror="this.parentElement.style.display='none'"></a>
                     </div>
                     ${mat && mat.shellType !== 'Plug' ? `
                     <div class="diagram-box">
                         <label>Panel Cutout:</label>
-                        <a href="${mat ? mat.cutoutImg : '#'}" target="_blank"><img class="preview-img" src="${mat ? mat.cutoutImg : ''}" alt="Panel Cutout" onerror="this.parentElement.style.display='none'"></a>
+                        <a href="javascript:void(0)" onclick="openImageModal('${mat ? mat.cutoutImg : ''}', 'Panel Cutout - Shell ${mat ? mat.shellSize : ''}')"><img class="preview-img" src="${mat ? mat.cutoutImg : ''}" alt="Panel Cutout" onerror="this.parentElement.style.display='none'"></a>
                     </div>` : ''}
                 </div>
 
@@ -1690,5 +1690,35 @@ function scrollToBOM() {
         bomSection.scrollIntoView({ behavior: 'smooth' });
     }
 }
+
+// Lightbox Modal Helpers
+function openImageModal(imgSrc, title) {
+    if (!imgSrc) return;
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImageSrc');
+    const modalTitle = document.getElementById('modalImageTitle');
+    
+    if (modal && modalImg) {
+        modalImg.src = imgSrc;
+        if (modalTitle) modalTitle.textContent = title || 'Diagram Preview';
+        modal.classList.add('active');
+    }
+}
+
+function closeImageModal() {
+    const modal = document.getElementById('imageModal');
+    if (modal) {
+        modal.classList.remove('active');
+        const modalImg = document.getElementById('modalImageSrc');
+        if (modalImg) modalImg.src = '';
+    }
+}
+
+// Close modal on Escape key press
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeImageModal();
+    }
+});
 
 window.onload = init;

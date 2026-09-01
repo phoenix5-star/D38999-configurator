@@ -218,11 +218,6 @@ h2, h3, h4 {
     margin-top: 0; 
 }
 
-.card > h2 {
-    text-align: center;
-    margin-bottom: 16px;
-}
-
 label { 
     font-weight: bold; 
     display: block; 
@@ -640,4 +635,84 @@ html {
         width: 40px;
         height: 40px;
     }
+}
+
+/* Image Lightbox Modal */
+.image-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(3px);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.image-modal.active {
+    display: flex;
+}
+
+.image-modal-content {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    max-width: 90vw;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: modalPop 0.2s ease-out;
+}
+
+@keyframes modalPop {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.image-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--card-border);
+    background: var(--filter-bg);
+}
+
+.image-modal-close {
+    background: transparent !important;
+    border: none !important;
+    color: var(--text-color) !important;
+    font-size: 24px !important;
+    line-height: 1;
+    padding: 0 4px !important;
+    cursor: pointer;
+    font-weight: bold;
+    width: auto !important;
+}
+
+.image-modal-close:hover {
+    color: var(--accent) !important;
+}
+
+.image-modal-body {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: auto;
+    background: var(--card-bg);
+}
+
+.image-modal-body img {
+    max-width: 80vw;
+    max-height: 75vh;
+    object-fit: contain;
+    border-radius: 4px;
 }

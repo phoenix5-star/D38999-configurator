@@ -226,6 +226,17 @@
             <polyline points="6 9 12 15 18 9"></polyline>
         </svg>
     </button>
+<!-- Image Lightbox Modal -->
+<div class="image-modal" id="imageModal" onclick="closeImageModal()">
+    <div class="image-modal-content" onclick="event.stopPropagation()">
+        <div class="image-modal-header">
+            <h4 id="modalImageTitle" style="margin: 0; font-size: 1.1rem;">Diagram Preview</h4>
+            <button type="button" class="image-modal-close" onclick="closeImageModal()" aria-label="Close">&times;</button>
+        </div>
+        <div class="image-modal-body">
+            <img id="modalImageSrc" src="" alt="Full size diagram">
+        </div>
+    </div>
 </div>
 
 </body>
