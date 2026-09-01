@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIL-DTL-38999 Series III Advanced Configurator - V001.1</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="header-toolbar">
+    <div class="title-container">
+        <h1 style="margin: 0; color: var(--heading-color); font-size: 1.6rem;">MIL-DTL-38999 Series III Configurator</h1>
+        <span class="version-tag">V001.1</span>
+    </div>
+    
+    <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle Theme" title="Toggle Light/Dark Mode">
+        <svg class="sun-icon" viewBox="0 0 24 24">
+            <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41s-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41s-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03 1.41 1.06-1.06z"/>
+        </svg>
+        <svg class="moon-icon" viewBox="0 0 24 24">
+            <path d="M12.3 2a10 10 0 0 0-1.9 20 10 10 0 0 0 9.6-7 1 1 0 0 0-1.2-1.2 8.01 8.01 0 1 1-6.5-11.8 1 1 0 0 0-.01-2z"/>
+        </svg>
+    </button>
+</div>
+
+<div class="card">
+    <div class="row">
+        <div>
+            <label>Input Mode:</label>
+            <select id="mode">
+                <option value="size" selected>Known Contact Size</option>
+                <option value="amps">Current Load (Amps)</option>
+            </select>
+        </div>
+        <div>
+            <label>P/N Standard:</label>
+            <select id="pnType">
+                <option value="mil">Military (D38999/26)</option>
+                <option value="comm">Commercial (TVS06RF)</option>
+            </select>
+        </div>
+    </div>
+
+    <h3>Configuration Filters (Optional)</h3>
+    <div class="filter-grid">
+        <div>
+            <label>Shell Type:</label>
+            <select id="filterShellType">
+                <option value="ALL">All Shell Types</option>
+                <option value="Plug">Straight Plug (26 / TVS06)</option>
+                <option value="Jam Nut">Jam Nut Receptacle (24 / TVS07)</option>
+                <option value="Wall Mount">Wall Mount Receptacle (20 / TVPS00)</option>
+            </select>
+        </div>
+        <div>
+            <label>Finish / Plating:</label>
+            <select id="filterFinish">
+                <option value="ALL">All Finishes</option>
+                <option value="W">Olive Drab Cadmium (W)</option>
+                <option value="F">Electroless Nickel (F)</option>
+                <option value="Z">Black Zinc Nickel (Z)</option>
+            </select>
+        </div>
+        <div>
+            <label>Shell Size:</label>
+            <select id="filterShellSize" onchange="filterArrangementDropdown()">
+                <option value="ALL">All Shell Sizes</option>
+                <option value="9">Shell 9 (Size A)</option>
+                <option value="11">Shell 11 (Size B)</option>
+                <option value="13">Shell 13 (Size C)</option>
+                <option value="15">Shell 15 (Size D)</option>
+                <option value="17">Shell 17 (Size E)</option>
+                <option value="19">Shell 19 (Size F)</option>
+                <option value="21">Shell 21 (Size G)</option>
+                <option value="23">Shell 23 (Size H)</option>
+                <option value="25">Shell 25 (Size J)</option>
+            </select>
+        </div>
+        <div>
+            <label>Insert Arrangement:</label>
+            <select id="filterArrangement">
+                <option value="ALL">All Arrangements</option>
+            </select>
+        </div>
+        <div>
+            <label>Contact Type (Primary):</label>
+            <select id="filterContactType">
+                <option value="ALL">All Contact Types</option>
+                <option value="P">Pin (P)</option>
+                <option value="S">Socket (S)</option>
+            </select>
+        </div>
+        <div>
+            <label>Keying Position:</label>
+            <select id="filterKeying">
+                <option value="ALL">All Keying Positions</option>
+                <option value="N">Normal (N)</option>
+                <option value="A">Keyway A</option>
+                <option value="B">Keyway B</option>
+                <option value="C">Keyway C</option>
+            </select>
+        </div>
+    </div>
+
+    <h3>Contact Requirements</h3>
+    <div id="groups">
+        <div class="row">
+            <div class="val-container"></div>
+            <div style="flex: 1.2;">
+                <label>Contact Material / Type</label>
+                <select class="contact-material">
+                    <option value="STD">Standard Crimp (Copper Alloy - Gold Plated)</option>
+                    <option value="TC_K">Thermocouple Type K (Alumel / Chromel)</option>
+                    <option value="TC_J">Thermocouple Type J (Iron / Constantan)</option>
+                    <option value="TC_E">Thermocouple Type E (Chromel / Constantan)</option>
+                    <option value="TC_T">Thermocouple Type T (Copper / Constantan)</option>
+                    <option value="COAX">Coax / Shielded Contact (Size 8/12/16)</option>
+                </select>
+            </div>
+            <div style="flex: 0.4;">
+                <label>Qty</label>
+                <input type="number" class="qty" value="4" placeholder="Qty">
+            </div>
+        </div>
+    </div>
+
+    <div class="checkbox-row">
+        <input type="checkbox" id="includeStdContacts">
+        <label for="includeStdContacts" style="font-weight: normal; margin-bottom: 0;">Include Standard Gold-Plated Contacts in BOM (Unchecked = Included with Connector Housing)</label>
+    </div>
+
+    <div style="margin-top: 15px;">
+        <button type="button" class="btn-outline" onclick="addGroup()">+ Add Contact Group</button>
+        <button type="button" onclick="calculate()">Calculate Solution</button>
+    </div>
+</div>
+
+<div id="resultsContainer"></div>
+
+<div class="card">
+    <h2>Project Lists & Export Manager</h2>
+    <div class="row">
+        <div>
+            <label>Active Project List:</label>
+            <select id="projectListSelect" onchange="loadActiveList()">
+                <option value="Default Project">Default Project</option>
+            </select>
+        </div>
+        <div style="flex:0.5; display: flex; gap: 8px; align-items: flex-end;">
+            <button type="button" class="btn-outline" style="flex: 1;" onclick="createNewList()">+ New List</button>
+            <button type="button" class="btn-red" style="flex: 1;" onclick="clearActiveList()">Clear BOM</button>
+        </div>
+    </div>
+
+    <table id="listTable">
+        <thead>
+            <tr>
+                <th>Part Number</th>
+                <th>Quantity</th>
+                <th>Description</th>
+                <th>Unit Price</th>
+                <th>Total Price</th>
+                <th style="width: 80px; text-align: center;">Remove</th>
+            </tr>
+        </thead>
+        <tbody id="listTableBody"></tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4" style="text-align: right;"><strong>Grand Total:</strong></td>
+                <td id="bomGrandTotal"><strong>$0.00</strong></td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div class="row" style="margin-top: 15px;">
+        <button type="button" class="btn-green" onclick="exportToCSV()">📊 Export List to Excel (CSV)</button>
+        <button type="button" class="btn-outline" onclick="exportToSkyCAD()">⚡ Export List to SkyCAD Catalog (CSV)</button>
+    </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connector Specification Tool</title>
+    <style>
+        :root {
+            /* Palette 1: Kratos Defense Core (Light) */
+            --bg-color: #F8FAFC;
+            --text-color: #0F172A;
+            --accent-color: #8B0000;
+            --card-bg: #FFFFFF;
+            --border-color: #E2E8F0;
+            --input-bg: #FFFFFF;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                /* Palette 1: Kratos Defense Core (Dark) */
+                --bg-color: #0F1117;
+                --text-color: #F1F5F9;
+                --accent-color: #A51C24;
+                --card-bg: #161B22;
+                --border-color: #21262D;
+                --input-bg: #0D1117;
+            }
+        }
+
+        body.light-theme {
+            --bg-color: #F8FAFC;
+            --text-color: #0F172A;
+            --accent-color: #8B0000;
+            --card-bg: #FFFFFF;
+            --border-color: #E2E8F0;
+            --input-bg: #FFFFFF;
+        }
+
+        body.dark-theme {
+            --bg-color: #0F1117;
+            --text-color: #F1F5F9;
+            --accent-color: #A51C24;
+            --card-bg: #161B22;
+            --border-color: #21262D;
+            --input-bg: #0D1117;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 2rem;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .accent-text {
+            color: var(--accent-color);
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-top: 4px solid var(--accent-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-weight: normal;
+        }
+
+        input[type="radio"] {
+            accent-color: var(--accent-color);
+        }
+
+        input[type="number"], select {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        input[type="number"]:focus, select:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(139, 0, 0, 0.25);
+        }
+
+        button.btn-primary {
+            background-color: var(--accent-color);
+            color: #FFFFFF;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+
+        button.btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>MIL-DTL-38999 <span class="accent-text">Selector</span></h1>
+            <button id="themeToggle" type="button" class="btn-primary">Toggle Theme</button>
+        </header>
+
+        <main>
+            <div class="card">
+                <div class="form-group">
+                    <label>Select Entry Method</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="entryMethod" value="current" checked> Expected Current Load
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="entryMethod" value="size"> Direct Contact Size
+                        </label>
+                    </div>
+                </div>
+
+                <div id="currentInputSection" class="form-group">
+                    <label for="currentInput">Expected Current Load (Amps)</label>
+                    <input type="number" id="currentInput" placeholder="e.g., 13" min="0" step="0.1">
+                </div>
+
+                <div id="sizeInputSection" class="form-group hidden">
+                    <label for="sizeSelect">Contact Size</label>
+                    <select id="sizeSelect">
+                        <option value="">-- Select Size --</option>
+                        <option value="22D">Size 22D</option>
+                        <option value="20">Size 20</option>
+                        <option value="16">Size 16</option>
+                        <option value="12">Size 12</option>
+                    </select>
+                </div>
+
+                <button type="button" class="btn-primary">Filter Connectors</button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const radioButtons = document.querySelectorAll('input[name="entryMethod"]');
+        const currentSection = document.getElementById('currentInputSection');
+        const sizeSection = document.getElementById('sizeInputSection');
+
+        radioButtons.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                if (e.target.value === 'current') {
+                    currentSection.classList.remove('hidden');
+                    sizeSection.classList.add('hidden');
+                } else {
+                    currentSection.classList.add('hidden');
+                    sizeSection.classList.remove('hidden');
+                }
+            });
+        });
+
+        const themeBtn = document.getElementById('themeToggle');
+        themeBtn.addEventListener('click', () => {
+            if (document.body.classList.contains('dark-theme')) {
+                document.body.classList.remove('dark-theme');
+                document.body.classList.add('light-theme');
+            } else if (document.body.classList.contains('light-theme')) {
+                document.body.classList.remove('light-theme');
+                document.body.classList.add('dark-theme');
+            } else {
+                const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.body.classList.add(isDark ? 'light-theme' : 'dark-theme');
+            }
+        });
+    </script>
+</body>
+</html>
