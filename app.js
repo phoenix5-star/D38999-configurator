@@ -253,25 +253,38 @@ const finishes = [
 const contactTypes = ["P", "S"];
 const keyingPositions = ["N", "A", "B", "C", "D", "E"];
 
+// Mapping of MIL-DTL-38999 connector finish codes to AS85049 / M85049 backshell finish codes
+// (AS85049 specifies 'N' for Electroless Nickel, 'S' for Passivated Stainless Steel)
+const CONNECTOR_TO_BACKSHELL_FINISH = {
+    "W": "W", // Cadmium Olive Drab
+    "F": "N", // Electroless Nickel (AS85049 uses 'N' instead of 'F')
+    "Z": "Z", // Black Zinc Nickel
+    "T": "T", // Nickel PTFE / Durmalon
+    "K": "S", // Passivated Stainless Steel (AS85049 uses 'S' instead of 'K')
+    "J": "W", // Composite OD Cad -> Aluminum AS85049 finish 'W'
+    "M": "N"  // Composite Electroless Nickel -> Aluminum AS85049 finish 'N'
+};
+
 function getBackshellOptions(shellSize, finishCode) {
     const numShell = String(shellSize).padStart(2, '0');
     const szNum = parseInt(shellSize, 10);
+    const bsFinish = CONNECTOR_TO_BACKSHELL_FINISH[finishCode] || finishCode;
     return {
         "M85049/38": {
             key: "M85049/38",
-            pn: `M85049/38-${numShell}${finishCode}`,
+            pn: `M85049/38-${numShell}${bsFinish}`,
             desc: `M85049/38 Strain Relief Clamp (Size ${shellSize})`,
             price: 14.00 + (szNum * 0.85)
         },
         "M85049/88": {
             key: "M85049/88",
-            pn: `M85049/88-${numShell}${finishCode}02`,
+            pn: `M85049/88-${numShell}${bsFinish}02`,
             desc: `M85049/88 EMI/RFI Banding Backshell w/ Band (Size ${shellSize})`,
             price: 28.00 + (szNum * 1.10)
         },
         "M85049/49": {
             key: "M85049/49",
-            pn: `M85049/49-2-${numShell}${finishCode}`,
+            pn: `M85049/49-2-${numShell}${bsFinish}`,
             desc: `M85049/49 Shrink Boot Adapter (Size ${shellSize})`,
             price: 18.00 + (szNum * 0.95)
         },
