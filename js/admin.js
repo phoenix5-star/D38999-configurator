@@ -24,6 +24,14 @@ let currentTab = 'tooling';
 let isUnlocked = true; // Default unlocked for local author workflow
 let baselineData = null;
 
+function saveWorkingDataState() {
+    try {
+        localStorage.setItem('admin_working_data', JSON.stringify(workingData));
+    } catch (e) {
+        console.warn('Storage quota warning:', e);
+    }
+}
+
 const HistoryService = {
     getHistory: function() {
         try {
@@ -48,7 +56,6 @@ const HistoryService = {
         if (history.length > 50) history.pop();
         try {
             localStorage.setItem('admin_change_history', JSON.stringify(history));
-            localStorage.setItem('admin_working_data', JSON.stringify(workingData));
         } catch (e) {
             console.warn('Storage quota warning:', e);
         }
@@ -70,7 +77,7 @@ const HistoryService = {
                 console.warn(e);
             }
             renderActiveTab();
-            alert(`Undone: ${rev.itemSummary}`);
+            alert(`Undone: ${rev.itemSummary}\nPrevious state successfully restored.`);
             return true;
         }
         return false;
@@ -400,9 +407,14 @@ function cycleToolStatus(category, index) {
     if (!tool) return;
     const currentIdx = statuses.indexOf(tool.status || statuses[0]);
     const nextIdx = (currentIdx + 1) % statuses.length;
-    const prevStatus = tool.status;
-    tool.status = statuses[nextIdx];
-    HistoryService.logChange('tooling', 'UPDATE', `Tool status ${tool.id}: ${prevStatus} -> ${tool.status}`, { status: prevStatus }, { status: tool.status });
+    const prevStatus = tool.status || statuses[0];
+    const newStatus = statuses[nextIdx];
+
+    // Log BEFORE mutating workingData so snapshotBefore captures the original status!
+    HistoryService.logChange('tooling', 'UPDATE', `Tool status for ${tool.id}: ${prevStatus} -> ${newStatus}`, { status: prevStatus }, { status: newStatus });
+
+    tool.status = newStatus;
+    saveWorkingDataState();
     renderActiveTab();
 }
 
@@ -412,6 +424,7 @@ function deleteTool(category, index) {
     if (confirm(`Are you sure you want to remove "${tool.id} (${tool.name})" from shop inventory?`)) {
         HistoryService.logChange('tooling', 'DELETE', `Tool ${tool.id} (${tool.name})`, tool, null);
         workingData.tooling.shopInventory[category].splice(index, 1);
+        saveWorkingDataState();
         renderActiveTab();
     }
 }
@@ -470,6 +483,7 @@ function saveToolModal() {
         workingData.tooling.shopInventory[category].push(newObj);
     }
 
+    saveWorkingDataState();
     closeAllModals();
     renderActiveTab();
 }
@@ -481,9 +495,15 @@ function cycleRemovalToolStatus(sz) {
     if (!tool) return;
     const currentIdx = statuses.indexOf(tool.status || statuses[0]);
     const nextIdx = (currentIdx + 1) % statuses.length;
-    const prevStatus = tool.status;
-    tool.status = statuses[nextIdx];
-    HistoryService.logChange('tooling', 'UPDATE', `Insertion/Extraction tool size ${sz} (${tool.partNumber}): ${prevStatus} -> ${tool.status}`, { status: prevStatus }, { status: tool.status });
+    const prevStatus = tool.status || statuses[0];
+    const newStatus = statuses[nextIdx];
+
+    // Log BEFORE mutating
+    HistoryService.logChange('tooling', 'UPDATE', `Insertion/Extraction tool size ${sz} (${tool.partNumber}): ${prevStatus} -> ${newStatus}`, { status: prevStatus }, { status: newStatus });
+
+    tool.status = newStatus;
+    saveWorkingDataState();
+    renderActiveTab();
 }
 
 function editRemovalTool(sz) {
@@ -744,6 +764,7 @@ function deleteLayout(index) {
     if (confirm(`Delete arrangement "${layout.arrangement}"?`)) {
         HistoryService.logChange('layouts', 'DELETE', `Layout ${layout.arrangement} (${layout.seriesId})`, layout, null);
         workingData.layouts.splice(index, 1);
+        saveWorkingDataState();
         renderActiveTab();
     }
 }
@@ -791,6 +812,7 @@ function saveLayoutModal() {
         workingData.layouts.push(newLayout);
     }
 
+    saveWorkingDataState();
     closeAllModals();
     renderActiveTab();
 }
