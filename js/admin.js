@@ -94,14 +94,16 @@ const HistoryService = {
 function checkAdminAuthentication() {
     const isAuthed = sessionStorage.getItem('admin_session_auth') === 'true';
     const authOverlay = document.getElementById('adminAuthOverlay');
-    if (!authOverlay) return;
+    const mainApp = document.getElementById('adminMainApp');
 
     if (isAuthed) {
-        authOverlay.style.display = 'none';
+        if (authOverlay) authOverlay.style.display = 'none';
+        if (mainApp) mainApp.style.display = 'block';
     } else {
-        authOverlay.style.display = 'flex';
+        if (authOverlay) authOverlay.style.display = 'flex';
+        if (mainApp) mainApp.style.display = 'none';
         const input = document.getElementById('adminPassInput');
-        if (input) setTimeout(() => input.focus(), 100);
+        if (input) setTimeout(() => input.focus(), 150);
     }
 }
 
@@ -115,14 +117,22 @@ function verifyAdminPass() {
 
     if (entered === storedPin || entered === 'admin') {
         sessionStorage.setItem('admin_session_auth', 'true');
-        const overlay = document.getElementById('adminAuthOverlay');
-        if (overlay) overlay.style.display = 'none';
+        const authOverlay = document.getElementById('adminAuthOverlay');
+        const mainApp = document.getElementById('adminMainApp');
+        if (authOverlay) authOverlay.style.display = 'none';
+        if (mainApp) mainApp.style.display = 'block';
         if (err) err.style.display = 'none';
+        renderActiveTab();
     } else {
         if (err) err.style.display = 'block';
         input.value = '';
         input.focus();
     }
+}
+
+function lockAdminConsole() {
+    sessionStorage.removeItem('admin_session_auth');
+    checkAdminAuthentication();
 }
 
 // Initialize on page load
