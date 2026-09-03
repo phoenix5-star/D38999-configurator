@@ -1,0 +1,32 @@
+[
+  {
+    "id": "d38999_mil",
+    "name": "MIL-DTL-38999 Series III",
+    "shortName": "Military D38999",
+    "standard": "mil",
+    "prefix": "D38999/",
+    "description": "Military specification circular connectors with triple-start threaded coupling.",
+    "defaultFinish": "W",
+    "supportedShellTypes": ["Plug", "Wall Mount", "Box Mount", "Jam Nut"]
+  },
+  {
+    "id": "d38999_comm",
+    "name": "Amphenol Tri-Start (Commercial)",
+    "shortName": "Commercial Tri-Start",
+    "standard": "comm",
+    "prefix": "TVS/CTVP",
+    "description": "Amphenol commercial equivalent to MIL-DTL-38999 Series III with metal and composite shells.",
+    "defaultFinish": "W",
+    "supportedShellTypes": ["Plug", "Wall Mount", "Box Mount", "Jam Nut"]
+  },
+  {
+    "id": "deutsch_asl",
+    "name": "Deutsch AutoSport (ASL Micro Series)",
+    "shortName": "Deutsch ASL",
+    "standard": "asl",
+    "prefix": "ASL",
+    "description": "Ultra-compact, lightweight circular connectors engineered for motorsport and aerospace avionics.",
+    "defaultFinish": "N",
+    "supportedShellTypes": ["Plug", "Wall Mount", "Inline", "Oval Flange", "Jam Nut"]
+  }
+]

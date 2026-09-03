@@ -1,0 +1,61 @@
+{
+  "backshells": [
+    {
+      "key": "M85049/38",
+      "name": "M85049/38 Strain Relief Clamp",
+      "pnTemplate": "M85049/38-{numShell}{finish}",
+      "descTemplate": "M85049/38 Strain Relief Clamp (Size {shellSize})",
+      "basePrice": 14.00,
+      "sizeStep": 0.85
+    },
+    {
+      "key": "M85049/88",
+      "name": "M85049/88 EMI/RFI Banding Backshell w/ Band",
+      "pnTemplate": "M85049/88-{numShell}{finish}02",
+      "descTemplate": "M85049/88 EMI/RFI Banding Backshell w/ Band (Size {shellSize})",
+      "basePrice": 28.00,
+      "sizeStep": 1.10
+    },
+    {
+      "key": "M85049/49",
+      "name": "M85049/49 Shrink Boot Adapter",
+      "pnTemplate": "M85049/49-2-{numShell}{finish}",
+      "descTemplate": "M85049/49 Shrink Boot Adapter (Size {shellSize})",
+      "basePrice": 18.00,
+      "sizeStep": 0.95
+    },
+    {
+      "key": "NONE",
+      "name": "No Backshell / Box Mount Pass-through",
+      "pnTemplate": "N/A",
+      "descTemplate": "No Backshell / Box Mount Pass-through",
+      "basePrice": 0.00,
+      "sizeStep": 0.00
+    }
+  ],
+  "dustCaps": {
+    "plug": {
+      "pnTemplate": "D38999/32{finish}{letterCode}N",
+      "descTemplate": "D38999/32 Protective Dust Cap for Plug (Size {letterCode})",
+      "basePrice": 15.00,
+      "sizeStep": 0.50
+    },
+    "receptacle": {
+      "pnTemplate": "D38999/33{finish}{letterCode}N",
+      "descTemplate": "D38999/33 Protective Dust Cap for Receptacle (Size {letterCode})",
+      "basePrice": 15.00,
+      "sizeStep": 0.50
+    }
+  },
+  "flanges": {
+    "accTemplate": "M85049/95-{numShell}A (3/4 Perimeter Flange)",
+    "basePrice": 9.00,
+    "sizeStep": 0.50
+  },
+  "fasteners": {
+    "desc": "Flange Fasteners, Fillister Head 1\" (McMaster: 91737A313, Box of 100)",
+    "url": "https://www.mcmaster.com/91737A313/",
+    "price": 10.04,
+    "qty": 4
+  }
+}

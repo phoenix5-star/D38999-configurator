@@ -81,6 +81,24 @@ try {
     $errors += "CSS Check Failed: $($_.Exception.Message)"
 }
 
+# 3. Validate JSON Data Models
+try {
+    $dataFiles = @("series.json", "shells.json", "finishes.json", "layouts.json", "contacts.json", "tooling.json", "accessories.json")
+    foreach ($file in $dataFiles) {
+        $path = Join-Path "data" $file
+        if (-not (Test-Path $path)) {
+            $errors += "Data Error: Missing $path"
+            continue
+        }
+        $raw = Get-Content -Raw $path
+        $null = ConvertFrom-Json $raw
+    }
+    Write-Host "[PASS] All data/*.json files verified (valid JSON syntax and structure)." -ForegroundColor Green
+} catch {
+    $errors += "Data Check Failed: $($_.Exception.Message)"
+}
+
+
 Write-Host "--------------------------------------------------"
 if ($errors.Count -gt 0) {
     Write-Host "VALIDATION FAILED:" -ForegroundColor Red

@@ -1,0 +1,117 @@
+{
+  "ratings": [
+    { "size": "24", "maxAmps": 3.0, "label": "Size 24 (Max 3A - Micro/ASL)" },
+    { "size": "22", "maxAmps": 5.0, "label": "Size 22 (Max 5A - ASL/Standard)" },
+    { "size": "22D", "maxAmps": 5.0, "label": "Size 22D (Max 5A - D38999 High Density)" },
+    { "size": "20", "maxAmps": 7.5, "label": "Size 20 (Max 7.5A)" },
+    { "size": "16", "maxAmps": 13.0, "label": "Size 16 (Max 13A)" },
+    { "size": "12", "maxAmps": 23.0, "label": "Size 12 (Max 23A)" },
+    { "size": "8", "maxAmps": 46.0, "label": "Size 8 (Max 46A - Coax/Twinax/Power)" }
+  ],
+  "m39029DB": {
+    "STD": {
+      "22D": {
+        "P": [{ "pn": "M39029/58-360", "price": 1.85, "desc": "Size 22D Pin Contact", "size": "22D", "isStd": true }],
+        "S": [{ "pn": "M39029/56-348", "price": 2.10, "desc": "Size 22D Socket Contact", "size": "22D", "isStd": true }]
+      },
+      "20": {
+        "P": [{ "pn": "M39029/58-364", "price": 2.15, "desc": "Size 20 Pin Contact", "size": "20", "isStd": true }],
+        "S": [{ "pn": "M39029/57-358", "price": 2.40, "desc": "Size 20 Socket Contact", "size": "20", "isStd": true }]
+      },
+      "16": {
+        "P": [{ "pn": "M39029/58-365", "price": 3.10, "desc": "Size 16 Pin Contact", "size": "16", "isStd": true }],
+        "S": [{ "pn": "M39029/57-359", "price": 3.50, "desc": "Size 16 Socket Contact", "size": "16", "isStd": true }]
+      },
+      "12": {
+        "P": [{ "pn": "M39029/58-366", "price": 4.50, "desc": "Size 12 Pin Contact", "size": "12", "isStd": true }],
+        "S": [{ "pn": "M39029/57-360", "price": 5.20, "desc": "Size 12 Socket Contact", "size": "12", "isStd": true }]
+      },
+      "8": {
+        "P": [{ "pn": "M39029/60-367", "price": 18.50, "desc": "Size 8 Pin Power Contact", "size": "8", "isStd": true }],
+        "S": [{ "pn": "M39029/59-366", "price": 21.00, "desc": "Size 8 Socket Power Contact", "size": "8", "isStd": true }]
+      }
+    },
+    "TC_K": {
+      "22D": {
+        "P": [
+          { "pn": "M39029/87-471", "price": 7.50, "desc": "Size 22D Alumel Pin Contact", "size": "22D", "isStd": false },
+          { "pn": "M39029/87-472", "price": 7.50, "desc": "Size 22D Chromel Pin Contact", "size": "22D", "isStd": false }
+        ],
+        "S": [
+          { "pn": "M39029/88-487", "price": 8.00, "desc": "Size 22D Alumel Socket Contact", "size": "22D", "isStd": false },
+          { "pn": "M39029/88-488", "price": 8.00, "desc": "Size 22D Chromel Socket Contact", "size": "22D", "isStd": false }
+        ]
+      },
+      "20": {
+        "P": [
+          { "pn": "M39029/87-473", "price": 8.50, "desc": "Size 20 Alumel Pin Contact", "size": "20", "isStd": false },
+          { "pn": "M39029/87-474", "price": 8.50, "desc": "Size 20 Chromel Pin Contact", "size": "20", "isStd": false }
+        ],
+        "S": [
+          { "pn": "M39029/88-489", "price": 9.00, "desc": "Size 20 Alumel Socket Contact", "size": "20", "isStd": false },
+          { "pn": "M39029/88-490", "price": 9.00, "desc": "Size 20 Chromel Socket Contact", "size": "20", "isStd": false }
+        ]
+      }
+    },
+    "TC_E": {
+      "22D": {
+        "P": [
+          { "pn": "M39029/87-472", "price": 7.50, "desc": "Size 22D Chromel Pin Contact", "size": "22D", "isStd": false },
+          { "pn": "M39029/87-470", "price": 7.50, "desc": "Size 22D Constantan Pin Contact", "size": "22D", "isStd": false }
+        ],
+        "S": [
+          { "pn": "M39029/88-488", "price": 8.00, "desc": "Size 22D Chromel Socket Contact", "size": "22D", "isStd": false },
+          { "pn": "M39029/88-486", "price": 8.00, "desc": "Size 22D Constantan Socket Contact", "size": "22D", "isStd": false }
+        ]
+      },
+      "20": {
+        "P": [
+          { "pn": "M39029/87-474", "price": 8.50, "desc": "Size 20 Chromel Pin Contact", "size": "20", "isStd": false },
+          { "pn": "M39029/87-470", "price": 8.50, "desc": "Size 20 Constantan Pin Contact", "size": "20", "isStd": false }
+        ],
+        "S": [
+          { "pn": "M39029/88-490", "price": 9.00, "desc": "Size 20 Chromel Socket Contact", "size": "20", "isStd": false },
+          { "pn": "M39029/88-486", "price": 8.00, "desc": "Size 20 Constantan Socket Contact", "size": "20", "isStd": false }
+        ]
+      }
+    },
+    "TC_J": {
+      "22D": {
+        "P": [
+          { "pn": "M39029/87-469", "price": 7.50, "desc": "Size 22D Iron Pin Contact", "size": "22D", "isStd": false },
+          { "pn": "M39029/87-470", "price": 7.50, "desc": "Size 22D Constantan Pin Contact", "size": "22D", "isStd": false }
+        ],
+        "S": [
+          { "pn": "M39029/88-485", "price": 8.00, "desc": "Size 22D Iron Socket Contact", "size": "22D", "isStd": false },
+          { "pn": "M39029/88-486", "price": 8.00, "desc": "Size 22D Constantan Socket Contact", "size": "22D", "isStd": false }
+        ]
+      }
+    },
+    "TC_T": {
+      "22D": {
+        "P": [
+          { "pn": "M39029/87-468", "price": 7.50, "desc": "Size 22D Copper Pin Contact", "size": "22D", "isStd": false },
+          { "pn": "M39029/87-470", "price": 7.50, "desc": "Size 22D Constantan Pin Contact", "size": "22D", "isStd": false }
+        ],
+        "S": [
+          { "pn": "M39029/88-484", "price": 8.00, "desc": "Size 22D Copper Socket Contact", "size": "22D", "isStd": false },
+          { "pn": "M39029/88-486", "price": 8.00, "desc": "Size 22D Constantan Socket Contact", "size": "22D", "isStd": false }
+        ]
+      }
+    },
+    "COAX": {
+      "16": {
+        "P": [{ "pn": "M39029/76-424", "price": 22.00, "desc": "Size 16 Coax Pin Contact", "size": "16", "isStd": false }],
+        "S": [{ "pn": "M39029/77-429", "price": 25.00, "desc": "Size 16 Coax Socket Contact", "size": "16", "isStd": false }]
+      },
+      "12": {
+        "P": [{ "pn": "M39029/28-211", "price": 34.00, "desc": "Size 12 Coax Pin Contact", "size": "12", "isStd": false }],
+        "S": [{ "pn": "M39029/75-416", "price": 38.00, "desc": "Size 12 Coax Socket Contact", "size": "12", "isStd": false }]
+      },
+      "8": {
+        "P": [{ "pn": "M39029/90-529", "price": 65.00, "desc": "Size 8 Twinax Pin Contact", "size": "8", "isStd": false }],
+        "S": [{ "pn": "M39029/91-530", "price": 72.00, "desc": "Size 8 Twinax Socket Contact", "size": "8", "isStd": false }]
+      }
+    }
+  }
+}
