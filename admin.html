@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connector Database &amp; Shop Tooling Manager</title>
-    <link rel="stylesheet" href="styles.css?v=2.0.3">
-    <link rel="stylesheet" href="admin.css?v=2.0.3">
-    <script src="data/fallbackData.js?v=2.0.3"></script>
-    <script src="js/services/dataService.js?v=2.0.3"></script>
-    <script src="js/admin.js?v=2.0.3" defer></script>
+    <link rel="stylesheet" href="styles.css?v=2.0.4">
+    <link rel="stylesheet" href="admin.css?v=2.0.4">
+    <script src="data/fallbackData.js?v=2.0.4"></script>
+    <script src="js/services/dataService.js?v=2.0.4"></script>
+    <script src="js/admin.js?v=2.0.4" defer></script>
 </head>
 <body>
 
@@ -20,11 +20,11 @@
         <p style="font-size: 13px; opacity: 0.85; margin: 0 0 20px 0; line-height: 1.5; color: var(--text-color, #334155);">
             Please enter your administrator PIN to manage shop tooling, layouts, and catalog databases.
         </p>
-        <form id="adminAuthForm" onsubmit="event.preventDefault(); verifyAdminPass();">
-            <input type="password" id="adminPassInput" placeholder="Enter PIN (Default: 38999)" autofocus style="width: 100%; box-sizing: border-box; text-align: center; font-size: 18px; letter-spacing: 3px; padding: 12px 14px; border-radius: 6px; border: 2px solid var(--input-border, #94a3b8); background: var(--input-bg, #f8fafc); color: var(--text-color, #0f172a); margin-bottom: 10px; outline: none;">
+        <form id="adminAuthForm" onsubmit="event.preventDefault(); verifyAdminPass(); return false;">
+            <input type="password" id="adminPassInput" placeholder="Enter PIN" autocomplete="off" autofocus onkeydown="if (event.key === 'Enter') { event.preventDefault(); verifyAdminPass(); }" style="width: 100%; box-sizing: border-box; text-align: center; font-size: 18px; letter-spacing: 3px; padding: 12px 14px; border-radius: 6px; border: 2px solid var(--input-border, #94a3b8); background: var(--input-bg, #f8fafc); color: var(--text-color, #0f172a); margin-bottom: 10px; outline: none;">
             <div id="adminAuthError" style="color: #ef4444; font-size: 12px; margin-bottom: 14px; display: none; font-weight: 600;">Incorrect PIN. Access denied.</div>
             <div style="display: flex; gap: 10px; justify-content: center;">
-                <button type="submit" class="admin-btn admin-btn-primary" style="padding: 10px 24px; font-weight: 600; cursor: pointer;">Unlock Console</button>
+                <button type="button" onclick="verifyAdminPass()" class="admin-btn admin-btn-primary" style="padding: 10px 24px; font-weight: 600; cursor: pointer;">Unlock Console</button>
                 <a href="index.html" class="admin-btn admin-btn-secondary" style="text-decoration: none; padding: 10px 18px; display: inline-flex; align-items: center; cursor: pointer;">Return to Configurator</a>
             </div>
         </form>

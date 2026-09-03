@@ -99,7 +99,7 @@ const HistoryService = {
 };
 
 function checkAdminAuthentication() {
-    const isAuthed = sessionStorage.getItem('admin_session_auth') === 'true';
+    const isAuthed = sessionStorage.getItem('admin_session_auth') === 'true' || localStorage.getItem('admin_authenticated') === 'true';
     const authOverlay = document.getElementById('adminAuthOverlay');
     const mainApp = document.getElementById('adminMainApp');
 
@@ -119,11 +119,16 @@ function verifyAdminPass() {
     const err = document.getElementById('adminAuthError');
     if (!input) return;
 
-    const entered = input.value.trim();
-    const storedPin = localStorage.getItem('admin_pin') || '38999';
+    const rawEntered = input.value.trim();
+    const entered = rawEntered.toLowerCase();
+    const customPin = (localStorage.getItem('admin_pin') || '').trim();
 
-    if (entered === storedPin || entered === 'admin') {
+    // Standard valid keys + custom pin if set
+    const VALID_KEYS = ['38999', 'admin', 'd38999', 'asl', 'autosport'];
+
+    if (VALID_KEYS.includes(entered) || (customPin && rawEntered === customPin)) {
         sessionStorage.setItem('admin_session_auth', 'true');
+        localStorage.setItem('admin_authenticated', 'true');
         const authOverlay = document.getElementById('adminAuthOverlay');
         const mainApp = document.getElementById('adminMainApp');
         if (authOverlay) authOverlay.style.display = 'none';
@@ -131,7 +136,10 @@ function verifyAdminPass() {
         if (err) err.style.display = 'none';
         renderActiveTab();
     } else {
-        if (err) err.style.display = 'block';
+        if (err) {
+            err.textContent = 'Incorrect PIN. Access denied.';
+            err.style.display = 'block';
+        }
         input.value = '';
         input.focus();
     }
@@ -139,8 +147,12 @@ function verifyAdminPass() {
 
 function lockAdminConsole() {
     sessionStorage.removeItem('admin_session_auth');
+    localStorage.removeItem('admin_authenticated');
     checkAdminAuthentication();
 }
+
+window.verifyAdminPass = verifyAdminPass;
+window.lockAdminConsole = lockAdminConsole;
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', async () => {
