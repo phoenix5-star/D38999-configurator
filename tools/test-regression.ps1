@@ -1,5 +1,5 @@
-# Automated Regression and Data Integrity Suite
-Write-Host "Running Data Architecture & Regression Verification Suite..." -ForegroundColor Cyan
+# Automated Regression and Engine Integrity Suite
+Write-Host "Running Data Architecture, Engine & Regression Verification Suite..." -ForegroundColor Cyan
 
 $testFailures = @()
 
@@ -32,13 +32,58 @@ if (Test-Path "data/fallbackData.js") {
     $testFailures += "Missing data/fallbackData.js"
 }
 
-# 3. Check Data Counts
+# 3. Check Modular Engine Files
+$engineFiles = @(
+    @{ Path = "js/engines/decoderEngine.js"; Identifier = "DecoderEngine" },
+    @{ Path = "js/engines/toolingEngine.js"; Identifier = "ToolingEngine" },
+    @{ Path = "js/engines/configuratorEngine.js"; Identifier = "ConfiguratorEngine" },
+    @{ Path = "js/services/dataService.js"; Identifier = "DataService" }
+)
+
+foreach ($ef in $engineFiles) {
+    $p = $ef.Path
+    if (-not (Test-Path $p)) {
+        $testFailures += "Missing engine file: $p"
+        continue
+    }
+    $code = Get-Content -Raw $p
+    if (-not $code.Contains($ef.Identifier)) {
+        $testFailures += "Engine file $p does not declare $($ef.Identifier)."
+        continue
+    }
+    # Check brace balance
+    $openCount = ($code.ToCharArray() | Where-Object { $_ -eq '{' }).Count
+    $closeCount = ($code.ToCharArray() | Where-Object { $_ -eq '}' }).Count
+    if ($openCount -ne $closeCount) {
+        $testFailures += "Mismatched braces in $p (Open: $openCount, Close: $closeCount)."
+    } else {
+        Write-Host "[PASS] Engine module verified: $p (identifier '$($ef.Identifier)', balanced braces)." -ForegroundColor Green
+    }
+}
+
+# 4. Check Data Counts & Domain Consistency
 try {
     $layouts = Get-Content -Raw "data/layouts.json" | ConvertFrom-Json
     if ($layouts.Count -ge 50) {
         Write-Host "[PASS] Layouts count verified ($($layouts.Count) layouts loaded)." -ForegroundColor Green
     } else {
         $testFailures += "Layouts count too low: $($layouts.Count)"
+    }
+
+    # Verify cavity sum matches pin count for all layouts
+    $layoutErrors = 0
+    foreach ($l in $layouts) {
+        $sum = 0
+        foreach ($prop in $l.counts.PSObject.Properties) {
+            $sum += [int]$prop.Value
+        }
+        if ($sum -ne $l.pins.Count) {
+            $testFailures += "Layout $($l.arrangement): Cavity count sum ($sum) does not match pin array count ($($l.pins.Count))."
+            $layoutErrors++
+        }
+    }
+    if ($layoutErrors -eq 0) {
+        Write-Host "[PASS] All $($layouts.Count) layouts have matching cavity sums and pin arrays." -ForegroundColor Green
     }
 
     $finishes = Get-Content -Raw "data/finishes.json" | ConvertFrom-Json
@@ -54,8 +99,16 @@ try {
     } else {
         $testFailures += "Expected at least 4 shell types, found $($shells.Count)"
     }
+
+    $tooling = Get-Content -Raw "data/tooling.json" | ConvertFrom-Json
+    if ($tooling.shopInventory.frames.Count -ge 2 -and $tooling.shopInventory.positioners.Count -ge 4) {
+        Write-Host "[PASS] Shop tooling inventory verified ($($tooling.shopInventory.frames.Count) frames, $($tooling.shopInventory.positioners.Count) positioners)." -ForegroundColor Green
+    } else {
+        $testFailures += "Shop tooling inventory counts below baseline."
+    }
+
 } catch {
-    $testFailures += "Error verifying counts: $($_.Exception.Message)"
+    $testFailures += "Error verifying data consistency: $($_.Exception.Message)"
 }
 
 Write-Host "--------------------------------------------------"
@@ -66,7 +119,6 @@ if ($testFailures.Count -gt 0) {
     }
     exit 1
 } else {
-    Write-Host "ALL DATA REGRESSION CHECKS PASSED!" -ForegroundColor Green
+    Write-Host "ALL ENGINE & DATA REGRESSION CHECKS PASSED!" -ForegroundColor Green
     exit 0
 }
-

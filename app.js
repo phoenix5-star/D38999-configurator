@@ -345,183 +345,12 @@ const MIL_SLASH_TO_SHELL_TYPE = {
 };
 
 /**
- * Parses a MIL-DTL-38999 Series III or Amphenol Commercial part number string (full or partial).
- * Supports:
- *   - Full Mil: D38999/26WE35PN, D38999/20FJ35SN
- *   - Short Mil: 26WE35PN, 20FJ35SN, 26W-E-35, 26WE35
- *   - Commercial: TVS06RF-11-35P, TVPS00RF-17-35S, TVPS02RW-15-19P, TVS07RBZ-21-35SN, CTV06RW-17-35P, CTVP00RF-13-35S
+ * Delegates part number parsing to DecoderEngine.
  */
 function parsePartNumber(input) {
-    if (!input || typeof input !== 'string') return null;
-    let raw = input.trim().toUpperCase().replace(/[\s\t]+/g, '');
-    if (!raw) return null;
-
-    let res = {
-        standard: null, // 'mil' or 'comm'
-        shellType: null, // 'Plug', 'Wall Mount', 'Box Mount', 'Jam Nut'
-        finish: null,    // 'W', 'F', 'Z', 'T', 'K', 'J', 'M'
-        shellSize: null, // '9', '11', '13', '15', '17', '19', '21', '23', '25'
-        arrangement: null, // '11-35', '17-35', etc.
-        contactType: null, // 'P' or 'S'
-        keying: null,     // 'N', 'A', 'B', 'C', 'D', 'E'
-        raw: raw,
-        confidence: 0
-    };
-
-    // Check Commercial pattern: starts with TVS06, TVPS00, TVPS02, TVS07, CTV06, CTVP00, CTVP02, CTV07
-    const commPrefixMatch = raw.match(/^(TVS06|TVPS00|TVPS02|TVS07|CTV06|CTVP00|CTVP02|CTV07)/);
-    if (commPrefixMatch) {
-        res.standard = 'comm';
-        let prefix = commPrefixMatch[1];
-        let foundType = shellTypes.find(st => st.commPrefix === prefix || st.compPrefix === prefix);
-        if (foundType) res.shellType = foundType.type;
-
-        let remainder = raw.slice(prefix.length).replace(/^[-_]/, '');
-        
-        // Find finish in commercial remainder (RW, RF, RBZ, RNF, RK, W, F, Z, T, K, J, M)
-        let finishMatched = null;
-        for (let f of finishes) {
-            if (remainder.startsWith(f.commCode)) {
-                finishMatched = f.code;
-                remainder = remainder.slice(f.commCode.length).replace(/^[-_]/, '');
-                break;
-            }
-        }
-        if (!finishMatched) {
-            for (let f of finishes) {
-                if (remainder.startsWith(f.code)) {
-                    finishMatched = f.code;
-                    remainder = remainder.slice(f.code.length).replace(/^[-_]/, '');
-                    break;
-                }
-            }
-        }
-        if (finishMatched) res.finish = finishMatched;
-
-        // Next part is shell size + layout or letter code + layout, e.g. 17-35, 1735, E35, 11-35, 25-35
-        let matchLayout = remainder.match(/^(\d{1,2}|[A-J])[-_]?([0-9]{1,3})/);
-        if (matchLayout) {
-            let sizeOrLetter = matchLayout[1];
-            let layoutNum = matchLayout[2];
-            let sz = null;
-            if (LETTER_CODE_TO_SHELL_SIZE[sizeOrLetter]) {
-                sz = LETTER_CODE_TO_SHELL_SIZE[sizeOrLetter];
-            } else if (parseInt(sizeOrLetter, 10) >= 9 && parseInt(sizeOrLetter, 10) <= 25) {
-                sz = sizeOrLetter;
-            }
-            if (sz) {
-                res.shellSize = sz;
-                let fullArr = `${sz}-${layoutNum}`;
-                if (masterLayouts.some(ml => ml.arrangement === fullArr)) {
-                    res.arrangement = fullArr;
-                }
-            }
-            remainder = remainder.slice(matchLayout[0].length).replace(/^[-_]/, '');
-        }
-
-        // Check contact type
-        if (remainder.startsWith('P')) {
-            res.contactType = 'P';
-            remainder = remainder.slice(1);
-        } else if (remainder.startsWith('S')) {
-            res.contactType = 'S';
-            remainder = remainder.slice(1);
-        }
-
-        // Check keying
-        if (remainder.length > 0 && keyingPositions.includes(remainder[0])) {
-            res.keying = remainder[0];
-        }
-
-        let fieldsFound = [res.shellType, res.finish, res.shellSize, res.arrangement, res.contactType, res.keying].filter(Boolean).length;
-        if (fieldsFound > 0) {
-            res.confidence = fieldsFound;
-            return res;
-        }
+    if (typeof DecoderEngine !== 'undefined') {
+        return DecoderEngine.parse(input);
     }
-
-    // Check Military pattern: D38999/26... or 26... or 20... or 22... or 24...
-    let milClean = raw;
-    if (milClean.startsWith('D38999/')) {
-        milClean = milClean.slice(7);
-        res.standard = 'mil';
-    } else if (milClean.startsWith('D38999')) {
-        milClean = milClean.slice(6).replace(/^\//, '');
-        res.standard = 'mil';
-    } else if (milClean.startsWith('38999/')) {
-        milClean = milClean.slice(6);
-        res.standard = 'mil';
-    }
-
-    // Now milClean starts with slash sheet: 20, 22, 24, 26
-    let slashMatch = milClean.match(/^(20|22|24|26)/);
-    if (slashMatch) {
-        if (!res.standard) res.standard = 'mil';
-        let slash = slashMatch[1];
-        res.shellType = MIL_SLASH_TO_SHELL_TYPE[slash];
-        milClean = milClean.slice(slash.length).replace(/^[-_]/, '');
-    }
-
-    // Finish code: W, F, Z, T, K, J, M
-    if (milClean.length > 0) {
-        let fChar = milClean[0];
-        let foundFinish = finishes.find(f => f.code === fChar);
-        if (foundFinish) {
-            res.finish = fChar;
-            milClean = milClean.slice(1).replace(/^[-_]/, '');
-        }
-    }
-
-    // Shell size letter code (A-J) and layout number
-    if (milClean.length > 0) {
-        let letter = milClean[0];
-        if (LETTER_CODE_TO_SHELL_SIZE[letter]) {
-            res.shellSize = LETTER_CODE_TO_SHELL_SIZE[letter];
-            milClean = milClean.slice(1).replace(/^[-_]/, '');
-
-            // Layout number
-            let layoutMatch = milClean.match(/^([0-9]{1,3})/);
-            if (layoutMatch) {
-                let layoutNum = layoutMatch[1];
-                let fullArr = `${res.shellSize}-${layoutNum}`;
-                if (masterLayouts.some(ml => ml.arrangement === fullArr)) {
-                    res.arrangement = fullArr;
-                }
-                milClean = milClean.slice(layoutNum.length).replace(/^[-_]/, '');
-            }
-        }
-    }
-
-    // Contact type (P, S, A, B, C, D)
-    if (milClean.length > 0) {
-        let cChar = milClean[0];
-        if (cChar === 'P' || cChar === 'S') {
-            res.contactType = cChar;
-            milClean = milClean.slice(1);
-        } else if (cChar === 'A') { // Less Contacts - Pin
-            res.contactType = 'P';
-            milClean = milClean.slice(1);
-        } else if (cChar === 'B') { // Less Contacts - Socket
-            res.contactType = 'S';
-            milClean = milClean.slice(1);
-        }
-    }
-
-    // Keying position (N, A, B, C, D, E)
-    if (milClean.length > 0) {
-        let kChar = milClean[0];
-        if (keyingPositions.includes(kChar)) {
-            res.keying = kChar;
-            milClean = milClean.slice(1);
-        }
-    }
-
-    let fieldsCount = [res.shellType, res.finish, res.shellSize, res.arrangement, res.contactType, res.keying].filter(Boolean).length;
-    if (fieldsCount > 0) {
-        res.confidence = fieldsCount;
-        return res;
-    }
-
     return null;
 }
 
@@ -713,86 +542,22 @@ function addGroup() {
 }
 
 function resolveGroupContacts(groupSpecs, gender) {
-    let totals = {};
-
-    groupSpecs.forEach(g => {
-        let typeMap = m39029DB[g.matType] || m39029DB["STD"];
-        let sizeEntry = typeMap[g.size] || (m39029DB["STD"][g.size] || m39029DB["STD"]["22D"]);
-        let list = gender === 'P' ? sizeEntry.P : sizeEntry.S;
-
-        if (g.matType.startsWith("TC_")) {
-            let channels = Math.ceil(g.qty / 2);
-            list.forEach(item => {
-                let totalQty = channels * 1;
-                if (!totals[item.pn]) {
-                    totals[item.pn] = { ...item, qty: totalQty, gender: gender };
-                } else {
-                    totals[item.pn].qty += totalQty;
-                }
-            });
-        } else {
-            list.forEach(item => {
-                let totalQty = g.qty;
-                if (!totals[item.pn]) {
-                    totals[item.pn] = { ...item, qty: totalQty, gender: gender };
-                } else {
-                    totals[item.pn].qty += totalQty;
-                }
-            });
-        }
-    });
-
-    return Object.values(totals);
+    if (typeof ConfiguratorEngine !== 'undefined') {
+        return ConfiguratorEngine.resolveGroupContacts(groupSpecs, gender, m39029DB);
+    }
+    return [];
 }
 
 function getToolingStatus(contacts) {
-    let results = [];
-    let missingTools = [];
-
-    contacts.forEach(c => {
-        let tool = TOOLING_MATRIX[c.size] ? TOOLING_MATRIX[c.size][c.gender] : null;
-        if (!tool) return;
-
-        let frameAvailable = SHOP_TOOLING.frames.includes(tool.frame);
-        let posAvailable = SHOP_TOOLING.positioners.includes(tool.positioner);
-        let isAvailable = frameAvailable && posAvailable;
-
-        let status = {
-            contactSize: c.size,
-            gender: c.gender === 'P' ? 'Pin' : 'Socket',
-            frame: tool.frame,
-            positioner: tool.positioner,
-            setting: tool.setting,
-            available: isAvailable
-        };
-
-        results.push(status);
-        if (!isAvailable) {
-            missingTools.push(status);
-        }
-    });
-
-    return { results, missingTools };
+    if (typeof ToolingEngine !== 'undefined') {
+        return ToolingEngine.getToolingStatus(contacts, SHOP_TOOLING, TOOLING_MATRIX);
+    }
+    return { results: [], missingTools: [] };
 }
 
 function getMatingConnector(primary, pnType, targetShellType) {
-    if (!targetShellType) {
-        targetShellType = primary.shellType === 'Plug' ? 'Wall Mount' : 'Plug';
-    }
-    let targetContactType = primary.contactType === 'P' ? 'S' : 'P';
-    
-    let match = database.find(d => 
-        d.shellSize === primary.shellSize &&
-        d.arrangement === primary.arrangement &&
-        d.shellType === targetShellType &&
-        d.finish === primary.finish &&
-        d.contactType === targetContactType &&
-        d.keying === primary.keying
-    );
-
-    if (match) {
-        let activePN = pnType === 'mil' ? match.milPN : match.commPN;
-        return { ...match, activePN };
+    if (typeof ConfiguratorEngine !== 'undefined') {
+        return ConfiguratorEngine.getMatingConnector(primary, pnType, targetShellType, database);
     }
     return null;
 }

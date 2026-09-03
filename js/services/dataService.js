@@ -178,5 +178,8 @@ const DataService = (function () {
 // Attach to window for global browser availability
 if (typeof window !== 'undefined') {
     window.DataService = DataService;
+    if (window.CONNECTOR_DATA_FALLBACK) {
+        DataService.loadSyncFromFallback();
+    }
 }
 

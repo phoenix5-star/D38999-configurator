@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Automated Regression Test Suite</title>
+    <script src="../data/fallbackData.js"></script>
+    <script src="../js/services/dataService.js"></script>
+    <script src="../js/engines/decoderEngine.js"></script>
+    <script src="../js/engines/toolingEngine.js"></script>
+    <script src="../js/engines/configuratorEngine.js"></script>
+</head>
+<body style="font-family: sans-serif; padding: 20px;">
+    <h1>Automated Regression Test Suite</h1>
+    <div id="test-summary" style="font-weight: bold; margin-bottom: 20px;">Running tests...</div>
+    <div id="test-results"></div>
+
+    <script>
+        (function runTestSuite() {
+            if (!DataService.isLoaded()) {
+                DataService.loadSyncFromFallback();
+            }
+
+            let passed = 0;
+            let failed = 0;
+            const resultsDiv = document.getElementById('test-results');
+
+            function assert(desc, condition, details) {
+                const item = document.createElement('div');
+                item.style.padding = '6px 10px';
+                item.style.margin = '4px 0';
+                item.style.borderRadius = '4px';
+
+                if (condition) {
+                    passed++;
+                    item.style.background = '#e6ffed';
+                    item.style.color = '#155724';
+                    item.innerHTML = `✅ <strong>PASS:</strong> ${desc}`;
+                } else {
+                    failed++;
+                    item.style.background = '#ffeef0';
+                    item.style.color = '#721c24';
+                    item.innerHTML = `❌ <strong>FAIL:</strong> ${desc} - <small>${details || ''}</small>`;
+                }
+                resultsDiv.appendChild(item);
+            }
+
+            try {
+                // TEST 1: Decoder - Full Military Part Number
+                const d1 = DecoderEngine.parse('D38999/26WE35PN');
+                assert('Decoder: Full Mil D38999/26WE35PN standard is mil', d1 && d1.standard === 'mil');
+                assert('Decoder: Full Mil D38999/26WE35PN shellType is Plug', d1 && d1.shellType === 'Plug');
+                assert('Decoder: Full Mil D38999/26WE35PN finish is W (Olive Drab Cadmium)', d1 && d1.finish === 'W');
+                assert('Decoder: Full Mil D38999/26WE35PN shellSize is 17 (Letter E)', d1 && d1.shellSize === '17');
+                assert('Decoder: Full Mil D38999/26WE35PN arrangement is 17-35', d1 && d1.arrangement === '17-35');
+                assert('Decoder: Full Mil D38999/26WE35PN contactType is P (Pin)', d1 && d1.contactType === 'P');
+                assert('Decoder: Full Mil D38999/26WE35PN keying is N (Normal)', d1 && d1.keying === 'N');
+
+                // TEST 2: Decoder - Short Military Part Number
+                const d2 = DecoderEngine.parse('20FJ35SN');
+                assert('Decoder: Short Mil 20FJ35SN standard is mil', d2 && d2.standard === 'mil');
+                assert('Decoder: Short Mil 20FJ35SN shellType is Wall Mount', d2 && d2.shellType === 'Wall Mount');
+                assert('Decoder: Short Mil 20FJ35SN finish is F (Electroless Nickel)', d2 && d2.finish === 'F');
+                assert('Decoder: Short Mil 20FJ35SN shellSize is 19 (Letter F)', d2 && d2.shellSize === '19');
+                assert('Decoder: Short Mil 20FJ35SN arrangement is 19-35', d2 && d2.arrangement === '19-35');
+                assert('Decoder: Short Mil 20FJ35SN contactType is S (Socket)', d2 && d2.contactType === 'S');
+
+                // TEST 3: Decoder - Commercial Amphenol Tri-Start
+                const d3 = DecoderEngine.parse('TVS06RF-11-35P');
+                assert('Decoder: Comm TVS06RF-11-35P standard is comm', d3 && d3.standard === 'comm');
+                assert('Decoder: Comm TVS06RF-11-35P shellType is Plug', d3 && d3.shellType === 'Plug');
+                assert('Decoder: Comm TVS06RF-11-35P finish is F', d3 && d3.finish === 'F');
+                assert('Decoder: Comm TVS06RF-11-35P shellSize is 11', d3 && d3.shellSize === '11');
+                assert('Decoder: Comm TVS06RF-11-35P arrangement is 11-35', d3 && d3.arrangement === '11-35');
+                assert('Decoder: Comm TVS06RF-11-35P contactType is P', d3 && d3.contactType === 'P');
+
+                // TEST 4: Decoder - Composite Commercial Part Number
+                const d4 = DecoderEngine.parse('CTV06RW-17-35S');
+                assert('Decoder: Composite CTV06RW-17-35S standard is comm', d4 && d4.standard === 'comm');
+                assert('Decoder: Composite CTV06RW-17-35S shellType is Plug', d4 && d4.shellType === 'Plug');
+                assert('Decoder: Composite CTV06RW-17-35S finish is W', d4 && d4.finish === 'W');
+                assert('Decoder: Composite CTV06RW-17-35S shellSize is 17', d4 && d4.shellSize === '17');
+
+                // TEST 5: ToolingEngine - 22D Pin and Socket
+                const shop = DataService.getShopInventory();
+                const matrix = DataService.getToolingMatrix();
+                const toolPin = ToolingEngine.getToolingStatus([{ size: '22D', gender: 'P' }], shop, matrix);
+                assert('Tooling: 22D Pin resolves AFM8 frame', toolPin.results[0] && toolPin.results[0].frame === 'AFM8');
+                assert('Tooling: 22D Pin resolves K42 positioner', toolPin.results[0] && toolPin.results[0].positioner === 'K42');
+                assert('Tooling: 22D Pin available in shop', toolPin.results[0] && toolPin.results[0].available === true);
+
+                const toolSoc = ToolingEngine.getToolingStatus([{ size: '22D', gender: 'S' }], shop, matrix);
+                assert('Tooling: 22D Socket resolves K40 positioner', toolSoc.results[0] && toolSoc.results[0].positioner === 'K40');
+
+                // TEST 6: ToolingEngine - Insertion/Extraction Reference
+                const removalTools = DataService.getInsertionExtractionTools();
+                const removalHtml = ToolingEngine.renderM81969Html([{ size: '22D' }], removalTools);
+                assert('Tooling: M81969/14-01 rendered for Size 22D', removalHtml.includes('M81969/14-01'));
+
+                // TEST 7: ConfiguratorEngine - Contact Group Resolution
+                const m39029 = DataService.getM39029DB();
+                const resolvedContacts = ConfiguratorEngine.resolveGroupContacts(
+                    [{ size: '22D', matType: 'STD', qty: 13 }],
+                    'P',
+                    m39029
+                );
+                assert('Configurator: 22D contact resolved to M39029/58-360', resolvedContacts[0] && resolvedContacts[0].pn === 'M39029/58-360');
+                assert('Configurator: Contact quantity is 13', resolvedContacts[0] && resolvedContacts[0].qty === 13);
+
+                // TEST 8: ConfiguratorEngine - Mating Connector Matcher
+                const samplePrimary = {
+                    shellSize: '11',
+                    arrangement: '11-35',
+                    shellType: 'Plug',
+                    finish: 'W',
+                    contactType: 'P',
+                    keying: 'N'
+                };
+                const mockDatabase = [
+                    { shellSize: '11', arrangement: '11-35', shellType: 'Plug', finish: 'W', contactType: 'P', keying: 'N', milPN: 'D38999/26WB35PN', commPN: 'TVS06RW-11-35P' },
+                    { shellSize: '11', arrangement: '11-35', shellType: 'Wall Mount', finish: 'W', contactType: 'S', keying: 'N', milPN: 'D38999/20WB35SN', commPN: 'TVPS00RW-11-35S' }
+                ];
+                const mating = ConfiguratorEngine.getMatingConnector(samplePrimary, 'mil', 'Wall Mount', mockDatabase);
+                assert('Configurator: Mating connector found for Plug', mating !== null);
+                assert('Configurator: Mating shellType is Wall Mount', mating && mating.shellType === 'Wall Mount');
+                assert('Configurator: Mating contactType is S', mating && mating.contactType === 'S');
+                assert('Configurator: Mating activePN is D38999/20WB35SN', mating && mating.activePN === 'D38999/20WB35SN');
+
+            } catch (err) {
+                assert('Execution threw unexpected error', false, err.message);
+            }
+
+            const summaryDiv = document.getElementById('test-summary');
+            if (failed === 0) {
+                summaryDiv.style.color = '#155724';
+                summaryDiv.innerHTML = `🎉 ALL ${passed} AUTOMATED REGRESSION TESTS PASSED!`;
+            } else {
+                summaryDiv.style.color = '#721c24';
+                summaryDiv.innerHTML = `⚠️ TEST SUITE FAILED: ${passed} passed, ${failed} failed.`;
+            }
+        })();
+    </script>
+</body>
+</html>
