@@ -189,6 +189,16 @@
     "costMult": 1.20,
     "backshellFinish": "N",
     "description": "Lightweight composite shell with electroless nickel plating (2000 hr salt spray)."
+  },
+  {
+    "code": "N",
+    "name": "Black Conductive / Electroless Nickel",
+    "commCode": "N",
+    "material": "Aluminum",
+    "isComp": false,
+    "costMult": 1.0,
+    "backshellFinish": "N",
+    "description": "Standard Deutsch AutoSport black conductive non-reflective finish (or Electroless Nickel)."
   }
 ],
   layouts: [

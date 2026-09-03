@@ -87,10 +87,10 @@ try {
     }
 
     $finishes = Get-Content -Raw "data/finishes.json" | ConvertFrom-Json
-    if ($finishes.Count -eq 7) {
-        Write-Host "[PASS] Finishes count verified (7 finishes loaded)." -ForegroundColor Green
+    if ($finishes.Count -ge 8) {
+        Write-Host "[PASS] Finishes count verified ($($finishes.Count) finishes loaded)." -ForegroundColor Green
     } else {
-        $testFailures += "Expected 7 finishes, found $($finishes.Count)"
+        $testFailures += "Expected at least 8 finishes, found $($finishes.Count)"
     }
 
     $shells = Get-Content -Raw "data/shells.json" | ConvertFrom-Json

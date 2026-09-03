@@ -37,9 +37,10 @@ const SHELL_LETTER_CODES = {
 
 // Master Parts Data loaded via DataService
 const m39029DB = (typeof DataService !== 'undefined') ? DataService.getM39029DB() : {};
-const masterLayouts = (typeof DataService !== 'undefined') ? DataService.getLayouts('d38999') : [];
-const shellTypes = (typeof DataService !== 'undefined') ? DataService.getShells('d38999') : [];
-const finishes = (typeof DataService !== 'undefined') ? DataService.getFinishes('d38999') : [];
+const masterLayouts = (typeof DataService !== 'undefined') ? DataService.getLayouts() : [];
+const d38999ShellTypes = (typeof DataService !== 'undefined') ? DataService.getShells('d38999') : [];
+const finishes = (typeof DataService !== 'undefined') ? DataService.getFinishes() : [];
+const d38999Finishes = finishes.filter(f => f.code !== 'N');
 
 const contactTypes = ["P", "S"];
 const keyingPositions = ["N", "A", "B", "C", "D", "E"];
@@ -232,8 +233,8 @@ masterLayouts.forEach(layout => {
         let fastenerPrice = 10.04;
         let fastenerQty = 4;
 
-        shellTypes.forEach(st => {
-            finishes.forEach(fin => {
+        d38999ShellTypes.forEach(st => {
+            d38999Finishes.forEach(fin => {
                 contactTypes.forEach(ct => {
                     keyingPositions.forEach(ky => {
                         const milPN = `D38999/${st.milCode}${fin.code}${layout.letterCode}${layout.arrangement.split('-')[1]}${ct}${ky}`;
@@ -553,10 +554,11 @@ function liveDecodePN(val) {
     }
     if (decoded.finish) {
         let fObj = finishes.find(f => f.code === decoded.finish);
-        chipsHtml.push(`<span class="pn-decode-chip"><strong>Finish:</strong> ${decoded.finish} (${fObj ? fObj.name : ''})</span>`);
+        chipsHtml.push(`<span class="pn-decode-chip"><strong>Finish:</strong> ${decoded.finish}${fObj ? ` (${fObj.name})` : ''}</span>`);
     }
     if (decoded.shellSize) {
-        chipsHtml.push(`<span class="pn-decode-chip"><strong>Shell Size:</strong> ${decoded.shellSize} (${SHELL_LETTER_CODES[decoded.shellSize] || ''})</span>`);
+        let letter = SHELL_LETTER_CODES[decoded.shellSize];
+        chipsHtml.push(`<span class="pn-decode-chip"><strong>Shell Size:</strong> ${decoded.shellSize}${letter ? ` (${letter})` : ''}</span>`);
     }
     if (decoded.arrangement) {
         let lObj = masterLayouts.find(l => l.arrangement === decoded.arrangement);
@@ -928,6 +930,7 @@ function renderSolutionPairHTML(pair, index) {
 
     // Mating shell style selector HTML
     let matingShellSelectorHtml = '';
+    const matContactTypeStr = mat ? (mat.contactType === 'P' ? 'Pins' : 'Sockets') : 'N/A';
     if (pri.shellType === 'Plug') {
         if (pnType === 'as') {
             matingShellSelectorHtml = `
@@ -939,6 +942,7 @@ function renderSolutionPairHTML(pair, index) {
                         <option value="In-Line Receptacle" ${mat && mat.shellType === 'In-Line Receptacle' ? 'selected' : ''}>In-Line Receptacle (ASL1 / ASM1 / AS1)</option>
                     </select>
                 </div>
+                <p><strong>Contact Type:</strong> ${matContactTypeStr} | <strong>Keying:</strong> ${mat ? mat.keying : 'N/A'}</p>
             `;
         } else if (pnType === 'mil') {
             matingShellSelectorHtml = `
@@ -949,6 +953,7 @@ function renderSolutionPairHTML(pair, index) {
                         <option value="Jam Nut" ${mat && mat.shellType === 'Jam Nut' ? 'selected' : ''}>Jam Nut Receptacle (D38999/24)</option>
                     </select>
                 </div>
+                <p><strong>Contact Type:</strong> ${matContactTypeStr} | <strong>Keying:</strong> ${mat ? mat.keying : 'N/A'}</p>
             `;
         } else {
             matingShellSelectorHtml = `
@@ -960,10 +965,11 @@ function renderSolutionPairHTML(pair, index) {
                         <option value="Jam Nut" ${mat && mat.shellType === 'Jam Nut' ? 'selected' : ''}>Jam Nut Receptacle (TVS07 / CTV07)</option>
                     </select>
                 </div>
+                <p><strong>Contact Type:</strong> ${matContactTypeStr} | <strong>Keying:</strong> ${mat ? mat.keying : 'N/A'}</p>
             `;
         }
     } else {
-        matingShellSelectorHtml = `<p><strong>Shell Type:</strong> ${mat ? mat.shellType : 'N/A'} (Mates with Receptacle) | <strong>Keying:</strong> ${mat ? mat.keying : 'N/A'}</p>`;
+        matingShellSelectorHtml = `<p><strong>Shell Type:</strong> ${mat ? mat.shellType : 'N/A'} (Mates with Receptacle) | <strong>Contact Type:</strong> ${matContactTypeStr} | <strong>Keying:</strong> ${mat ? mat.keying : 'N/A'}</p>`;
     }
 
     return `
@@ -971,7 +977,7 @@ function renderSolutionPairHTML(pair, index) {
         <div class="solution-grid">
             <div class="solution-card primary-card">
                 <h4 style="margin-top:0; color:var(--accent);">Primary Connector: ${pri.activePN}</h4>
-                <p><strong>Shell Type:</strong> ${pri.shellType} | <strong>Keying:</strong> ${pri.keying}</p>
+                <p><strong>Shell Type:</strong> ${pri.shellType} | <strong>Contact Type:</strong> ${pri.contactType === 'P' ? 'Pins' : 'Sockets'} | <strong>Keying:</strong> ${pri.keying}</p>
                 <p><strong>Arrangement:</strong> ${pri.shellLabel}</p>
                 
                 <div class="diagram-section">
