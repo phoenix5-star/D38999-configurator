@@ -179,3 +179,4 @@ const DataService = (function () {
 if (typeof window !== 'undefined') {
     window.DataService = DataService;
 }
+

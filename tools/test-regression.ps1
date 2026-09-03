@@ -69,3 +69,4 @@ if ($testFailures.Count -gt 0) {
     Write-Host "ALL DATA REGRESSION CHECKS PASSED!" -ForegroundColor Green
     exit 0
 }
+
