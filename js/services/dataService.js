@@ -123,6 +123,48 @@ const DataService = (function () {
 
         // Dynamic Calculations
         getBackshellOptions: function (shellSize, finishCode) {
+            const isAutoSport = ['06', '07', '08', '10', '12'].includes(String(shellSize));
+            if (isAutoSport) {
+                const sz = String(shellSize).padStart(2, '0');
+                let straightPn = '202K121-25-0';
+                let straightPrice = 12.50;
+                let rightPn = '222K121-25-0';
+                let rightPrice = 14.50;
+
+                if (sz === '06') {
+                    straightPn = '204W221-25-0';
+                    straightPrice = 12.50;
+                    rightPn = '224W221-25-0';
+                    rightPrice = 14.50;
+                } else if (['10', '12'].includes(sz)) {
+                    straightPn = '202K132-25-0';
+                    straightPrice = 14.50;
+                    rightPn = '222K132-25-0';
+                    rightPrice = 16.50;
+                }
+
+                return {
+                    "BOOT_STRAIGHT": {
+                        key: "BOOT_STRAIGHT",
+                        pn: straightPn,
+                        desc: `Raychem Straight Heat Shrink Boot (${straightPn})`,
+                        price: straightPrice
+                    },
+                    "BOOT_RA": {
+                        key: "BOOT_RA",
+                        pn: rightPn,
+                        desc: `Raychem 90° Right-Angle Heat Shrink Boot (${rightPn})`,
+                        price: rightPrice
+                    },
+                    "NONE": {
+                        key: "NONE",
+                        pn: "N/A",
+                        desc: "No Heat Shrink Boot / Direct Wire Exit",
+                        price: 0.00
+                    }
+                };
+            }
+
             const numShell = String(shellSize).padStart(2, '0');
             const szNum = parseInt(shellSize, 10);
             const finishObj = this.getFinishByCode(finishCode);
@@ -157,6 +199,22 @@ const DataService = (function () {
         },
 
         getDustCapOptions: function (shellSize, finishCode, letterCode) {
+            const isAutoSport = ['06', '07', '08', '10', '12'].includes(String(shellSize));
+            if (isAutoSport) {
+                const sz = String(shellSize).padStart(2, '0');
+                return {
+                    plugCap: {
+                        pn: `AS-CAP-${sz}-PLUG`,
+                        desc: `AutoSport Protective Cap for Plug (Size ${sz})`,
+                        price: 9.50
+                    },
+                    receptacleCap: {
+                        pn: `AS-CAP-${sz}-REC`,
+                        desc: `AutoSport Protective Cap for Receptacle (Size ${sz})`,
+                        price: 9.50
+                    }
+                };
+            }
             const szNum = parseInt(shellSize, 10);
             const price = 15.00 + (szNum * 0.50);
             return {

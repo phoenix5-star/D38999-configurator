@@ -2662,16 +2662,16 @@
   },
   "shrinkBoots": {
     "straight": {
-      "06": { "pn": "202K121-25-0", "desc": "Raychem Straight Heat Shrink Boot (Size 06 / 07 / 08)", "price": 12.50 },
-      "07": { "pn": "202K121-25-0", "desc": "Raychem Straight Heat Shrink Boot (Size 06 / 07 / 08)", "price": 12.50 },
-      "08": { "pn": "202K121-25-0", "desc": "Raychem Straight Heat Shrink Boot (Size 06 / 07 / 08)", "price": 12.50 },
+      "06": { "pn": "204W221-25-0", "desc": "Raychem Straight Heat Shrink Boot (ASL Size 06)", "price": 12.50 },
+      "07": { "pn": "202K121-25-0", "desc": "Raychem Straight Heat Shrink Boot (Size 07 / 08)", "price": 12.50 },
+      "08": { "pn": "202K121-25-0", "desc": "Raychem Straight Heat Shrink Boot (Size 07 / 08)", "price": 12.50 },
       "10": { "pn": "202K132-25-0", "desc": "Raychem Straight Heat Shrink Boot (Size 10 / 12)", "price": 14.50 },
       "12": { "pn": "202K132-25-0", "desc": "Raychem Straight Heat Shrink Boot (Size 10 / 12)", "price": 14.50 }
     },
     "rightAngle": {
-      "06": { "pn": "222K121-25-0", "desc": "Raychem 90Â° Right-Angle Heat Shrink Boot (Size 06 / 07 / 08)", "price": 14.50 },
-      "07": { "pn": "222K121-25-0", "desc": "Raychem 90Â° Right-Angle Heat Shrink Boot (Size 06 / 07 / 08)", "price": 14.50 },
-      "08": { "pn": "222K121-25-0", "desc": "Raychem 90Â° Right-Angle Heat Shrink Boot (Size 06 / 07 / 08)", "price": 14.50 },
+      "06": { "pn": "224W221-25-0", "desc": "Raychem 90Â° Right-Angle Heat Shrink Boot (ASL Size 06)", "price": 14.50 },
+      "07": { "pn": "222K121-25-0", "desc": "Raychem 90Â° Right-Angle Heat Shrink Boot (Size 07 / 08)", "price": 14.50 },
+      "08": { "pn": "222K121-25-0", "desc": "Raychem 90Â° Right-Angle Heat Shrink Boot (Size 07 / 08)", "price": 14.50 },
       "10": { "pn": "222K132-25-0", "desc": "Raychem 90Â° Right-Angle Heat Shrink Boot (Size 10 / 12)", "price": 16.50 },
       "12": { "pn": "222K132-25-0", "desc": "Raychem 90Â° Right-Angle Heat Shrink Boot (Size 10 / 12)", "price": 16.50 }
     }

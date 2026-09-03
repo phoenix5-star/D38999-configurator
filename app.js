@@ -61,11 +61,22 @@ function getBackshellOptions(shellSize, finishCode) {
     const isAutoSport = ['06', '07', '08', '10', '12'].includes(String(shellSize));
     if (isAutoSport) {
         const sz = String(shellSize).padStart(2, '0');
-        const isSmall = ['06', '07', '08'].includes(sz);
-        const straightPn = isSmall ? '202K121-25-0' : '202K132-25-0';
-        const straightPrice = isSmall ? 12.50 : 14.50;
-        const rightPn = isSmall ? '222K121-25-0' : '222K132-25-0';
-        const rightPrice = isSmall ? 14.50 : 16.50;
+        let straightPn = '202K121-25-0';
+        let straightPrice = 12.50;
+        let rightPn = '222K121-25-0';
+        let rightPrice = 14.50;
+
+        if (sz === '06') {
+            straightPn = '204W221-25-0';
+            straightPrice = 12.50;
+            rightPn = '224W221-25-0';
+            rightPrice = 14.50;
+        } else if (['10', '12'].includes(sz)) {
+            straightPn = '202K132-25-0';
+            straightPrice = 14.50;
+            rightPn = '222K132-25-0';
+            rightPrice = 16.50;
+        }
         return {
             "BOOT_STRAIGHT": {
                 key: "BOOT_STRAIGHT",

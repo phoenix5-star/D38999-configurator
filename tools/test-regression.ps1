@@ -131,8 +131,8 @@ try {
     }
 
     $acc = Get-Content -Raw "data/accessories.json" | ConvertFrom-Json
-    if ($acc.shrinkBoots -and $acc.shrinkBoots.straight."06" -and $acc.shrinkBoots.straight."06".pn -eq "202K121-25-0") {
-        Write-Host "[PASS] Raychem heat shrink boot accessories verified." -ForegroundColor Green
+    if ($acc.shrinkBoots -and $acc.shrinkBoots.straight."06" -and $acc.shrinkBoots.straight."06".pn -eq "204W221-25-0" -and $acc.shrinkBoots.rightAngle."06".pn -eq "224W221-25-0") {
+        Write-Host "[PASS] Raychem heat shrink boot accessories verified (204W221 / 224W221 for size 06)." -ForegroundColor Green
     } else {
         $testFailures += "Raychem shrink boots missing or incorrect in accessories.json."
     }
