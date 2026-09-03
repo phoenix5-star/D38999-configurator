@@ -117,6 +117,31 @@
     border-color: #DC2626;
 }
 
+/* Generic Custom Color Classes */
+.status-color-green { background: #DCFCE7; color: #15803D; border-color: #86EFAC; }
+[data-theme="dark"] .status-color-green { background: #064E3B; color: #A7F3D0; border-color: #059669; }
+
+.status-color-blue { background: #DBEAFE; color: #1D4ED8; border-color: #93C5FD; }
+[data-theme="dark"] .status-color-blue { background: #1E3A8A; color: #BFDBFE; border-color: #2563EB; }
+
+.status-color-yellow { background: #FEF3C7; color: #B45309; border-color: #FCD34D; }
+[data-theme="dark"] .status-color-yellow { background: #78350F; color: #FDE68A; border-color: #D97706; }
+
+.status-color-red { background: #FEE2E2; color: #B91C1C; border-color: #FCA5A5; }
+[data-theme="dark"] .status-color-red { background: #7F1D1D; color: #FECACA; border-color: #DC2626; }
+
+.status-color-purple { background: #F3E8FF; color: #7E22CE; border-color: #D8B4FE; }
+[data-theme="dark"] .status-color-purple { background: #581C87; color: #E9D5FF; border-color: #9333EA; }
+
+.status-color-orange { background: #FFEDD5; color: #C2410C; border-color: #FDBA74; }
+[data-theme="dark"] .status-color-orange { background: #7C2D12; color: #FED7AA; border-color: #EA580C; }
+
+.status-color-teal { background: #CCFBF1; color: #0F766E; border-color: #5EEAD4; }
+[data-theme="dark"] .status-color-teal { background: #134E4A; color: #99F6E4; border-color: #0D9488; }
+
+.status-color-gray { background: #F4F4F5; color: #52525B; border-color: #D4D4D8; }
+[data-theme="dark"] .status-color-gray { background: #27272A; color: #D4D4D8; border-color: #3F3F46; }
+
 /* Admin Data Tables */
 .admin-table-container {
     overflow-x: auto;

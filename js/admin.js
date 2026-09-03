@@ -162,7 +162,8 @@ function renderToolingTab(container) {
                     <h2 style="margin: 0 0 4px 0;">Shop Tooling Inventory</h2>
                     <p style="margin: 0; font-size: 0.85rem; opacity: 0.85;">Manage crimp frames, positioners, and insertion/extraction tools. Click status pills to toggle availability.</p>
                 </div>
-                <div style="display: flex; gap: 8px;">
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button class="btn-outline admin-btn-sm" onclick="openStatusOptionsModal()" style="padding: 7px 14px; font-weight: 600;">⚙️ Customize Statuses</button>
                     <button class="btn-primary admin-btn-sm" onclick="openAddToolModal()" style="padding: 7px 14px; font-weight: 600;">+ Add New Tool</button>
                     <button class="btn-outline admin-btn-sm" onclick="downloadDomainJson('tooling')" style="padding: 7px 14px;">💾 Export tooling.json</button>
                 </div>
@@ -219,21 +220,60 @@ function renderToolingTab(container) {
     `;
 }
 
+function getStatusOptions() {
+    if (!workingData.tooling.shopInventory) {
+        workingData.tooling.shopInventory = {};
+    }
+    if (!workingData.tooling.shopInventory.statusOptions || !Array.isArray(workingData.tooling.shopInventory.statusOptions) || workingData.tooling.shopInventory.statusOptions.length === 0) {
+        workingData.tooling.shopInventory.statusOptions = [
+            { label: 'In Shop', color: 'green' },
+            { label: 'Calibrated', color: 'blue' },
+            { label: 'Out for Calibration', color: 'yellow' },
+            { label: 'Missing / On Order', color: 'red' }
+        ];
+    }
+    return workingData.tooling.shopInventory.statusOptions;
+}
+
 function getStatusPillClass(status) {
+    const opts = getStatusOptions();
+    const found = opts.find(o => (o.label || '').toLowerCase() === (status || '').toLowerCase());
+    if (found && found.color) {
+        return `status-color-${found.color}`;
+    }
     switch (status) {
-        case 'In Shop': return 'status-in-shop';
-        case 'Calibrated': return 'status-calibrated';
-        case 'Out for Calibration': return 'status-calibration-due';
-        case 'Missing / On Order': return 'status-missing';
-        default: return 'status-in-shop';
+        case 'In Shop': return 'status-color-green';
+        case 'Calibrated': return 'status-color-blue';
+        case 'Out for Calibration': return 'status-color-yellow';
+        case 'Missing / On Order': return 'status-color-red';
+        default: return 'status-color-gray';
+    }
+}
+
+function populateStatusDropdown(selectElementId, selectedValue) {
+    const select = document.getElementById(selectElementId);
+    if (!select) return;
+    const opts = getStatusOptions();
+    select.innerHTML = opts.map(o => `
+        <option value="${escapeHtml(o.label)}" ${o.label === selectedValue ? 'selected' : ''}>
+            ${escapeHtml(o.label)}
+        </option>
+    `).join('');
+    if (selectedValue && !opts.some(o => o.label === selectedValue)) {
+        const customOpt = document.createElement('option');
+        customOpt.value = selectedValue;
+        customOpt.textContent = selectedValue;
+        customOpt.selected = true;
+        select.appendChild(customOpt);
     }
 }
 
 function cycleToolStatus(category, index) {
-    const statuses = ['In Shop', 'Calibrated', 'Out for Calibration', 'Missing / On Order'];
+    const statuses = getStatusOptions().map(o => o.label);
+    if (statuses.length === 0) return;
     const tool = workingData.tooling.shopInventory[category][index];
     if (!tool) return;
-    const currentIdx = statuses.indexOf(tool.status || 'In Shop');
+    const currentIdx = statuses.indexOf(tool.status || statuses[0]);
     const nextIdx = (currentIdx + 1) % statuses.length;
     tool.status = statuses[nextIdx];
     renderActiveTab();
@@ -255,7 +295,7 @@ function openAddToolModal() {
     document.getElementById('toolFormId').value = '';
     document.getElementById('toolFormMilSpec').value = '';
     document.getElementById('toolFormName').value = '';
-    document.getElementById('toolFormStatus').value = 'In Shop';
+    populateStatusDropdown('toolFormStatus', 'In Shop');
     document.getElementById('toolFormEditIndex').value = '-1';
     modal.classList.add('active');
 }
@@ -269,7 +309,7 @@ function editTool(category, index) {
     document.getElementById('toolFormId').value = tool.id || '';
     document.getElementById('toolFormMilSpec').value = tool.milSpec || '';
     document.getElementById('toolFormName').value = tool.name || '';
-    document.getElementById('toolFormStatus').value = tool.status || 'In Shop';
+    populateStatusDropdown('toolFormStatus', tool.status || 'In Shop');
     document.getElementById('toolFormEditIndex').value = index;
     modal.classList.add('active');
 }
@@ -304,10 +344,11 @@ function saveToolModal() {
 }
 
 function cycleRemovalToolStatus(sz) {
-    const statuses = ['In Shop', 'Calibrated', 'Out for Calibration', 'Missing / On Order'];
+    const statuses = getStatusOptions().map(o => o.label);
+    if (statuses.length === 0) return;
     const tool = workingData.tooling.insertionExtractionTools[sz];
     if (!tool) return;
-    const currentIdx = statuses.indexOf(tool.status || 'In Shop');
+    const currentIdx = statuses.indexOf(tool.status || statuses[0]);
     const nextIdx = (currentIdx + 1) % statuses.length;
     tool.status = statuses[nextIdx];
     renderActiveTab();
@@ -324,7 +365,7 @@ function editRemovalTool(sz) {
     document.getElementById('removalToolFormPN').value = tool.toolPN || '';
     document.getElementById('removalToolFormColors').value = tool.colors || '';
     document.getElementById('removalToolFormDesc').value = tool.desc || '';
-    document.getElementById('removalToolFormStatus').value = tool.status || 'In Shop';
+    populateStatusDropdown('removalToolFormStatus', tool.status || 'In Shop');
     modal.classList.add('active');
 }
 
@@ -339,6 +380,101 @@ function saveRemovalToolModal() {
     tool.status = document.getElementById('removalToolFormStatus').value;
 
     closeAllModals();
+    renderActiveTab();
+}
+
+/* --------------------------------------------------------------------------
+   STATUS OPTIONS CUSTOMIZATION MANAGER
+   -------------------------------------------------------------------------- */
+function openStatusOptionsModal() {
+    renderStatusOptionsRows();
+    resetStatusOptionForm();
+    const modal = document.getElementById('statusOptionsModal');
+    if (modal) modal.classList.add('active');
+}
+
+function renderStatusOptionsRows() {
+    const tbody = document.getElementById('statusOptionsTableBody');
+    if (!tbody) return;
+    const opts = getStatusOptions();
+
+    tbody.innerHTML = opts.map((opt, idx) => `
+        <tr>
+            <td><strong>${escapeHtml(opt.label)}</strong></td>
+            <td>
+                <span class="status-pill status-color-${escapeHtml(opt.color)}">
+                    ● ${escapeHtml(opt.label)}
+                </span>
+            </td>
+            <td style="text-align: right;">
+                <button class="admin-btn-sm" onclick="editStatusOption(${idx})">Edit</button>
+                <button class="admin-btn-sm admin-btn-danger" onclick="deleteStatusOption(${idx})">Delete</button>
+            </td>
+        </tr>
+    `).join('') || '<tr><td colspan="3" style="text-align:center;">No status options defined.</td></tr>';
+}
+
+function resetStatusOptionForm() {
+    document.getElementById('statusFormHeading').textContent = 'Add New Status Option';
+    document.getElementById('statusOptionEditIndex').value = '-1';
+    document.getElementById('statusOptionLabel').value = '';
+    document.getElementById('statusOptionColor').value = 'green';
+    document.getElementById('statusOptionSubmitBtn').textContent = 'Add Status';
+}
+
+function editStatusOption(index) {
+    const opts = getStatusOptions();
+    const opt = opts[index];
+    if (!opt) return;
+
+    document.getElementById('statusFormHeading').textContent = `Edit Status: ${opt.label}`;
+    document.getElementById('statusOptionEditIndex').value = index;
+    document.getElementById('statusOptionLabel').value = opt.label;
+    document.getElementById('statusOptionColor').value = opt.color || 'green';
+    document.getElementById('statusOptionSubmitBtn').textContent = 'Update Status';
+}
+
+function deleteStatusOption(index) {
+    const opts = getStatusOptions();
+    const opt = opts[index];
+    if (!opt) return;
+
+    if (opts.length <= 1) {
+        alert('You must have at least one status option.');
+        return;
+    }
+
+    if (confirm(`Delete status option "${opt.label}"? Existing tools with this status will remain labeled "${opt.label}".`)) {
+        opts.splice(index, 1);
+        renderStatusOptionsRows();
+        renderActiveTab();
+    }
+}
+
+function saveStatusOptionForm() {
+    const label = document.getElementById('statusOptionLabel').value.trim();
+    const color = document.getElementById('statusOptionColor').value;
+    const editIndex = parseInt(document.getElementById('statusOptionEditIndex').value, 10);
+
+    if (!label) {
+        alert('Please provide a status name.');
+        return;
+    }
+
+    const opts = getStatusOptions();
+
+    if (editIndex >= 0 && editIndex < opts.length) {
+        opts[editIndex] = { label, color };
+    } else {
+        if (opts.some(o => o.label.toLowerCase() === label.toLowerCase())) {
+            alert('A status option with this name already exists.');
+            return;
+        }
+        opts.push({ label, color });
+    }
+
+    resetStatusOptionForm();
+    renderStatusOptionsRows();
     renderActiveTab();
 }
 

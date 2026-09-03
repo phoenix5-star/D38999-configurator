@@ -190,6 +190,68 @@
     </div>
 </div>
 
+<!-- Modal: Customize Status Options -->
+<div id="statusOptionsModal" class="admin-modal-overlay">
+    <div class="admin-modal-card" style="max-width: 600px;">
+        <div class="admin-modal-header">
+            <h3 style="margin: 0;">Customize Tool Status Options</h3>
+            <button type="button" class="admin-modal-close" aria-label="Close">&times;</button>
+        </div>
+        
+        <p style="margin: 0 0 14px 0; font-size: 0.85rem; opacity: 0.85;">
+            Configure the status options available for tooling. Clicking status pills on any tool will cycle through these options in order.
+        </p>
+
+        <div class="admin-table-container" style="margin-top: 0; margin-bottom: 16px;">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Status Label</th>
+                        <th>Color Preview</th>
+                        <th style="text-align: right;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="statusOptionsTableBody">
+                    <!-- Dynamic status options rows -->
+                </tbody>
+            </table>
+        </div>
+
+        <div style="background: var(--filter-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 14px;">
+            <h4 id="statusFormHeading" style="margin: 0 0 10px 0; font-size: 0.95rem; color: var(--heading-color);">Add New Status Option</h4>
+            <form id="statusOptionForm" onsubmit="event.preventDefault(); saveStatusOptionForm();">
+                <input type="hidden" id="statusOptionEditIndex" value="-1">
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <div style="flex: 1.5; min-width: 180px;">
+                        <label for="statusOptionLabel" style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 4px;">Status Name</label>
+                        <input type="text" id="statusOptionLabel" required placeholder="e.g. In Shop, In Use, Bench A" style="width: 100%; padding: 7px 10px; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);">
+                    </div>
+                    <div style="flex: 1; min-width: 140px;">
+                        <label for="statusOptionColor" style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 4px;">Color Theme</label>
+                        <select id="statusOptionColor" style="width: 100%; padding: 7px 10px; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);">
+                            <option value="green">Green (Active / In Shop)</option>
+                            <option value="blue">Blue (Calibrated / Verified)</option>
+                            <option value="yellow">Yellow (Attention / Due)</option>
+                            <option value="red">Red (Missing / Out)</option>
+                            <option value="purple">Purple (Specialty / Reserve)</option>
+                            <option value="orange">Orange (In Transit)</option>
+                            <option value="teal">Teal (Assigned / Bench)</option>
+                            <option value="gray">Gray (Archived / Inactive)</option>
+                        </select>
+                    </div>
+                    <div style="align-self: flex-end;">
+                        <button type="submit" class="btn-primary" id="statusOptionSubmitBtn" style="padding: 7px 16px; font-size: 0.85rem; height: 35px;">Save Status</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="admin-form-actions" style="margin-top: 14px;">
+            <button type="button" class="btn-outline btn-modal-cancel" style="width: auto; padding: 7px 20px;">Done</button>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
 

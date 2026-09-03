@@ -1,5 +1,11 @@
 {
   "shopInventory": {
+    "statusOptions": [
+      { "label": "In Shop", "color": "green" },
+      { "label": "Calibrated", "color": "blue" },
+      { "label": "Out for Calibration", "color": "yellow" },
+      { "label": "Missing / On Order", "color": "red" }
+    ],
     "frames": [
       { "id": "AFM8", "milSpec": "M22520/2-01", "name": "DMC AFM8 Miniature Crimp Frame", "status": "In Shop" },
       { "id": "AF8", "milSpec": "M22520/1-01", "name": "DMC AF8 Standard Crimp Frame", "status": "In Shop" }
