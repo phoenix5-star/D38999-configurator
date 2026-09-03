@@ -198,9 +198,7 @@ const database = [];
 
 masterLayouts.forEach(layout => {
     if (layout.seriesId === 'deutsch_autosport') {
-        let prefixFamily = 'AS';
-        if (layout.shellSize === '06') prefixFamily = 'ASL';
-        else if (layout.shellSize === '07') prefixFamily = 'ASM';
+        let prefixFamily = (layout.shellSize === '06') ? 'ASL' : 'AS';
 
         const asStyles = [
             { type: 'Plug', asCode: '6', name: 'Free Plug' },
@@ -345,16 +343,16 @@ function updatePnStandardFilters() {
     if (currentStandard === 'as') {
         shellTypeSelect.innerHTML = `
             <option value="ALL">All Shell Types (Plug, Flange, Jam Nut, In-Line)</option>
-            <option value="Plug">Free Plug (ASL6 / ASM6 / AS6)</option>
-            <option value="2-Hole Flange Receptacle">2-Hole Flange Receptacle (ASL0 / ASM0 / AS0)</option>
-            <option value="Jam Nut Receptacle">Jam Nut Receptacle (ASL7 / ASM7 / AS7)</option>
-            <option value="In-Line Receptacle">In-Line Receptacle (ASL1 / ASM1 / AS1)</option>
-            <option value="2-Hole Flange PCB Receptacle">2-Hole Flange PCB Receptacle (ASL2 / ASM2 / AS2)</option>
+            <option value="Plug">Free Plug (ASL6 / AS6)</option>
+            <option value="2-Hole Flange Receptacle">2-Hole Flange Receptacle (ASL0 / AS0)</option>
+            <option value="Jam Nut Receptacle">Jam Nut Receptacle (ASL7 / AS7)</option>
+            <option value="In-Line Receptacle">In-Line Receptacle (ASL1 / AS1)</option>
+            <option value="2-Hole Flange PCB Receptacle">2-Hole Flange PCB Receptacle (ASL2 / AS2)</option>
         `;
         shellSizeSelect.innerHTML = `
             <option value="ALL">All Shell Sizes (06, 07, 08, 10, 12)</option>
             <option value="06">Size 06 (ASL Micro Lite)</option>
-            <option value="07">Size 07 (ASM Mini)</option>
+            <option value="07">Size 07 (AS Mini)</option>
             <option value="08">Size 08 (AS Standard)</option>
             <option value="10">Size 10 (AS Standard)</option>
             <option value="12">Size 12 (AS Standard)</option>
@@ -498,6 +496,33 @@ function init() {
     
     document.getElementById('mode').addEventListener('change', toggleInputMode);
     toggleInputMode();
+    checkAdminAccess();
+}
+
+function checkAdminAccess() {
+    const gearLink = document.getElementById('adminGearLink');
+    if (!gearLink) return;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasAdminParam = urlParams.has('admin') && (urlParams.get('admin') === '1' || urlParams.get('admin') === 'true');
+    const isUnlocked = localStorage.getItem('admin_unlocked') === 'true';
+
+    if (hasAdminParam || isUnlocked) {
+        gearLink.style.display = 'inline-flex';
+    }
+
+    window.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+            e.preventDefault();
+            const current = gearLink.style.display;
+            const nextState = (current === 'none' || !current) ? 'inline-flex' : 'none';
+            gearLink.style.display = nextState;
+            localStorage.setItem('admin_unlocked', nextState === 'inline-flex' ? 'true' : 'false');
+            if (nextState === 'inline-flex') {
+                alert('Admin mode unlocked. Database gear icon is now visible in the header.');
+            }
+        }
+    });
 }
 
 function populateArrangementDropdown() {

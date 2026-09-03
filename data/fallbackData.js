@@ -2338,38 +2338,17 @@
     },
     {
       "seriesId": "deutsch_autosport",
-      "shellSize": "06",
-      "arrangement": "06-03",
-      "counts": { "22": 3 },
-      "pins": ["1", "2", "3"]
+      "shellSize": "07",
+      "arrangement": "07-35",
+      "counts": { "22": 6 },
+      "pins": ["1", "2", "3", "4", "5", "6"]
     },
     {
       "seriesId": "deutsch_autosport",
       "shellSize": "07",
-      "arrangement": "07-03",
-      "counts": { "22": 3 },
+      "arrangement": "07-98",
+      "counts": { "20": 3 },
       "pins": ["1", "2", "3"]
-    },
-    {
-      "seriesId": "deutsch_autosport",
-      "shellSize": "07",
-      "arrangement": "07-05",
-      "counts": { "24": 5 },
-      "pins": ["1", "2", "3", "4", "5"]
-    },
-    {
-      "seriesId": "deutsch_autosport",
-      "shellSize": "08",
-      "arrangement": "08-04",
-      "counts": { "22": 4 },
-      "pins": ["1", "2", "3", "4"]
-    },
-    {
-      "seriesId": "deutsch_autosport",
-      "shellSize": "08",
-      "arrangement": "08-07",
-      "counts": { "24": 7 },
-      "pins": ["1", "2", "3", "4", "5", "6", "7"]
     },
     {
       "seriesId": "deutsch_autosport",
@@ -2380,24 +2359,24 @@
     },
     {
       "seriesId": "deutsch_autosport",
-      "shellSize": "10",
-      "arrangement": "10-05",
-      "counts": { "22": 5 },
-      "pins": ["1", "2", "3", "4", "5"]
+      "shellSize": "08",
+      "arrangement": "08-98",
+      "counts": { "20": 3 },
+      "pins": ["1", "2", "3"]
     },
     {
       "seriesId": "deutsch_autosport",
       "shellSize": "10",
-      "arrangement": "10-10",
-      "counts": { "24": 10 },
-      "pins": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+      "arrangement": "10-02",
+      "counts": { "16": 2 },
+      "pins": ["1", "2"]
     },
     {
       "seriesId": "deutsch_autosport",
       "shellSize": "10",
-      "arrangement": "10-13",
-      "counts": { "24": 13 },
-      "pins": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"]
+      "arrangement": "10-03",
+      "counts": { "16": 3 },
+      "pins": ["1", "2", "3"]
     },
     {
       "seriesId": "deutsch_autosport",
@@ -2408,9 +2387,30 @@
     },
     {
       "seriesId": "deutsch_autosport",
+      "shellSize": "10",
+      "arrangement": "10-98",
+      "counts": { "20": 6 },
+      "pins": ["1", "2", "3", "4", "5", "6"]
+    },
+    {
+      "seriesId": "deutsch_autosport",
       "shellSize": "12",
-      "arrangement": "12-10",
-      "counts": { "22": 10 },
+      "arrangement": "12-04",
+      "counts": { "16": 4 },
+      "pins": ["1", "2", "3", "4"]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "12",
+      "arrangement": "12-35",
+      "counts": { "22": 22 },
+      "pins": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22"]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "12",
+      "arrangement": "12-98",
+      "counts": { "20": 10 },
       "pins": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
     }
 ],

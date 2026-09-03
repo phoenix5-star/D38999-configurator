@@ -378,3 +378,68 @@
     color: #F87171;
 }
 
+/* Authentication Gate Overlay */
+.admin-auth-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(6px);
+    z-index: 99999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.admin-auth-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 32px 28px;
+    max-width: 440px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+    animation: modalPop 0.25s ease-out;
+}
+
+/* Revision History Styles */
+.history-item {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.history-item:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.history-action-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.action-add { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+.action-update { background: #dbeafe; color: #1d4ed8; border: 1px solid #93c5fd; }
+.action-delete { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+
+[data-theme="dark"] .action-add { background: #064e3b; color: #6ee7b7; border-color: #047857; }
+[data-theme="dark"] .action-update { background: #1e3a8a; color: #93c5fd; border-color: #1d4ed8; }
+[data-theme="dark"] .action-delete { background: #7f1d1d; color: #fca5a5; border-color: #991b1b; }
+

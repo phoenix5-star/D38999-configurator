@@ -57,6 +57,10 @@
         <svg style="width: 16px; height: 16px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2v9.67z"/></svg>
         Data Export &amp; Audit
     </button>
+    <button type="button" class="tab-btn" data-tab="history">
+        <svg style="width: 16px; height: 16px; fill: currentColor;" viewBox="0 0 24 24"><path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
+        Revision History &amp; Undo
+    </button>
 </div>
 
 <!-- Tab Content Mounting Node -->
@@ -249,6 +253,25 @@
         <div class="admin-form-actions" style="margin-top: 14px;">
             <button type="button" class="btn-outline btn-modal-cancel" style="width: auto; padding: 7px 20px;">Done</button>
         </div>
+    </div>
+</div>
+
+<!-- Admin Auth Gate Overlay -->
+<div id="adminAuthOverlay" class="admin-auth-overlay" style="display: flex;">
+    <div class="admin-auth-card">
+        <div style="font-size: 38px; margin-bottom: 10px;">🔒</div>
+        <h2 style="margin: 0 0 8px 0; color: var(--heading-color);">Admin Access Restricted</h2>
+        <p style="font-size: 13px; opacity: 0.85; margin: 0 0 18px 0; line-height: 1.4;">
+            Please enter your administrator PIN to manage shop tooling, layouts, and catalog databases.
+        </p>
+        <form id="adminAuthForm" onsubmit="event.preventDefault(); verifyAdminPass();">
+            <input type="password" id="adminPassInput" placeholder="Enter PIN (Default: 38999)" autofocus style="width: 100%; box-sizing: border-box; text-align: center; font-size: 16px; letter-spacing: 2px; padding: 10px 14px; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); margin-bottom: 10px;">
+            <div id="adminAuthError" style="color: #ef4444; font-size: 12px; margin-bottom: 12px; display: none; font-weight: 500;">Incorrect PIN. Access denied.</div>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button type="submit" class="admin-btn admin-btn-primary" style="padding: 8px 22px;">Unlock Console</button>
+                <a href="index.html" class="admin-btn admin-btn-secondary" style="text-decoration: none; padding: 8px 16px;">Return to Configurator</a>
+            </div>
+        </form>
     </div>
 </div>
 

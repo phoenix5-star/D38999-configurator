@@ -107,13 +107,27 @@ try {
         $testFailures += "Shop tooling inventory counts below baseline."
     }
 
-    # Verify AutoSport series and tooling data
     $series = Get-Content -Raw "data/series.json" | ConvertFrom-Json
     $asSeries = $series | Where-Object { $_.id -eq "deutsch_autosport" }
     if ($asSeries -and $asSeries.name -eq "Deutsch AutoSport") {
         Write-Host "[PASS] Deutsch AutoSport series definition verified." -ForegroundColor Green
     } else {
         $testFailures += "Deutsch AutoSport series definition missing or incorrect in series.json."
+    }
+
+    # Verify authentic TE AutoSport layouts from catalog pages 11 & 12
+    $expectedAsArrangements = @('06-05', '07-35', '07-98', '08-35', '08-98', '10-02', '10-03', '10-35', '10-98', '12-04', '12-35', '12-98')
+    $asLayouts = $layouts | Where-Object { $_.seriesId -eq "deutsch_autosport" }
+    $missingAs = @()
+    foreach ($arr in $expectedAsArrangements) {
+        if (-not ($asLayouts | Where-Object { $_.arrangement -eq $arr })) {
+            $missingAs += $arr
+        }
+    }
+    if ($missingAs.Count -eq 0) {
+        Write-Host "[PASS] All 12 authentic Deutsch AutoSport catalog arrangements verified ($($expectedAsArrangements -join ', '))." -ForegroundColor Green
+    } else {
+        $testFailures += "Missing authentic AutoSport arrangements: $($missingAs -join ', ')"
     }
 
     $k1584 = $tooling.shopInventory.positioners | Where-Object { $_.id -eq "K1584" }
