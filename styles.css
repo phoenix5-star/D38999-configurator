@@ -326,8 +326,8 @@ button:disabled {
     align-items: center;
     gap: 10px;
     margin: 0 auto;
-    flex-wrap: nowrap;
-    max-width: 600px;
+    flex-wrap: wrap;
+    max-width: 800px;
 }
 
 .decoder-input-fitted {
@@ -456,6 +456,23 @@ button:disabled {
 .preview-img:hover {
     transform: scale(1.03);
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.diagram-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 70px;
+    padding: 8px 12px;
+    margin-top: 4px;
+    background: var(--card-bg);
+    border: 1px dashed var(--card-border);
+    border-radius: 4px;
+    font-size: 12px;
+    font-style: italic;
+    color: var(--text-color);
+    opacity: 0.75;
+    text-align: center;
 }
 
 .contact-list, .tooling-list {

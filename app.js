@@ -1015,12 +1015,20 @@ function renderSolutionPairHTML(pair, index) {
                 <div class="diagram-section">
                     <div class="diagram-box">
                         <label>Insert Diagram:</label>
-                        <a href="javascript:void(0)" onclick="openImageModal('${pri.diagramImg}', 'Insert Diagram - ${pri.shellLabel}')"><img class="preview-img" src="${pri.diagramImg}" alt="Insert Diagram" onerror="this.parentElement.style.display='none'"></a>
+                        ${isAutoSport ? `
+                            <div class="diagram-placeholder">Insert arrangements coming soon!</div>
+                        ` : `
+                            <a href="javascript:void(0)" onclick="openImageModal('${pri.diagramImg}', 'Insert Diagram - ${pri.shellLabel}')"><img class="preview-img" src="${pri.diagramImg}" alt="Insert Diagram" onerror="this.parentElement.style.display='none'"></a>
+                        `}
                     </div>
                     ${pri.shellType !== 'Plug' ? `
                     <div class="diagram-box">
                         <label>Panel Cutout:</label>
-                        <a href="javascript:void(0)" onclick="openImageModal('${pri.cutoutImg}', 'Panel Cutout - Shell ${pri.shellSize}')"><img class="preview-img" src="${pri.cutoutImg}" alt="Panel Cutout" onerror="this.parentElement.style.display='none'"></a>
+                        ${isAutoSport ? `
+                            <div class="diagram-placeholder">Panel cutout coming soon!</div>
+                        ` : `
+                            <a href="javascript:void(0)" onclick="openImageModal('${pri.cutoutImg}', 'Panel Cutout - Shell ${pri.shellSize}')"><img class="preview-img" src="${pri.cutoutImg}" alt="Panel Cutout" onerror="this.parentElement.style.display='none'"></a>
+                        `}
                     </div>` : ''}
                 </div>
 
@@ -1088,12 +1096,20 @@ function renderSolutionPairHTML(pair, index) {
                 <div class="diagram-section">
                     <div class="diagram-box">
                         <label>Insert Diagram:</label>
-                        <a href="javascript:void(0)" onclick="openImageModal('${mat ? mat.diagramImg : ''}', 'Insert Diagram - ${mat ? mat.shellLabel : ''}')"><img class="preview-img" src="${mat ? mat.diagramImg : ''}" alt="Mating Insert Diagram" onerror="this.parentElement.style.display='none'"></a>
+                        ${isAutoSport ? `
+                            <div class="diagram-placeholder">Insert arrangements coming soon!</div>
+                        ` : `
+                            <a href="javascript:void(0)" onclick="openImageModal('${mat ? mat.diagramImg : ''}', 'Insert Diagram - ${mat ? mat.shellLabel : ''}')"><img class="preview-img" src="${mat ? mat.diagramImg : ''}" alt="Mating Insert Diagram" onerror="this.parentElement.style.display='none'"></a>
+                        `}
                     </div>
                     ${mat && mat.shellType !== 'Plug' ? `
                     <div class="diagram-box">
                         <label>Panel Cutout:</label>
-                        <a href="javascript:void(0)" onclick="openImageModal('${mat ? mat.cutoutImg : ''}', 'Panel Cutout - Shell ${mat ? mat.shellSize : ''}')"><img class="preview-img" src="${mat ? mat.cutoutImg : ''}" alt="Panel Cutout" onerror="this.parentElement.style.display='none'"></a>
+                        ${isAutoSport ? `
+                            <div class="diagram-placeholder">Panel cutout coming soon!</div>
+                        ` : `
+                            <a href="javascript:void(0)" onclick="openImageModal('${mat ? mat.cutoutImg : ''}', 'Panel Cutout - Shell ${mat ? mat.shellSize : ''}')"><img class="preview-img" src="${mat ? mat.cutoutImg : ''}" alt="Panel Cutout" onerror="this.parentElement.style.display='none'"></a>
+                        `}
                     </div>` : ''}
                 </div>
 
