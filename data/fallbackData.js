@@ -21,14 +21,14 @@
     "supportedShellTypes": ["Plug", "Wall Mount", "Box Mount", "Jam Nut"]
   },
   {
-    "id": "deutsch_asl",
-    "name": "Deutsch AutoSport (ASL Micro Series)",
-    "shortName": "Deutsch ASL",
-    "standard": "asl",
-    "prefix": "ASL",
-    "description": "Ultra-compact, lightweight circular connectors engineered for motorsport and aerospace avionics.",
+    "id": "deutsch_autosport",
+    "name": "Deutsch AutoSport",
+    "shortName": "Deutsch AutoSport",
+    "standard": "as",
+    "prefix": "ASL / ASM / AS",
+    "description": "Ultra-compact, lightweight circular connectors engineered for motorsport and aerospace avionics (ASL Micro, ASM Mini, and AS Standard).",
     "defaultFinish": "N",
-    "supportedShellTypes": ["Plug", "Wall Mount", "Inline", "Oval Flange", "Jam Nut"]
+    "supportedShellTypes": ["Plug", "2-Hole Flange Receptacle", "Jam Nut Receptacle", "In-Line Receptacle", "2-Hole Flange PCB Receptacle"]
   }
 ],
   shells: [
@@ -69,38 +69,53 @@
     "description": "Single-hole mounting receptacle with O-ring seal and rear hex jam nut."
   },
   {
-    "seriesId": "deutsch_asl",
+    "seriesId": "deutsch_autosport",
     "type": "Plug",
     "name": "Free Plug",
-    "aslCode": "6",
+    "asCode": "6",
+    "aslPrefix": "ASL6",
+    "asmPrefix": "ASM6",
+    "asPrefix": "AS6",
     "description": "Free plug with bayonet coupling ring."
   },
   {
-    "seriesId": "deutsch_asl",
-    "type": "Wall Mount",
+    "seriesId": "deutsch_autosport",
+    "type": "2-Hole Flange Receptacle",
     "name": "2-Hole Flange Receptacle",
-    "aslCode": "0",
+    "asCode": "0",
+    "aslPrefix": "ASL0",
+    "asmPrefix": "ASM0",
+    "asPrefix": "AS0",
     "description": "Front/rear panel 2-hole mounting flange receptacle."
   },
   {
-    "seriesId": "deutsch_asl",
-    "type": "Inline",
-    "name": "Inline Receptacle",
-    "aslCode": "1",
-    "description": "Free-hanging inline receptacle for cable-to-cable connections."
+    "seriesId": "deutsch_autosport",
+    "type": "In-Line Receptacle",
+    "name": "In-Line Receptacle",
+    "asCode": "1",
+    "aslPrefix": "ASL1",
+    "asmPrefix": "ASM1",
+    "asPrefix": "AS1",
+    "description": "Free-hanging in-line receptacle for cable-to-cable connections."
   },
   {
-    "seriesId": "deutsch_asl",
-    "type": "Oval Flange",
-    "name": "2-Hole Oval Flange Receptacle",
-    "aslCode": "2",
-    "description": "Low profile 2-hole oval flange receptacle."
+    "seriesId": "deutsch_autosport",
+    "type": "2-Hole Flange PCB Receptacle",
+    "name": "2-Hole Flange PCB Receptacle",
+    "asCode": "2",
+    "aslPrefix": "ASL2",
+    "asmPrefix": "ASM2",
+    "asPrefix": "AS2",
+    "description": "Low profile 2-hole flange receptacle with PCB/solder contacts."
   },
   {
-    "seriesId": "deutsch_asl",
-    "type": "Jam Nut",
+    "seriesId": "deutsch_autosport",
+    "type": "Jam Nut Receptacle",
     "name": "Jam Nut Receptacle",
-    "aslCode": "7",
+    "asCode": "7",
+    "aslPrefix": "ASL7",
+    "asmPrefix": "ASM7",
+    "asPrefix": "AS7",
     "description": "Single-hole jam nut receptacle."
   }
 ],
@@ -2303,6 +2318,90 @@
                      "60",
                      "61"
                  ]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "06",
+      "arrangement": "06-05",
+      "counts": { "24": 5 },
+      "pins": ["1", "2", "3", "4", "5"]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "06",
+      "arrangement": "06-03",
+      "counts": { "22": 3 },
+      "pins": ["1", "2", "3"]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "07",
+      "arrangement": "07-03",
+      "counts": { "22": 3 },
+      "pins": ["1", "2", "3"]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "07",
+      "arrangement": "07-05",
+      "counts": { "24": 5 },
+      "pins": ["1", "2", "3", "4", "5"]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "08",
+      "arrangement": "08-04",
+      "counts": { "22": 4 },
+      "pins": ["1", "2", "3", "4"]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "08",
+      "arrangement": "08-07",
+      "counts": { "24": 7 },
+      "pins": ["1", "2", "3", "4", "5", "6", "7"]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "08",
+      "arrangement": "08-35",
+      "counts": { "22": 6 },
+      "pins": ["1", "2", "3", "4", "5", "6"]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "10",
+      "arrangement": "10-05",
+      "counts": { "22": 5 },
+      "pins": ["1", "2", "3", "4", "5"]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "10",
+      "arrangement": "10-10",
+      "counts": { "24": 10 },
+      "pins": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "10",
+      "arrangement": "10-13",
+      "counts": { "24": 13 },
+      "pins": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "10",
+      "arrangement": "10-35",
+      "counts": { "22": 13 },
+      "pins": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "12",
+      "arrangement": "12-10",
+      "counts": { "22": 10 },
+      "pins": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
     }
 ],
   contacts: {
@@ -2317,6 +2416,14 @@
   ],
   "m39029DB": {
     "STD": {
+      "24": {
+        "P": [{ "pn": "605079", "price": 3.85, "desc": "Size 24 Micro Pin Contact (Deutsch AutoSport)", "size": "24", "isStd": true }],
+        "S": [{ "pn": "605080", "price": 4.15, "desc": "Size 24 Micro Socket Contact (Deutsch AutoSport)", "size": "24", "isStd": true }]
+      },
+      "22": {
+        "P": [{ "pn": "605011", "price": 2.95, "desc": "Size 22 Pin Contact (Deutsch AutoSport)", "size": "22", "isStd": true }],
+        "S": [{ "pn": "605012", "price": 3.25, "desc": "Size 22 Socket Contact (Deutsch AutoSport)", "size": "22", "isStd": true }]
+      },
       "22D": {
         "P": [{ "pn": "M39029/58-360", "price": 1.85, "desc": "Size 22D Pin Contact", "size": "22D", "isStd": true }],
         "S": [{ "pn": "M39029/56-348", "price": 2.10, "desc": "Size 22D Socket Contact", "size": "22D", "isStd": true }]
@@ -2438,10 +2545,20 @@
       { "id": "K40", "milSpec": "M22520/2-07", "name": "K40 Positioner (Size 22D Socket)", "status": "In Shop" },
       { "id": "K42", "milSpec": "M22520/2-09", "name": "K42 Positioner (Size 22D Pin)", "status": "In Shop" },
       { "id": "K13-1", "milSpec": "M22520/2-08", "name": "K13-1 Positioner (Size 20)", "status": "In Shop" },
-      { "id": "TH163", "milSpec": "M22520/1-04", "name": "TH163 Turret Head (Size 16 & 12)", "status": "In Shop" }
+      { "id": "TH163", "milSpec": "M22520/1-04", "name": "TH163 Turret Head (Size 16 & 12)", "status": "In Shop" },
+      { "id": "K1584", "milSpec": "DMC K1584", "name": "K1584 Positioner (Size 24 AutoSport Pin/Socket)", "status": "In Shop" },
+      { "id": "K1585", "milSpec": "DMC K1585", "name": "K1585 Positioner (Size 22 AutoSport Pin/Socket)", "status": "In Shop" }
     ]
   },
   "toolingMatrix": {
+    "24": {
+      "P": { "frame": "AFM8", "positioner": "K1584", "setting": "SEL: 4-5 (AWG 24-26)" },
+      "S": { "frame": "AFM8", "positioner": "K1584", "setting": "SEL: 4-5 (AWG 24-26)" }
+    },
+    "22": {
+      "P": { "frame": "AFM8", "positioner": "K1585", "setting": "SEL: 4-6 (AWG 22-24)" },
+      "S": { "frame": "AFM8", "positioner": "K1585", "setting": "SEL: 4-6 (AWG 22-24)" }
+    },
     "22D": {
       "P": { "frame": "AFM8", "positioner": "K42", "setting": "Color SEL: 4 (AWG 22-28)" },
       "S": { "frame": "AFM8", "positioner": "K40", "setting": "Color SEL: 4 (AWG 22-28)" }
@@ -2464,6 +2581,8 @@
     }
   },
   "insertionExtractionTools": {
+    "24":  { "toolPN": "605837", "colors": "Black / White", "badgeClass": "badge-blue", "desc": "Insertion/Extraction Tool (Size 24 AutoSport)", "status": "In Shop" },
+    "22":  { "toolPN": "605837", "colors": "Black / White", "badgeClass": "badge-blue", "desc": "Insertion/Extraction Tool (Size 22 AutoSport)", "status": "In Shop" },
     "22D": { "toolPN": "M81969/14-01", "colors": "Green / White", "badgeClass": "badge-green", "desc": "Plastic Insertion/Extraction (Size 22D)", "status": "In Shop" },
     "20":  { "toolPN": "M81969/14-10", "colors": "Red / Orange", "badgeClass": "badge-orange", "desc": "Plastic Insertion/Extraction (Size 20)", "status": "In Shop" },
     "16":  { "toolPN": "M81969/14-03", "colors": "Blue / White", "badgeClass": "badge-blue", "desc": "Plastic Insertion/Extraction (Size 16)", "status": "In Shop" },
@@ -2530,6 +2649,22 @@
     "url": "https://www.mcmaster.com/91737A313/",
     "price": 10.04,
     "qty": 4
+  },
+  "shrinkBoots": {
+    "straight": {
+      "06": { "pn": "202K121-25-0", "desc": "Raychem Straight Heat Shrink Boot (Size 06 / 07 / 08)", "price": 12.50 },
+      "07": { "pn": "202K121-25-0", "desc": "Raychem Straight Heat Shrink Boot (Size 06 / 07 / 08)", "price": 12.50 },
+      "08": { "pn": "202K121-25-0", "desc": "Raychem Straight Heat Shrink Boot (Size 06 / 07 / 08)", "price": 12.50 },
+      "10": { "pn": "202K132-25-0", "desc": "Raychem Straight Heat Shrink Boot (Size 10 / 12)", "price": 14.50 },
+      "12": { "pn": "202K132-25-0", "desc": "Raychem Straight Heat Shrink Boot (Size 10 / 12)", "price": 14.50 }
+    },
+    "rightAngle": {
+      "06": { "pn": "222K121-25-0", "desc": "Raychem 90Â° Right-Angle Heat Shrink Boot (Size 06 / 07 / 08)", "price": 14.50 },
+      "07": { "pn": "222K121-25-0", "desc": "Raychem 90Â° Right-Angle Heat Shrink Boot (Size 06 / 07 / 08)", "price": 14.50 },
+      "08": { "pn": "222K121-25-0", "desc": "Raychem 90Â° Right-Angle Heat Shrink Boot (Size 06 / 07 / 08)", "price": 14.50 },
+      "10": { "pn": "222K132-25-0", "desc": "Raychem 90Â° Right-Angle Heat Shrink Boot (Size 10 / 12)", "price": 16.50 },
+      "12": { "pn": "222K132-25-0", "desc": "Raychem 90Â° Right-Angle Heat Shrink Boot (Size 10 / 12)", "price": 16.50 }
+    }
   }
 }
 };

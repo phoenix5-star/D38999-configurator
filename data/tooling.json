@@ -14,10 +14,20 @@
       { "id": "K40", "milSpec": "M22520/2-07", "name": "K40 Positioner (Size 22D Socket)", "status": "In Shop" },
       { "id": "K42", "milSpec": "M22520/2-09", "name": "K42 Positioner (Size 22D Pin)", "status": "In Shop" },
       { "id": "K13-1", "milSpec": "M22520/2-08", "name": "K13-1 Positioner (Size 20)", "status": "In Shop" },
-      { "id": "TH163", "milSpec": "M22520/1-04", "name": "TH163 Turret Head (Size 16 & 12)", "status": "In Shop" }
+      { "id": "TH163", "milSpec": "M22520/1-04", "name": "TH163 Turret Head (Size 16 & 12)", "status": "In Shop" },
+      { "id": "K1584", "milSpec": "DMC K1584", "name": "K1584 Positioner (Size 24 AutoSport Pin/Socket)", "status": "In Shop" },
+      { "id": "K1585", "milSpec": "DMC K1585", "name": "K1585 Positioner (Size 22 AutoSport Pin/Socket)", "status": "In Shop" }
     ]
   },
   "toolingMatrix": {
+    "24": {
+      "P": { "frame": "AFM8", "positioner": "K1584", "setting": "SEL: 4-5 (AWG 24-26)" },
+      "S": { "frame": "AFM8", "positioner": "K1584", "setting": "SEL: 4-5 (AWG 24-26)" }
+    },
+    "22": {
+      "P": { "frame": "AFM8", "positioner": "K1585", "setting": "SEL: 4-6 (AWG 22-24)" },
+      "S": { "frame": "AFM8", "positioner": "K1585", "setting": "SEL: 4-6 (AWG 22-24)" }
+    },
     "22D": {
       "P": { "frame": "AFM8", "positioner": "K42", "setting": "Color SEL: 4 (AWG 22-28)" },
       "S": { "frame": "AFM8", "positioner": "K40", "setting": "Color SEL: 4 (AWG 22-28)" }
@@ -40,6 +50,8 @@
     }
   },
   "insertionExtractionTools": {
+    "24":  { "toolPN": "605837", "colors": "Black / White", "badgeClass": "badge-blue", "desc": "Insertion/Extraction Tool (Size 24 AutoSport)", "status": "In Shop" },
+    "22":  { "toolPN": "605837", "colors": "Black / White", "badgeClass": "badge-blue", "desc": "Insertion/Extraction Tool (Size 22 AutoSport)", "status": "In Shop" },
     "22D": { "toolPN": "M81969/14-01", "colors": "Green / White", "badgeClass": "badge-green", "desc": "Plastic Insertion/Extraction (Size 22D)", "status": "In Shop" },
     "20":  { "toolPN": "M81969/14-10", "colors": "Red / Orange", "badgeClass": "badge-orange", "desc": "Plastic Insertion/Extraction (Size 20)", "status": "In Shop" },
     "16":  { "toolPN": "M81969/14-03", "colors": "Blue / White", "badgeClass": "badge-blue", "desc": "Plastic Insertion/Extraction (Size 16)", "status": "In Shop" },

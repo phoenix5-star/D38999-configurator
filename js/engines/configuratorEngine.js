@@ -66,8 +66,14 @@ const ConfiguratorEngine = (function () {
         if (!primary) return null;
         const db = database || [];
 
+        const isAutoSport = primary.seriesId === 'deutsch_autosport' || pnType === 'as' || ['06','07','08','10','12'].includes(primary.shellSize);
+
         if (!targetShellType) {
-            targetShellType = primary.shellType === 'Plug' ? 'Wall Mount' : 'Plug';
+            if (isAutoSport) {
+                targetShellType = primary.shellType === 'Plug' ? '2-Hole Flange Receptacle' : 'Plug';
+            } else {
+                targetShellType = primary.shellType === 'Plug' ? 'Wall Mount' : 'Plug';
+            }
         }
         let targetContactType = primary.contactType === 'P' ? 'S' : 'P';
         
@@ -75,13 +81,12 @@ const ConfiguratorEngine = (function () {
             d.shellSize === primary.shellSize &&
             d.arrangement === primary.arrangement &&
             d.shellType === targetShellType &&
-            d.finish === primary.finish &&
             d.contactType === targetContactType &&
             d.keying === primary.keying
         );
 
         if (match) {
-            let activePN = pnType === 'mil' ? match.milPN : match.commPN;
+            let activePN = pnType === 'mil' ? match.milPN : (pnType === 'comm' ? match.commPN : (match.asPN || match.milPN));
             return { ...match, activePN };
         }
         return null;
@@ -104,7 +109,12 @@ const ConfiguratorEngine = (function () {
         } = params;
 
         return database.filter(entry => {
-            if (standard === 'mil' && entry.shellType === 'Box Mount') return false;
+            if (standard === 'as') {
+                if (entry.seriesId !== 'deutsch_autosport') return false;
+            } else {
+                if (entry.seriesId === 'deutsch_autosport') return false;
+                if (standard === 'mil' && entry.shellType === 'Box Mount') return false;
+            }
             if (filterShellType !== "ALL" && entry.shellType !== filterShellType) return false;
             if (filterFinish !== "ALL" && entry.finish !== filterFinish) return false;
             if (filterShellSize !== "ALL" && entry.shellSize !== filterShellSize) return false;
@@ -127,8 +137,8 @@ const ConfiguratorEngine = (function () {
         const { standard = 'mil', groupSpecs = [], database = [], m39029DB = null } = params;
 
         return matches.map(match => {
-            let activePN = standard === 'mil' ? match.milPN : match.commPN;
-            let defaultMatingShell = match.shellType === 'Plug' ? 'Wall Mount' : 'Plug';
+            let activePN = standard === 'mil' ? match.milPN : (standard === 'comm' ? match.commPN : (match.asPN || match.milPN));
+            let defaultMatingShell = match.shellType === 'Plug' ? (standard === 'as' ? '2-Hole Flange Receptacle' : 'Wall Mount') : 'Plug';
             let mating = getMatingConnector(match, standard, defaultMatingShell, database);
 
             let priContacts = resolveGroupContacts(groupSpecs, match.contactType, m39029DB);
@@ -160,3 +170,4 @@ const ConfiguratorEngine = (function () {
 if (typeof window !== 'undefined') {
     window.ConfiguratorEngine = ConfiguratorEngine;
 }
+

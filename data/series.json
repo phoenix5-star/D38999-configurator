@@ -20,14 +20,14 @@
     "supportedShellTypes": ["Plug", "Wall Mount", "Box Mount", "Jam Nut"]
   },
   {
-    "id": "deutsch_asl",
-    "name": "Deutsch AutoSport (ASL Micro Series)",
-    "shortName": "Deutsch ASL",
-    "standard": "asl",
-    "prefix": "ASL",
-    "description": "Ultra-compact, lightweight circular connectors engineered for motorsport and aerospace avionics.",
+    "id": "deutsch_autosport",
+    "name": "Deutsch AutoSport",
+    "shortName": "Deutsch AutoSport",
+    "standard": "as",
+    "prefix": "ASL / ASM / AS",
+    "description": "Ultra-compact, lightweight circular connectors engineered for motorsport and aerospace avionics (ASL Micro, ASM Mini, and AS Standard).",
     "defaultFinish": "N",
-    "supportedShellTypes": ["Plug", "Wall Mount", "Inline", "Oval Flange", "Jam Nut"]
+    "supportedShellTypes": ["Plug", "2-Hole Flange Receptacle", "Jam Nut Receptacle", "In-Line Receptacle", "2-Hole Flange PCB Receptacle"]
   }
 ]
 

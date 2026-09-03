@@ -80,6 +80,23 @@
                 assert('Decoder: Composite CTV06RW-17-35S finish is W', d4 && d4.finish === 'W');
                 assert('Decoder: Composite CTV06RW-17-35S shellSize is 17', d4 && d4.shellSize === '17');
 
+                // TEST 4B: Decoder - Deutsch AutoSport (ASL, ASM, AS)
+                const dASL = DecoderEngine.parse('ASL606-05PN');
+                assert('Decoder: AutoSport ASL606-05PN standard is as', dASL && dASL.standard === 'as');
+                assert('Decoder: AutoSport ASL606-05PN shellType is Plug', dASL && dASL.shellType === 'Plug');
+                assert('Decoder: AutoSport ASL606-05PN arrangement is 06-05', dASL && dASL.arrangement === '06-05');
+                assert('Decoder: AutoSport ASL606-05PN contactType is P', dASL && dASL.contactType === 'P');
+
+                const dASM = DecoderEngine.parse('ASM607-05PN');
+                assert('Decoder: AutoSport ASM607-05PN standard is as', dASM && dASM.standard === 'as');
+                assert('Decoder: AutoSport ASM607-05PN arrangement is 07-05', dASM && dASM.arrangement === '07-05');
+
+                const dAS = DecoderEngine.parse('AS010-13SN');
+                assert('Decoder: AutoSport AS010-13SN standard is as', dAS && dAS.standard === 'as');
+                assert('Decoder: AutoSport AS010-13SN shellType is 2-Hole Flange Receptacle', dAS && dAS.shellType === '2-Hole Flange Receptacle');
+                assert('Decoder: AutoSport AS010-13SN arrangement is 10-13', dAS && dAS.arrangement === '10-13');
+                assert('Decoder: AutoSport AS010-13SN contactType is S', dAS && dAS.contactType === 'S');
+
                 // TEST 5: ToolingEngine - 22D Pin and Socket
                 const shop = DataService.getShopInventory();
                 const matrix = DataService.getToolingMatrix();
@@ -91,8 +108,18 @@
                 const toolSoc = ToolingEngine.getToolingStatus([{ size: '22D', gender: 'S' }], shop, matrix);
                 assert('Tooling: 22D Socket resolves K40 positioner', toolSoc.results[0] && toolSoc.results[0].positioner === 'K40');
 
+                // TEST 5B: ToolingEngine - Size 24 & Size 22 AutoSport Tooling
+                const tool24 = ToolingEngine.getToolingStatus([{ size: '24', gender: 'P' }], shop, matrix);
+                assert('Tooling: Size 24 Pin resolves AFM8 + K1584 positioner', tool24.results[0] && tool24.results[0].frame === 'AFM8' && tool24.results[0].positioner === 'K1584');
+
+                const tool22 = ToolingEngine.getToolingStatus([{ size: '22', gender: 'S' }], shop, matrix);
+                assert('Tooling: Size 22 Socket resolves AFM8 + K1585 positioner', tool22.results[0] && tool22.results[0].frame === 'AFM8' && tool22.results[0].positioner === 'K1585');
+
                 // TEST 6: ToolingEngine - Insertion/Extraction Reference
                 const removalTools = DataService.getInsertionExtractionTools();
+                const removal24 = removalTools['24'];
+                assert('Tooling: Size 24 insertion/extraction tool is 605837', removal24 && removal24.toolPN === '605837');
+
                 const removalHtml = ToolingEngine.renderM81969Html([{ size: '22D' }], removalTools);
                 assert('Tooling: M81969/14-01 rendered for Size 22D', removalHtml.includes('M81969/14-01'));
 

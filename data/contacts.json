@@ -10,6 +10,14 @@
   ],
   "m39029DB": {
     "STD": {
+      "24": {
+        "P": [{ "pn": "605079", "price": 3.85, "desc": "Size 24 Micro Pin Contact (Deutsch AutoSport)", "size": "24", "isStd": true }],
+        "S": [{ "pn": "605080", "price": 4.15, "desc": "Size 24 Micro Socket Contact (Deutsch AutoSport)", "size": "24", "isStd": true }]
+      },
+      "22": {
+        "P": [{ "pn": "605011", "price": 2.95, "desc": "Size 22 Pin Contact (Deutsch AutoSport)", "size": "22", "isStd": true }],
+        "S": [{ "pn": "605012", "price": 3.25, "desc": "Size 22 Socket Contact (Deutsch AutoSport)", "size": "22", "isStd": true }]
+      },
       "22D": {
         "P": [{ "pn": "M39029/58-360", "price": 1.85, "desc": "Size 22D Pin Contact", "size": "22D", "isStd": true }],
         "S": [{ "pn": "M39029/56-348", "price": 2.10, "desc": "Size 22D Socket Contact", "size": "22D", "isStd": true }]

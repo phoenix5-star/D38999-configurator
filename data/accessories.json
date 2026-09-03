@@ -57,6 +57,22 @@
     "url": "https://www.mcmaster.com/91737A313/",
     "price": 10.04,
     "qty": 4
+  },
+  "shrinkBoots": {
+    "straight": {
+      "06": { "pn": "202K121-25-0", "desc": "Raychem Straight Heat Shrink Boot (Size 06 / 07 / 08)", "price": 12.50 },
+      "07": { "pn": "202K121-25-0", "desc": "Raychem Straight Heat Shrink Boot (Size 06 / 07 / 08)", "price": 12.50 },
+      "08": { "pn": "202K121-25-0", "desc": "Raychem Straight Heat Shrink Boot (Size 06 / 07 / 08)", "price": 12.50 },
+      "10": { "pn": "202K132-25-0", "desc": "Raychem Straight Heat Shrink Boot (Size 10 / 12)", "price": 14.50 },
+      "12": { "pn": "202K132-25-0", "desc": "Raychem Straight Heat Shrink Boot (Size 10 / 12)", "price": 14.50 }
+    },
+    "rightAngle": {
+      "06": { "pn": "222K121-25-0", "desc": "Raychem 90° Right-Angle Heat Shrink Boot (Size 06 / 07 / 08)", "price": 14.50 },
+      "07": { "pn": "222K121-25-0", "desc": "Raychem 90° Right-Angle Heat Shrink Boot (Size 06 / 07 / 08)", "price": 14.50 },
+      "08": { "pn": "222K121-25-0", "desc": "Raychem 90° Right-Angle Heat Shrink Boot (Size 06 / 07 / 08)", "price": 14.50 },
+      "10": { "pn": "222K132-25-0", "desc": "Raychem 90° Right-Angle Heat Shrink Boot (Size 10 / 12)", "price": 16.50 },
+      "12": { "pn": "222K132-25-0", "desc": "Raychem 90° Right-Angle Heat Shrink Boot (Size 10 / 12)", "price": 16.50 }
+    }
   }
 }
 

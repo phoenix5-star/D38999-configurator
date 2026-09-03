@@ -36,38 +36,53 @@
     "description": "Single-hole mounting receptacle with O-ring seal and rear hex jam nut."
   },
   {
-    "seriesId": "deutsch_asl",
+    "seriesId": "deutsch_autosport",
     "type": "Plug",
     "name": "Free Plug",
-    "aslCode": "6",
+    "asCode": "6",
+    "aslPrefix": "ASL6",
+    "asmPrefix": "ASM6",
+    "asPrefix": "AS6",
     "description": "Free plug with bayonet coupling ring."
   },
   {
-    "seriesId": "deutsch_asl",
-    "type": "Wall Mount",
+    "seriesId": "deutsch_autosport",
+    "type": "2-Hole Flange Receptacle",
     "name": "2-Hole Flange Receptacle",
-    "aslCode": "0",
+    "asCode": "0",
+    "aslPrefix": "ASL0",
+    "asmPrefix": "ASM0",
+    "asPrefix": "AS0",
     "description": "Front/rear panel 2-hole mounting flange receptacle."
   },
   {
-    "seriesId": "deutsch_asl",
-    "type": "Inline",
-    "name": "Inline Receptacle",
-    "aslCode": "1",
-    "description": "Free-hanging inline receptacle for cable-to-cable connections."
+    "seriesId": "deutsch_autosport",
+    "type": "In-Line Receptacle",
+    "name": "In-Line Receptacle",
+    "asCode": "1",
+    "aslPrefix": "ASL1",
+    "asmPrefix": "ASM1",
+    "asPrefix": "AS1",
+    "description": "Free-hanging in-line receptacle for cable-to-cable connections."
   },
   {
-    "seriesId": "deutsch_asl",
-    "type": "Oval Flange",
-    "name": "2-Hole Oval Flange Receptacle",
-    "aslCode": "2",
-    "description": "Low profile 2-hole oval flange receptacle."
+    "seriesId": "deutsch_autosport",
+    "type": "2-Hole Flange PCB Receptacle",
+    "name": "2-Hole Flange PCB Receptacle",
+    "asCode": "2",
+    "aslPrefix": "ASL2",
+    "asmPrefix": "ASM2",
+    "asPrefix": "AS2",
+    "description": "Low profile 2-hole flange receptacle with PCB/solder contacts."
   },
   {
-    "seriesId": "deutsch_asl",
-    "type": "Jam Nut",
+    "seriesId": "deutsch_autosport",
+    "type": "Jam Nut Receptacle",
     "name": "Jam Nut Receptacle",
-    "aslCode": "7",
+    "asCode": "7",
+    "aslPrefix": "ASL7",
+    "asmPrefix": "ASM7",
+    "asPrefix": "AS7",
     "description": "Single-hole jam nut receptacle."
   }
 ]

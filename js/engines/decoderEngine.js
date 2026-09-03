@@ -42,16 +42,51 @@ const DecoderEngine = (function () {
         const shellTypes = (typeof DataService !== 'undefined') ? DataService.getShells('d38999') : [];
 
         let res = {
-            standard: null,       // 'mil', 'comm', 'asl'
+            standard: null,       // 'mil', 'comm', 'as'
             shellType: null,      // 'Plug', 'Wall Mount', 'Box Mount', 'Jam Nut', etc.
-            finish: null,         // 'W', 'F', 'Z', 'T', 'K', 'J', 'M'
-            shellSize: null,      // '9'..'25'
-            arrangement: null,    // '11-35', '17-35', etc.
+            finish: null,         // 'W', 'F', 'Z', 'T', 'K', 'J', 'M', 'N'
+            shellSize: null,      // '9'..'25' or '06'..'12'
+            arrangement: null,    // '11-35', '06-05', etc.
             contactType: null,    // 'P' or 'S'
-            keying: null,         // 'N', 'A', 'B', 'C', 'D', 'E'
+            keying: null,         // 'N', 'A', 'B', 'C', 'D', 'E', 'U'
             raw: raw,
             confidence: 0
         };
+
+        // 0. Check Deutsch AutoSport pattern (ASL, ASM, AS)
+        // e.g. ASL606-05PN, ASL006-05SN, ASM607-05PN, AS608-04PN, AS010-13SN, AS710-05PN, AS612-10SN
+        const asMatch = raw.match(/^(ASL|ASM|AS)([01267])[-_]?([01]?[0-9])[-_]?([0-9]{2,3})([PSAB])([NABCDEU]?)/);
+        if (asMatch) {
+            res.standard = 'as';
+            const styleCode = asMatch[2];    // '6', '0', '7', '1', '2'
+            const sizeCode = asMatch[3].padStart(2, '0'); // '06', '07', '08', '10', '12'
+            const layoutCode = asMatch[4];   // '05', '03', '04', '07', '10', '13', '35'
+            const contactChar = asMatch[5];  // 'P', 'S', 'A', 'B'
+            const keyingChar = asMatch[6] || 'N';
+
+            const AS_STYLE_TO_SHELL_TYPE = {
+                '6': 'Plug',
+                '0': '2-Hole Flange Receptacle',
+                '7': 'Jam Nut Receptacle',
+                '1': 'In-Line Receptacle',
+                '2': '2-Hole Flange PCB Receptacle'
+            };
+            res.shellType = AS_STYLE_TO_SHELL_TYPE[styleCode] || 'Plug';
+            res.finish = 'N'; // Standard AutoSport finish
+            res.shellSize = sizeCode;
+            res.arrangement = `${sizeCode}-${layoutCode}`;
+            res.contactType = (contactChar === 'P' || contactChar === 'A') ? 'P' : 'S';
+            res.keying = keyingChar;
+
+            const asLayouts = (typeof DataService !== 'undefined') ? DataService.getLayouts('deutsch_autosport') : [];
+            if (asLayouts.some(l => l.arrangement === res.arrangement)) {
+                res.confidence = 6;
+                return res;
+            } else {
+                res.confidence = 5;
+                return res;
+            }
+        }
 
         // 1. Check Commercial pattern (TVS06, TVPS00, TVPS02, TVS07, CTV06, CTVP00, CTVP02, CTV07)
         const commPrefixMatch = raw.match(/^(TVS06|TVPS00|TVPS02|TVS07|CTV06|CTVP00|CTVP02|CTV07)/);
@@ -223,3 +258,4 @@ const DecoderEngine = (function () {
 if (typeof window !== 'undefined') {
     window.DecoderEngine = DecoderEngine;
 }
+

@@ -107,6 +107,36 @@ try {
         $testFailures += "Shop tooling inventory counts below baseline."
     }
 
+    # Verify AutoSport series and tooling data
+    $series = Get-Content -Raw "data/series.json" | ConvertFrom-Json
+    $asSeries = $series | Where-Object { $_.id -eq "deutsch_autosport" }
+    if ($asSeries -and $asSeries.name -eq "Deutsch AutoSport") {
+        Write-Host "[PASS] Deutsch AutoSport series definition verified." -ForegroundColor Green
+    } else {
+        $testFailures += "Deutsch AutoSport series definition missing or incorrect in series.json."
+    }
+
+    $k1584 = $tooling.shopInventory.positioners | Where-Object { $_.id -eq "K1584" }
+    $k1585 = $tooling.shopInventory.positioners | Where-Object { $_.id -eq "K1585" }
+    if ($k1584 -and $k1585) {
+        Write-Host "[PASS] AutoSport DMC positioners K1584 and K1585 verified in shop inventory." -ForegroundColor Green
+    } else {
+        $testFailures += "AutoSport positioners K1584 / K1585 missing in tooling.json."
+    }
+
+    if ($tooling.insertionExtractionTools."24" -and $tooling.insertionExtractionTools."24".toolPN -eq "605837") {
+        Write-Host "[PASS] AutoSport insertion/extraction tool 605837 verified." -ForegroundColor Green
+    } else {
+        $testFailures += "AutoSport insertion/extraction tool 605837 missing in tooling.json."
+    }
+
+    $acc = Get-Content -Raw "data/accessories.json" | ConvertFrom-Json
+    if ($acc.shrinkBoots -and $acc.shrinkBoots.straight."06" -and $acc.shrinkBoots.straight."06".pn -eq "202K121-25-0") {
+        Write-Host "[PASS] Raychem heat shrink boot accessories verified." -ForegroundColor Green
+    } else {
+        $testFailures += "Raychem shrink boots missing or incorrect in accessories.json."
+    }
+
 } catch {
     $testFailures += "Error verifying data consistency: $($_.Exception.Message)"
 }

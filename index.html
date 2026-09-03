@@ -38,12 +38,12 @@
 
 <!-- P/N Decoder Card -->
 <div class="card" id="decoderCard" style="margin-bottom: 20px; text-align: center;">
-    <h2 style="margin-bottom: 8px;">D38999 &amp; Commercial Part Number Decoder</h2>
+    <h2 style="margin-bottom: 8px;">Connector Part Number Decoder</h2>
     <p style="margin: 0 auto 14px auto; max-width: 750px; font-size: 13px; color: var(--text-color); opacity: 0.85;">
-        Paste or type a partial or full MIL-DTL-38999 Series III or Amphenol Commercial part number (e.g. <code>26WE35</code>, <code>20FJ35SN</code>, <code>D38999/26WE35PN</code>, <code>TVS06RF-11-35P</code>) to decode and auto-populate all filters.
+        Paste or type a partial or full MIL-DTL-38999 Series III, Amphenol Commercial, or Deutsch AutoSport part number (e.g. <code>26WE35</code>, <code>20FJ35SN</code>, <code>TVS06RF-11-35P</code>, <code>ASL606-05PN</code>, <code>AS010-13SN</code>) to decode and auto-populate all filters.
     </p>
     <div class="decoder-controls-centered">
-        <input type="text" id="pnDecodeInput" class="decoder-input-fitted" placeholder="e.g. 26WE35PN or TVS06RF-11-35P"
+        <input type="text" id="pnDecodeInput" class="decoder-input-fitted" placeholder="e.g. 26WE35PN, TVS06RF-11-35P, or ASL606-05PN"
             oninput="liveDecodePN(this.value)"
             onkeydown="if(event.key==='Enter') applyDecodedPN()">
         <button type="button" id="pnDecodeApplyBtn" onclick="applyDecodedPN()" style="width: auto; white-space: nowrap; padding: 8px 18px;" disabled>Apply &amp; Calculate</button>
@@ -55,11 +55,15 @@
 <div class="tab-container">
     <button type="button" class="tab-btn active" id="tabMilBtn" onclick="switchStandardTab('mil')">
         <svg style="width: 16px; height: 16px; fill: currentColor;" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9.5l-8-4V17l8 4 8-4v-9.5l-8 4z"/></svg>
-        Military Standard (MIL-DTL-38999 Series III)
+        MIL-DTL-38999 Series III
     </button>
     <button type="button" class="tab-btn" id="tabCommBtn" onclick="switchStandardTab('comm')">
         <svg style="width: 16px; height: 16px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
-        Commercial Standard (Amphenol Tri-Start TVS/CTVP)
+        Amphenol Tri-Start Comm
+    </button>
+    <button type="button" class="tab-btn" id="tabAsBtn" onclick="switchStandardTab('as')">
+        <svg style="width: 16px; height: 16px; fill: currentColor;" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+        Deutsch AutoSport
     </button>
 </div>
 

@@ -57,6 +57,35 @@ const CONNECTOR_TO_BACKSHELL_FINISH = {
 };
 
 function getBackshellOptions(shellSize, finishCode) {
+    const isAutoSport = ['06', '07', '08', '10', '12'].includes(String(shellSize));
+    if (isAutoSport) {
+        const sz = String(shellSize).padStart(2, '0');
+        const isSmall = ['06', '07', '08'].includes(sz);
+        const straightPn = isSmall ? '202K121-25-0' : '202K132-25-0';
+        const straightPrice = isSmall ? 12.50 : 14.50;
+        const rightPn = isSmall ? '222K121-25-0' : '222K132-25-0';
+        const rightPrice = isSmall ? 14.50 : 16.50;
+        return {
+            "BOOT_STRAIGHT": {
+                key: "BOOT_STRAIGHT",
+                pn: straightPn,
+                desc: `Raychem Straight Heat Shrink Boot (${straightPn})`,
+                price: straightPrice
+            },
+            "BOOT_RA": {
+                key: "BOOT_RA",
+                pn: rightPn,
+                desc: `Raychem 90° Right-Angle Heat Shrink Boot (${rightPn})`,
+                price: rightPrice
+            },
+            "NONE": {
+                key: "NONE",
+                pn: "N/A",
+                desc: "No Heat Shrink Boot / Direct Wire Exit",
+                price: 0.00
+            }
+        };
+    }
     const numShell = String(shellSize).padStart(2, '0');
     const szNum = parseInt(shellSize, 10);
     const bsFinish = CONNECTOR_TO_BACKSHELL_FINISH[finishCode] || finishCode;
@@ -89,6 +118,22 @@ function getBackshellOptions(shellSize, finishCode) {
 }
 
 function getDustCapOptions(shellSize, finishCode, letterCode) {
+    const isAutoSport = ['06', '07', '08', '10', '12'].includes(String(shellSize));
+    if (isAutoSport) {
+        const sz = String(shellSize).padStart(2, '0');
+        return {
+            plugCap: {
+                pn: `AS-CAP-${sz}-PLUG`,
+                desc: `AutoSport Protective Cap for Plug (Size ${sz})`,
+                price: 9.50
+            },
+            receptacleCap: {
+                pn: `AS-CAP-${sz}-REC`,
+                desc: `AutoSport Protective Cap for Receptacle (Size ${sz})`,
+                price: 9.50
+            }
+        };
+    }
     const szNum = parseInt(shellSize, 10);
     const price = 15.00 + (szNum * 0.50);
     return {
@@ -125,53 +170,107 @@ function renderM81969Html(contacts) {
 const database = [];
 
 masterLayouts.forEach(layout => {
-    const numShell = layout.shellSize.padStart(2, '0');
-    const szNum = parseInt(layout.shellSize, 10);
-    
-    let basePrice = 30.00 + (szNum * 3.50);
-    let flangePrice = 9.00 + (szNum * 0.50);
+    if (layout.seriesId === 'deutsch_autosport') {
+        let prefixFamily = 'AS';
+        if (layout.shellSize === '06') prefixFamily = 'ASL';
+        else if (layout.shellSize === '07') prefixFamily = 'ASM';
 
-    let fastenerDesc = "Flange Fasteners, Fillister Head 1\" (McMaster: 91737A313, Box of 100)";
-    let fastenerUrl = "https://www.mcmaster.com/91737A313/";
-    let fastenerPrice = 10.04;
-    let fastenerQty = 4;
+        const asStyles = [
+            { type: 'Plug', asCode: '6', name: 'Free Plug' },
+            { type: '2-Hole Flange Receptacle', asCode: '0', name: '2-Hole Flange Receptacle' },
+            { type: 'Jam Nut Receptacle', asCode: '7', name: 'Jam Nut Receptacle' },
+            { type: 'In-Line Receptacle', asCode: '1', name: 'In-Line Receptacle' },
+            { type: '2-Hole Flange PCB Receptacle', asCode: '2', name: '2-Hole Flange PCB Receptacle' }
+        ];
 
-    shellTypes.forEach(st => {
-        finishes.forEach(fin => {
+        const priceMap = { '06': 48.00, '07': 52.00, '08': 58.00, '10': 66.00, '12': 74.00 };
+        const basePrice = priceMap[layout.shellSize] || 50.00;
+
+        asStyles.forEach(st => {
             contactTypes.forEach(ct => {
                 keyingPositions.forEach(ky => {
-                    const milPN = `D38999/${st.milCode}${fin.code}${layout.letterCode}${layout.arrangement.split('-')[1]}${ct}${ky}`;
-                    const prefix = fin.isComp ? st.compPrefix : st.commPrefix;
-                    const commPN = `${prefix}${fin.commCode}-${layout.arrangement}${ct}${ky !== 'N' ? ky : ''}`;
+                    const asPN = `${prefixFamily}${st.asCode}${layout.arrangement}${ct}${ky}`;
 
                     database.push({
-                        id: `${milPN}_${commPN}`,
+                        id: asPN,
+                        seriesId: 'deutsch_autosport',
                         shellSize: layout.shellSize,
-                        letterCode: layout.letterCode,
+                        letterCode: '',
                         arrangement: layout.arrangement,
                         shellType: st.type,
-                        finish: fin.code,
+                        finish: 'N',
                         contactType: ct,
                         keying: ky,
-                        shellLabel: `Shell ${layout.shellSize} (${layout.arrangement})`,
-                        milPN: milPN,
-                        commPN: commPN,
-                        unitPriceConnector: basePrice * fin.costMult,
-                        flangeAcc: `M85049/95-${numShell}A (3/4 Perimeter Flange)`,
-                        unitPriceFlange: flangePrice,
-                        fastener: fastenerDesc,
-                        fastenerUrl: fastenerUrl,
-                        fastenerQty: fastenerQty,
-                        unitPriceFastener: fastenerPrice,
-                        diagramImg: `assets/inserts/${getInsertImageFilename(layout.arrangement, layout.shellSize)}`,
-                        cutoutImg: `assets/cutouts/Shell${layout.shellSize}.png`,
+                        shellLabel: `Deutsch AutoSport Shell ${layout.shellSize} (${layout.arrangement})`,
+                        milPN: asPN,
+                        commPN: asPN,
+                        asPN: asPN,
+                        unitPriceConnector: basePrice,
+                        flangeAcc: 'N/A (Integral Flange)',
+                        unitPriceFlange: 0,
+                        fastener: 'M3 Motorsport Stainless Fasteners',
+                        fastenerUrl: 'https://www.mcmaster.com/',
+                        fastenerQty: 2,
+                        unitPriceFastener: 4.50,
+                        diagramImg: '',
+                        cutoutImg: '',
                         pins: layout.pins,
                         counts: layout.counts
                     });
                 });
             });
         });
-    });
+    } else {
+        const numShell = layout.shellSize.padStart(2, '0');
+        const szNum = parseInt(layout.shellSize, 10);
+        
+        let basePrice = 30.00 + (szNum * 3.50);
+        let flangePrice = 9.00 + (szNum * 0.50);
+
+        let fastenerDesc = "Flange Fasteners, Fillister Head 1\" (McMaster: 91737A313, Box of 100)";
+        let fastenerUrl = "https://www.mcmaster.com/91737A313/";
+        let fastenerPrice = 10.04;
+        let fastenerQty = 4;
+
+        shellTypes.forEach(st => {
+            finishes.forEach(fin => {
+                contactTypes.forEach(ct => {
+                    keyingPositions.forEach(ky => {
+                        const milPN = `D38999/${st.milCode}${fin.code}${layout.letterCode}${layout.arrangement.split('-')[1]}${ct}${ky}`;
+                        const prefix = fin.isComp ? st.compPrefix : st.commPrefix;
+                        const commPN = `${prefix}${fin.commCode}-${layout.arrangement}${ct}${ky !== 'N' ? ky : ''}`;
+
+                        database.push({
+                            id: `${milPN}_${commPN}`,
+                            seriesId: 'd38999',
+                            shellSize: layout.shellSize,
+                            letterCode: layout.letterCode,
+                            arrangement: layout.arrangement,
+                            shellType: st.type,
+                            finish: fin.code,
+                            contactType: ct,
+                            keying: ky,
+                            shellLabel: `Shell ${layout.shellSize} (${layout.arrangement})`,
+                            milPN: milPN,
+                            commPN: commPN,
+                            asPN: milPN,
+                            unitPriceConnector: basePrice * fin.costMult,
+                            flangeAcc: `M85049/95-${numShell}A (3/4 Perimeter Flange)`,
+                            unitPriceFlange: flangePrice,
+                            fastener: fastenerDesc,
+                            fastenerUrl: fastenerUrl,
+                            fastenerQty: fastenerQty,
+                            unitPriceFastener: fastenerPrice,
+                            diagramImg: `assets/inserts/${getInsertImageFilename(layout.arrangement, layout.shellSize)}`,
+                            cutoutImg: `assets/cutouts/Shell${layout.shellSize}.png`,
+                            pins: layout.pins,
+                            counts: layout.counts
+                        });
+                    });
+                });
+            });
+        });
+    }
 });
 
 let currentCalculatedSolutions = [];
@@ -182,7 +281,7 @@ function initTheme() {
     document.documentElement.setAttribute('data-theme', savedTheme);
 }
 
-let currentStandard = 'mil'; // 'mil' or 'comm'
+let currentStandard = 'mil'; // 'mil', 'comm', or 'as'
 
 document.getElementById('themeToggleBtn').addEventListener('click', () => {
     const currentTheme = document.documentElement.getAttribute('data-theme');
@@ -197,17 +296,13 @@ function switchStandardTab(standard) {
     // Update Tab Buttons
     const milBtn = document.getElementById('tabMilBtn');
     const commBtn = document.getElementById('tabCommBtn');
-    if (milBtn && commBtn) {
-        if (standard === 'mil') {
-            milBtn.classList.add('active');
-            commBtn.classList.remove('active');
-        } else {
-            commBtn.classList.add('active');
-            milBtn.classList.remove('active');
-        }
-    }
+    const asBtn = document.getElementById('tabAsBtn');
+    if (milBtn) milBtn.classList.toggle('active', standard === 'mil');
+    if (commBtn) commBtn.classList.toggle('active', standard === 'comm');
+    if (asBtn) asBtn.classList.toggle('active', standard === 'as');
 
     updatePnStandardFilters();
+    populateArrangementDropdown();
 
     if (currentCalculatedSolutions && currentCalculatedSolutions.length > 0) {
         calculate();
@@ -216,14 +311,59 @@ function switchStandardTab(standard) {
 
 function updatePnStandardFilters() {
     const shellTypeSelect = document.getElementById('filterShellType');
-    if (!shellTypeSelect) return;
+    const shellSizeSelect = document.getElementById('filterShellSize');
+    const finishSelect = document.getElementById('filterFinish');
+    if (!shellTypeSelect || !shellSizeSelect || !finishSelect) return;
 
-    if (currentStandard === 'mil') {
+    if (currentStandard === 'as') {
+        shellTypeSelect.innerHTML = `
+            <option value="ALL">All Shell Types (Plug, Flange, Jam Nut, In-Line)</option>
+            <option value="Plug">Free Plug (ASL6 / ASM6 / AS6)</option>
+            <option value="2-Hole Flange Receptacle">2-Hole Flange Receptacle (ASL0 / ASM0 / AS0)</option>
+            <option value="Jam Nut Receptacle">Jam Nut Receptacle (ASL7 / ASM7 / AS7)</option>
+            <option value="In-Line Receptacle">In-Line Receptacle (ASL1 / ASM1 / AS1)</option>
+            <option value="2-Hole Flange PCB Receptacle">2-Hole Flange PCB Receptacle (ASL2 / ASM2 / AS2)</option>
+        `;
+        shellSizeSelect.innerHTML = `
+            <option value="ALL">All Shell Sizes (06, 07, 08, 10, 12)</option>
+            <option value="06">Size 06 (ASL Micro Lite)</option>
+            <option value="07">Size 07 (ASM Mini)</option>
+            <option value="08">Size 08 (AS Standard)</option>
+            <option value="10">Size 10 (AS Standard)</option>
+            <option value="12">Size 12 (AS Standard)</option>
+        `;
+        finishSelect.innerHTML = `
+            <option value="ALL">All Finishes</option>
+            <option value="N">Black Conductive / Electroless Nickel (N)</option>
+        `;
+    } else if (currentStandard === 'mil') {
         shellTypeSelect.innerHTML = `
             <option value="ALL">All Shell Types (D38999/20, /24, /26)</option>
             <option value="Plug">Straight Plug (D38999/26)</option>
             <option value="Wall Mount">Wall Mount Receptacle (D38999/20)</option>
             <option value="Jam Nut">Jam Nut Receptacle (D38999/24)</option>
+        `;
+        shellSizeSelect.innerHTML = `
+            <option value="ALL">All Shell Sizes</option>
+            <option value="9">Size 9 (A)</option>
+            <option value="11">Size 11 (B)</option>
+            <option value="13">Size 13 (C)</option>
+            <option value="15">Size 15 (D)</option>
+            <option value="17">Size 17 (E)</option>
+            <option value="19">Size 19 (F)</option>
+            <option value="21">Size 21 (G)</option>
+            <option value="23">Size 23 (H)</option>
+            <option value="25">Size 25 (J)</option>
+        `;
+        finishSelect.innerHTML = `
+            <option value="ALL">All Finishes</option>
+            <option value="W">Olive Drab Cadmium (W)</option>
+            <option value="F">Electroless Nickel (F)</option>
+            <option value="Z">Black Zinc Nickel (Z)</option>
+            <option value="T">Nickel PTFE (Durmalon) (T)</option>
+            <option value="K">Passivated Stainless Steel (K)</option>
+            <option value="J">Olive Drab Cadmium Composite (J)</option>
+            <option value="M">Electroless Nickel Composite (M)</option>
         `;
     } else {
         shellTypeSelect.innerHTML = `
@@ -232,6 +372,28 @@ function updatePnStandardFilters() {
             <option value="Wall Mount">Wall Mount Receptacle (TVPS00 / CTVP00)</option>
             <option value="Box Mount">Box Mount Receptacle (TVPS02 / CTVP02)</option>
             <option value="Jam Nut">Jam Nut Receptacle (TVS07 / CTV07)</option>
+        `;
+        shellSizeSelect.innerHTML = `
+            <option value="ALL">All Shell Sizes</option>
+            <option value="9">Size 9 (A)</option>
+            <option value="11">Size 11 (B)</option>
+            <option value="13">Size 13 (C)</option>
+            <option value="15">Size 15 (D)</option>
+            <option value="17">Size 17 (E)</option>
+            <option value="19">Size 19 (F)</option>
+            <option value="21">Size 21 (G)</option>
+            <option value="23">Size 23 (H)</option>
+            <option value="25">Size 25 (J)</option>
+        `;
+        finishSelect.innerHTML = `
+            <option value="ALL">All Finishes</option>
+            <option value="W">Olive Drab Cadmium (W / RW)</option>
+            <option value="F">Electroless Nickel (F / RF)</option>
+            <option value="Z">Black Zinc Nickel (Z / RNF)</option>
+            <option value="T">Nickel PTFE (Durmalon) (T)</option>
+            <option value="K">Passivated Stainless Steel (K / RK)</option>
+            <option value="J">Olive Drab Cadmium Composite (J)</option>
+            <option value="M">Electroless Nickel Composite (M)</option>
         `;
     }
 }
@@ -263,7 +425,8 @@ function resetConfiguration() {
     // 4. Reset Contact Requirements to default single group
     const groupsContainer = document.getElementById('groups');
     if (groupsContainer) {
-        let options = contactRatings.map(c => `<option value="${c.size}" ${c.size === '22D' ? 'selected' : ''}>${c.label}</option>`).join('');
+        const defaultSize = currentStandard === 'as' ? '24' : '22D';
+        let options = contactRatings.map(c => `<option value="${c.size}" ${c.size === defaultSize ? 'selected' : ''}>${c.label}</option>`).join('');
         groupsContainer.innerHTML = `
             <div class="row">
                 <div class="val-container">
@@ -301,13 +464,13 @@ function resetConfiguration() {
 
 function init() {
     initTheme();
+    updatePnStandardFilters();
     populateArrangementDropdown();
     updateListDropdown();
     loadActiveList();
     
     document.getElementById('mode').addEventListener('change', toggleInputMode);
     toggleInputMode();
-    updatePnStandardFilters();
 }
 
 function populateArrangementDropdown() {
@@ -317,6 +480,10 @@ function populateArrangementDropdown() {
     select.innerHTML = '<option value="ALL">All Arrangements</option>';
 
     masterLayouts.forEach(layout => {
+        const isAutoSport = layout.seriesId === 'deutsch_autosport';
+        if (currentStandard === 'as' && !isAutoSport) return;
+        if ((currentStandard === 'mil' || currentStandard === 'comm') && isAutoSport) return;
+
         if (selectedShellSize === "ALL" || layout.shellSize === selectedShellSize) {
             let descParts = Object.entries(layout.counts).map(([sz, qty]) => `${qty}x Size ${sz}`).join(', ');
             let opt = document.createElement('option');
@@ -368,7 +535,7 @@ function liveDecodePN(val) {
     const decoded = parsePartNumber(val);
     if (!decoded || decoded.confidence === 0) {
         resultDiv.style.display = 'block';
-        resultDiv.innerHTML = `<span style="color: #e53e3e;">Could not parse part number. Try format like <code>26WE35PN</code>, <code>D38999/20FJ35SN</code>, or <code>TVS06RF-11-35P</code>.</span>`;
+        resultDiv.innerHTML = `<span style="color: #e53e3e;">Could not parse part number. Try format like <code>26WE35PN</code>, <code>TVS06RF-11-35P</code>, or <code>ASL606-05PN</code>.</span>`;
         applyBtn.disabled = true;
         return;
     }
@@ -378,7 +545,8 @@ function liveDecodePN(val) {
 
     let chipsHtml = [];
     if (decoded.standard) {
-        chipsHtml.push(`<span class="pn-decode-chip"><strong>Standard:</strong> ${decoded.standard === 'mil' ? 'Military' : 'Commercial'}</span>`);
+        let stdLabel = decoded.standard === 'as' ? 'Deutsch AutoSport' : (decoded.standard === 'mil' ? 'Military' : 'Commercial');
+        chipsHtml.push(`<span class="pn-decode-chip"><strong>Standard:</strong> ${stdLabel}</span>`);
     }
     if (decoded.shellType) {
         chipsHtml.push(`<span class="pn-decode-chip"><strong>Shell Type:</strong> ${decoded.shellType}</span>`);
@@ -608,7 +776,12 @@ function calculate() {
     }
 
     let matches = database.filter(entry => {
-        if (pnType === 'mil' && entry.shellType === 'Box Mount') return false;
+        if (pnType === 'as') {
+            if (entry.seriesId !== 'deutsch_autosport') return false;
+        } else {
+            if (entry.seriesId === 'deutsch_autosport') return false;
+            if (pnType === 'mil' && entry.shellType === 'Box Mount') return false;
+        }
         if (filterShellType !== "ALL" && entry.shellType !== filterShellType) return false;
         if (filterFinish !== "ALL" && entry.finish !== filterFinish) return false;
         if (filterShellSize !== "ALL" && entry.shellSize !== filterShellSize) return false;
@@ -632,12 +805,16 @@ function calculate() {
 
     if (matches.length > 0) {
         currentCalculatedSolutions = matches.map(match => {
-            let activePN = pnType === 'mil' ? match.milPN : match.commPN;
-            let defaultMatingShell = match.shellType === 'Plug' ? 'Wall Mount' : 'Plug';
+            let activePN = pnType === 'mil' ? match.milPN : (pnType === 'comm' ? match.commPN : (match.asPN || match.milPN));
+            let isAutoSport = pnType === 'as' || match.seriesId === 'deutsch_autosport';
+            let defaultMatingShell = match.shellType === 'Plug' ? (isAutoSport ? '2-Hole Flange Receptacle' : 'Wall Mount') : 'Plug';
             let mating = getMatingConnector(match, pnType, defaultMatingShell);
 
             let priContacts = resolveGroupContacts(groupSpecs, match.contactType);
             let matContacts = mating ? resolveGroupContacts(groupSpecs, mating.contactType) : [];
+
+            let defaultBackshell = isAutoSport ? 'BOOT_STRAIGHT' : (match.shellType === 'Box Mount' ? 'NONE' : 'M85049/38');
+            let defaultMatBackshell = mating ? (isAutoSport ? 'BOOT_STRAIGHT' : (mating.shellType === 'Box Mount' ? 'NONE' : 'M85049/38')) : 'NONE';
 
             return { 
                 primary: { 
@@ -645,13 +822,13 @@ function calculate() {
                     activePN, 
                     summary: summaryText, 
                     contacts: priContacts,
-                    selectedBackshell: match.shellType === 'Box Mount' ? 'NONE' : 'M85049/38',
+                    selectedBackshell: defaultBackshell,
                     includeDustCap: false
                 }, 
                 mating: mating ? { 
                     ...mating, 
                     contacts: matContacts,
-                    selectedBackshell: mating.shellType === 'Box Mount' ? 'NONE' : 'M85049/38',
+                    selectedBackshell: defaultMatBackshell,
                     includeDustCap: false
                 } : null,
                 groupSpecs: groupSpecs,
@@ -693,15 +870,18 @@ function renderSolutionPairHTML(pair, index) {
     const priDustCaps = getDustCapOptions(pri.shellSize, pri.finish, pri.letterCode);
     const priCap = pri.shellType === 'Plug' ? priDustCaps.plugCap : priDustCaps.receptacleCap;
 
+    const isAutoSport = pnType === 'as' || ['06','07','08','10','12'].includes(pri.shellSize);
+
+    const priIsFlange = pri.shellType === '2-Hole Flange Receptacle' || pri.shellType === '2-Hole Flange PCB Receptacle' || pri.shellType === 'Wall Mount';
     const priIsWall = pri.shellType === 'Wall Mount';
     const priIsBox = pri.shellType === 'Box Mount';
 
-    let priFlangeHtml = priIsWall 
-        ? `${pri.flangeAcc} (Est. $${pri.unitPriceFlange.toFixed(2)})`
-        : `<span class="na-text">N/A (Not Required for Shell Type)</span>`;
-    let priFastenerHtml = (priIsWall || priIsBox)
-        ? `4x <a href="https://www.mcmaster.com/91737A313/" target="_blank">91737A313</a> - Fillister Head 1" (Sold in Box of 100 @ $10.04 - covers up to 25 connectors)`
-        : `<span class="na-text">N/A (Not Required for Shell Type)</span>`;
+    let priFlangeHtml = isAutoSport 
+        ? (priIsFlange ? `<span class="na-text">Integral 2-Hole Flange on Shell</span>` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`)
+        : (priIsWall ? `${pri.flangeAcc} (Est. $${pri.unitPriceFlange.toFixed(2)})` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`);
+    let priFastenerHtml = isAutoSport
+        ? (priIsFlange ? `2x M3 / 4-40 Stainless Socket Head Screws (@ $4.50/pair)` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`)
+        : ((priIsWall || priIsBox) ? `4x <a href="https://www.mcmaster.com/91737A313/" target="_blank">91737A313</a> - Fillister Head 1" (Sold in Box of 100 @ $10.04 - covers up to 25 connectors)` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`);
 
     let priContactListHtml = pri.contacts.map(c => 
         `<li><strong>${c.qty}x ${c.pn}</strong> - ${c.desc} (Est. $${c.price.toFixed(2)}/ea) ${c.isStd ? '<span class="na-text">(Standard Contact)</span>' : '<span style="color:#d97706; font-weight:bold;">(Specialty TC/Coax Contact)</span>'}</li>`
@@ -722,15 +902,16 @@ function renderSolutionPairHTML(pair, index) {
     let matDustCaps = mat ? getDustCapOptions(mat.shellSize, mat.finish, mat.letterCode) : null;
     let matCap = (mat && matDustCaps) ? (mat.shellType === 'Plug' ? matDustCaps.plugCap : matDustCaps.receptacleCap) : { pn: "N/A", price: 0 };
 
+    const matIsFlange = mat ? (mat.shellType === '2-Hole Flange Receptacle' || mat.shellType === '2-Hole Flange PCB Receptacle' || mat.shellType === 'Wall Mount') : false;
     const matIsWall = mat ? mat.shellType === 'Wall Mount' : false;
     const matIsBox = mat ? mat.shellType === 'Box Mount' : false;
 
-    let matFlangeHtml = matIsWall 
-        ? `${mat.flangeAcc} (Est. $${mat.unitPriceFlange.toFixed(2)})`
-        : `<span class="na-text">N/A (Not Required for Shell Type)</span>`;
-    let matFastenerHtml = (matIsWall || matIsBox)
-        ? `4x <a href="https://www.mcmaster.com/91737A313/" target="_blank">91737A313</a> - Fillister Head 1" (Sold in Box of 100 @ $10.04 - covers up to 25 connectors)`
-        : `<span class="na-text">N/A (Not Required for Shell Type)</span>`;
+    let matFlangeHtml = isAutoSport 
+        ? (matIsFlange ? `<span class="na-text">Integral 2-Hole Flange on Shell</span>` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`)
+        : (matIsWall ? `${mat.flangeAcc} (Est. $${mat.unitPriceFlange.toFixed(2)})` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`);
+    let matFastenerHtml = isAutoSport
+        ? (matIsFlange ? `2x M3 / 4-40 Stainless Socket Head Screws (@ $4.50/pair)` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`)
+        : ((matIsWall || matIsBox) ? `4x <a href="https://www.mcmaster.com/91737A313/" target="_blank">91737A313</a> - Fillister Head 1" (Sold in Box of 100 @ $10.04 - covers up to 25 connectors)` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`);
 
     let matContactListHtml = mat ? mat.contacts.map(c => 
         `<li><strong>${c.qty}x ${c.pn}</strong> - ${c.desc} (Est. $${c.price.toFixed(2)}/ea) ${c.isStd ? '<span class="na-text">(Standard Contact)</span>' : '<span style="color:#d97706; font-weight:bold;">(Specialty TC/Coax Contact)</span>'}</li>`
@@ -748,8 +929,18 @@ function renderSolutionPairHTML(pair, index) {
     // Mating shell style selector HTML
     let matingShellSelectorHtml = '';
     if (pri.shellType === 'Plug') {
-        const isMil = pnType === 'mil';
-        if (isMil) {
+        if (pnType === 'as') {
+            matingShellSelectorHtml = `
+                <div style="margin-bottom: 8px;">
+                    <label for="matingShellSelect_${index}"><strong>Mating Shell Style:</strong></label>
+                    <select id="matingShellSelect_${index}" class="mating-shell-select" onchange="changeMatingShellType(${index}, this.value)">
+                        <option value="2-Hole Flange Receptacle" ${mat && mat.shellType === '2-Hole Flange Receptacle' ? 'selected' : ''}>2-Hole Flange Receptacle (ASL0 / ASM0 / AS0)</option>
+                        <option value="Jam Nut Receptacle" ${mat && mat.shellType === 'Jam Nut Receptacle' ? 'selected' : ''}>Jam Nut Receptacle (ASL7 / ASM7 / AS7)</option>
+                        <option value="In-Line Receptacle" ${mat && mat.shellType === 'In-Line Receptacle' ? 'selected' : ''}>In-Line Receptacle (ASL1 / ASM1 / AS1)</option>
+                    </select>
+                </div>
+            `;
+        } else if (pnType === 'mil') {
             matingShellSelectorHtml = `
                 <div style="margin-bottom: 8px;">
                     <label for="matingShellSelect_${index}"><strong>Mating Shell Style:</strong></label>
@@ -799,16 +990,21 @@ function renderSolutionPairHTML(pair, index) {
 
                 <div class="accessory-section">
                     <div class="accessory-row">
-                        <label><strong>Backshell Style:</strong></label>
-                        ${priIsBox ? `<span class="box-mount-notice">Box Mount (No rear accessory threads)</span>` : `
+                        <label><strong>${isAutoSport ? 'Heat Shrink Boot:' : 'Backshell Style:'}</strong></label>
+                        ${priIsBox ? `<span class="box-mount-notice">Box Mount (No rear accessory threads)</span>` : (isAutoSport ? `
+                        <select onchange="updateCardBackshell(${index}, true, this.value)">
+                            <option value="BOOT_STRAIGHT" ${pri.selectedBackshell === 'BOOT_STRAIGHT' ? 'selected' : ''}>Straight Boot (${priBackshellOpts['BOOT_STRAIGHT'] ? priBackshellOpts['BOOT_STRAIGHT'].pn : '202K121'}) - $${priBackshellOpts['BOOT_STRAIGHT'] ? priBackshellOpts['BOOT_STRAIGHT'].price.toFixed(2) : '12.50'}</option>
+                            <option value="BOOT_RA" ${pri.selectedBackshell === 'BOOT_RA' ? 'selected' : ''}>90° Right-Angle Boot (${priBackshellOpts['BOOT_RA'] ? priBackshellOpts['BOOT_RA'].pn : '222K121'}) - $${priBackshellOpts['BOOT_RA'] ? priBackshellOpts['BOOT_RA'].price.toFixed(2) : '14.50'}</option>
+                            <option value="NONE" ${pri.selectedBackshell === 'NONE' ? 'selected' : ''}>None (No Boot) - $0.00</option>
+                        </select>` : `
                         <select onchange="updateCardBackshell(${index}, true, this.value)">
                             <option value="M85049/38" ${pri.selectedBackshell === 'M85049/38' ? 'selected' : ''}>Strain Relief (M85049/38) - $${priBackshellOpts['M85049/38'].price.toFixed(2)}</option>
                             <option value="M85049/88" ${pri.selectedBackshell === 'M85049/88' ? 'selected' : ''}>EMI Banding (M85049/88) - $${priBackshellOpts['M85049/88'].price.toFixed(2)}</option>
                             <option value="M85049/49" ${pri.selectedBackshell === 'M85049/49' ? 'selected' : ''}>Shrink Boot (M85049/49) - $${priBackshellOpts['M85049/49'].price.toFixed(2)}</option>
                             <option value="NONE" ${pri.selectedBackshell === 'NONE' ? 'selected' : ''}>None (No Backshell) - $0.00</option>
-                        </select>`}
+                        </select>`)}
                     </div>
-                    ${(!priIsBox && pri.selectedBackshell !== 'NONE') ? `<p style="margin: 4px 0 8px 0; font-size: 12px;"><strong>Active Backshell:</strong> ${priSelectedBs.pn} (Est. $${priSelectedBs.price.toFixed(2)})</p>` : ''}
+                    ${(!priIsBox && pri.selectedBackshell !== 'NONE') ? `<p style="margin: 4px 0 8px 0; font-size: 12px;"><strong>Active ${isAutoSport ? 'Boot' : 'Backshell'}:</strong> ${priSelectedBs.pn} (Est. $${priSelectedBs.price.toFixed(2)})</p>` : ''}
                     
                     <div class="checkbox-row" style="margin-top: 6px;">
                         <input type="checkbox" id="priCap_${index}" ${pri.includeDustCap ? 'checked' : ''} onchange="updateCardDustCap(${index}, true, this.checked)">
@@ -861,16 +1057,21 @@ function renderSolutionPairHTML(pair, index) {
                 ${mat ? `
                 <div class="accessory-section">
                     <div class="accessory-row">
-                        <label><strong>Backshell Style:</strong></label>
-                        ${matIsBox ? `<span class="box-mount-notice">Box Mount (No rear accessory threads)</span>` : `
+                        <label><strong>${isAutoSport ? 'Heat Shrink Boot:' : 'Backshell Style:'}</strong></label>
+                        ${matIsBox ? `<span class="box-mount-notice">Box Mount (No rear accessory threads)</span>` : (isAutoSport ? `
+                        <select onchange="updateCardBackshell(${index}, false, this.value)">
+                            <option value="BOOT_STRAIGHT" ${mat.selectedBackshell === 'BOOT_STRAIGHT' ? 'selected' : ''}>Straight Boot (${matBackshellOpts['BOOT_STRAIGHT'] ? matBackshellOpts['BOOT_STRAIGHT'].pn : '202K121'}) - $${matBackshellOpts['BOOT_STRAIGHT'] ? matBackshellOpts['BOOT_STRAIGHT'].price.toFixed(2) : '12.50'}</option>
+                            <option value="BOOT_RA" ${mat.selectedBackshell === 'BOOT_RA' ? 'selected' : ''}>90° Right-Angle Boot (${matBackshellOpts['BOOT_RA'] ? matBackshellOpts['BOOT_RA'].pn : '222K121'}) - $${matBackshellOpts['BOOT_RA'] ? matBackshellOpts['BOOT_RA'].price.toFixed(2) : '14.50'}</option>
+                            <option value="NONE" ${mat.selectedBackshell === 'NONE' ? 'selected' : ''}>None (No Boot) - $0.00</option>
+                        </select>` : `
                         <select onchange="updateCardBackshell(${index}, false, this.value)">
                             <option value="M85049/38" ${mat.selectedBackshell === 'M85049/38' ? 'selected' : ''}>Strain Relief (M85049/38) - $${matBackshellOpts['M85049/38'].price.toFixed(2)}</option>
                             <option value="M85049/88" ${mat.selectedBackshell === 'M85049/88' ? 'selected' : ''}>EMI Banding (M85049/88) - $${matBackshellOpts['M85049/88'].price.toFixed(2)}</option>
                             <option value="M85049/49" ${mat.selectedBackshell === 'M85049/49' ? 'selected' : ''}>Shrink Boot (M85049/49) - $${matBackshellOpts['M85049/49'].price.toFixed(2)}</option>
                             <option value="NONE" ${mat.selectedBackshell === 'NONE' ? 'selected' : ''}>None (No Backshell) - $0.00</option>
-                        </select>`}
+                        </select>`)}
                     </div>
-                    ${(!matIsBox && mat.selectedBackshell !== 'NONE') ? `<p style="margin: 4px 0 8px 0; font-size: 12px;"><strong>Active Backshell:</strong> ${matSelectedBs.pn} (Est. $${matSelectedBs.price.toFixed(2)})</p>` : ''}
+                    ${(!matIsBox && mat.selectedBackshell !== 'NONE') ? `<p style="margin: 4px 0 8px 0; font-size: 12px;"><strong>Active ${isAutoSport ? 'Boot' : 'Backshell'}:</strong> ${matSelectedBs.pn} (Est. $${matSelectedBs.price.toFixed(2)})</p>` : ''}
                     
                     <div class="checkbox-row" style="margin-top: 6px;">
                         <input type="checkbox" id="matCap_${index}" ${mat.includeDustCap ? 'checked' : ''} onchange="updateCardDustCap(${index}, false, this.checked)">
@@ -976,11 +1177,14 @@ function addSolutionPairToActiveList(solutionIndex) {
 
     let itemsToAdd = [];
 
+    const isAutoSport = pair.pnType === 'as' || pri.seriesId === 'deutsch_autosport';
+    const seriesTitle = isAutoSport ? 'Deutsch AutoSport' : (pair.pnType === 'comm' ? 'Commercial Tri-Start' : '38999 Series III');
+
     // Primary connector
     itemsToAdd.push({ 
         pn: pri.activePN, 
         qty: 1, 
-        desc: `38999 Series III Primary ${pri.shellLabel} ${pri.shellType}`, 
+        desc: `${seriesTitle} Primary ${pri.shellLabel} ${pri.shellType}`, 
         price: pri.unitPriceConnector 
     });
 
@@ -1001,7 +1205,7 @@ function addSolutionPairToActiveList(solutionIndex) {
     }
 
     // Primary Flange Accessory
-    if (pri.shellType === 'Wall Mount') {
+    if (!isAutoSport && pri.shellType === 'Wall Mount') {
         itemsToAdd.push({ pn: pri.flangeAcc, qty: 1, desc: 'M85049/95 Flange (Primary)', price: pri.unitPriceFlange });
     }
 
@@ -1018,7 +1222,7 @@ function addSolutionPairToActiveList(solutionIndex) {
         itemsToAdd.push({ 
             pn: mat.activePN, 
             qty: 1, 
-            desc: `38999 Series III Mating ${mat.shellLabel} ${mat.shellType}`, 
+            desc: `${seriesTitle} Mating ${mat.shellLabel} ${mat.shellType}`, 
             price: mat.unitPriceConnector 
         });
 
@@ -1039,7 +1243,7 @@ function addSolutionPairToActiveList(solutionIndex) {
         }
 
         // Mating Flange Accessory
-        if (mat.shellType === 'Wall Mount') {
+        if (!isAutoSport && mat.shellType === 'Wall Mount') {
             itemsToAdd.push({ pn: mat.flangeAcc, qty: 1, desc: 'M85049/95 Flange (Mating)', price: mat.unitPriceFlange });
         }
 
