@@ -148,5 +148,48 @@
     </div>
 </div>
 
+<!-- Modal: Edit Insertion / Extraction Tool -->
+<div id="removalToolModal" class="admin-modal-overlay">
+    <div class="admin-modal-card">
+        <div class="admin-modal-header">
+            <h3 id="removalToolModalTitle">Edit Insertion / Extraction Tool</h3>
+            <button type="button" class="admin-modal-close" aria-label="Close">&times;</button>
+        </div>
+        <form id="removalToolForm" onsubmit="event.preventDefault(); saveRemovalToolModal();">
+            <input type="hidden" id="removalToolFormKey" value="">
+            <div class="admin-form-group">
+                <label for="removalToolFormSize">Contact Size</label>
+                <input type="text" id="removalToolFormSize" required readonly style="opacity: 0.8; cursor: not-allowed;">
+            </div>
+            <div class="admin-form-group">
+                <label for="removalToolFormPN">Part Number</label>
+                <input type="text" id="removalToolFormPN" required placeholder="e.g. M81969/14-01">
+            </div>
+            <div class="admin-form-group">
+                <label for="removalToolFormColors">Color Band / Identification</label>
+                <input type="text" id="removalToolFormColors" required placeholder="e.g. Green / White">
+            </div>
+            <div class="admin-form-group">
+                <label for="removalToolFormDesc">Description</label>
+                <input type="text" id="removalToolFormDesc" required placeholder="e.g. Plastic Insertion/Extraction (Size 22D)">
+            </div>
+            <div class="admin-form-group">
+                <label for="removalToolFormStatus">Availability Status</label>
+                <select id="removalToolFormStatus">
+                    <option value="In Shop">In Shop (Available)</option>
+                    <option value="Calibrated">Calibrated (Verified)</option>
+                    <option value="Out for Calibration">Out for Calibration</option>
+                    <option value="Missing / On Order">Missing / On Order</option>
+                </select>
+            </div>
+            <div class="admin-form-actions">
+                <button type="button" class="btn-outline btn-modal-cancel" style="width: auto; padding: 7px 16px;">Cancel</button>
+                <button type="submit" class="btn-primary" style="width: auto; padding: 7px 20px;">Save Tool</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 </body>
 </html>
+

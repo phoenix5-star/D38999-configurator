@@ -2458,11 +2458,11 @@
     }
   },
   "insertionExtractionTools": {
-    "22D": { "toolPN": "M81969/14-01", "colors": "Green / White", "badgeClass": "badge-green", "desc": "Plastic Insertion/Extraction (Size 22D)" },
-    "20":  { "toolPN": "M81969/14-10", "colors": "Red / Orange", "badgeClass": "badge-orange", "desc": "Plastic Insertion/Extraction (Size 20)" },
-    "16":  { "toolPN": "M81969/14-03", "colors": "Blue / White", "badgeClass": "badge-blue", "desc": "Plastic Insertion/Extraction (Size 16)" },
-    "12":  { "toolPN": "M81969/14-04", "colors": "Yellow / White", "badgeClass": "badge-yellow", "desc": "Plastic Insertion/Extraction (Size 12)" },
-    "8":   { "toolPN": "M81969/14-06", "colors": "Red / Blue (Size 8)", "badgeClass": "badge-red", "desc": "Plastic Insertion/Extraction (Size 8)" }
+    "22D": { "toolPN": "M81969/14-01", "colors": "Green / White", "badgeClass": "badge-green", "desc": "Plastic Insertion/Extraction (Size 22D)", "status": "In Shop" },
+    "20":  { "toolPN": "M81969/14-10", "colors": "Red / Orange", "badgeClass": "badge-orange", "desc": "Plastic Insertion/Extraction (Size 20)", "status": "In Shop" },
+    "16":  { "toolPN": "M81969/14-03", "colors": "Blue / White", "badgeClass": "badge-blue", "desc": "Plastic Insertion/Extraction (Size 16)", "status": "In Shop" },
+    "12":  { "toolPN": "M81969/14-04", "colors": "Yellow / White", "badgeClass": "badge-yellow", "desc": "Plastic Insertion/Extraction (Size 12)", "status": "In Shop" },
+    "8":   { "toolPN": "M81969/14-06", "colors": "Red / Blue (Size 8)", "badgeClass": "badge-red", "desc": "Plastic Insertion/Extraction (Size 8)", "status": "In Shop" }
   }
 },
   accessories: {

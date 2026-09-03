@@ -142,11 +142,15 @@ function renderToolingTab(container) {
     let toolsHtml = Object.entries(removalTools).map(([sz, tool]) => `
         <tr>
             <td><strong>Size ${escapeHtml(sz)}</strong></td>
-            <td>${escapeHtml(tool.toolPN)}</td>
-            <td><span class="m81969-badge ${tool.badgeClass}">[${escapeHtml(tool.colors)}]</span> ${escapeHtml(tool.desc)}</td>
-            <td><span class="status-pill status-in-shop">● Standard Stock</span></td>
+            <td><code>${escapeHtml(tool.toolPN)}</code></td>
+            <td><span class="m81969-badge ${tool.badgeClass || 'badge-green'}">[${escapeHtml(tool.colors)}]</span> ${escapeHtml(tool.desc)}</td>
+            <td>
+                <span class="status-pill ${getStatusPillClass(tool.status || 'In Shop')}" onclick="cycleRemovalToolStatus('${escapeHtml(sz)}')">
+                    ● ${escapeHtml(tool.status || 'In Shop')}
+                </span>
+            </td>
             <td style="text-align: right;">
-                <button class="admin-btn-sm" onclick="editRemovalTool('${sz}')">Edit</button>
+                <button class="admin-btn-sm" onclick="editRemovalTool('${escapeHtml(sz)}')">Edit</button>
             </td>
         </tr>
     `).join('');
@@ -294,6 +298,45 @@ function saveToolModal() {
     } else {
         workingData.tooling.shopInventory[category].push(newObj);
     }
+
+    closeAllModals();
+    renderActiveTab();
+}
+
+function cycleRemovalToolStatus(sz) {
+    const statuses = ['In Shop', 'Calibrated', 'Out for Calibration', 'Missing / On Order'];
+    const tool = workingData.tooling.insertionExtractionTools[sz];
+    if (!tool) return;
+    const currentIdx = statuses.indexOf(tool.status || 'In Shop');
+    const nextIdx = (currentIdx + 1) % statuses.length;
+    tool.status = statuses[nextIdx];
+    renderActiveTab();
+}
+
+function editRemovalTool(sz) {
+    const tool = workingData.tooling.insertionExtractionTools[sz];
+    if (!tool) return;
+    const modal = document.getElementById('removalToolModal');
+    if (!modal) return;
+    document.getElementById('removalToolModalTitle').textContent = `Edit Tool (Size ${sz})`;
+    document.getElementById('removalToolFormKey').value = sz;
+    document.getElementById('removalToolFormSize').value = `Size ${sz}`;
+    document.getElementById('removalToolFormPN').value = tool.toolPN || '';
+    document.getElementById('removalToolFormColors').value = tool.colors || '';
+    document.getElementById('removalToolFormDesc').value = tool.desc || '';
+    document.getElementById('removalToolFormStatus').value = tool.status || 'In Shop';
+    modal.classList.add('active');
+}
+
+function saveRemovalToolModal() {
+    const sz = document.getElementById('removalToolFormKey').value;
+    const tool = workingData.tooling.insertionExtractionTools[sz];
+    if (!tool) return;
+
+    tool.toolPN = document.getElementById('removalToolFormPN').value.trim();
+    tool.colors = document.getElementById('removalToolFormColors').value.trim();
+    tool.desc = document.getElementById('removalToolFormDesc').value.trim();
+    tool.status = document.getElementById('removalToolFormStatus').value;
 
     closeAllModals();
     renderActiveTab();
@@ -805,3 +848,4 @@ function escapeHtml(str) {
     if (typeof str !== 'string') return String(str || '');
     return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
+
