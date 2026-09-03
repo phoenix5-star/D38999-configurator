@@ -137,6 +137,12 @@ try {
         $testFailures += "Raychem shrink boots missing or incorrect in accessories.json."
     }
 
+    if ($acc.nutPlates -and $acc.nutPlates."06".pn -eq "ATM396-6" -and $acc.nutPlates."06".thread -eq "M2.5" -and $acc.nutPlates."07".pn -eq "ATM396-7" -and $acc.nutPlates."08".pn -eq "ATM396-8") {
+        Write-Host "[PASS] Deutsch AutoSport ATM396 nut plate accessories verified (ATM396-6 M2.5, ATM396-7 M3, ATM396-8 M3)." -ForegroundColor Green
+    } else {
+        $testFailures += "Deutsch AutoSport ATM396 nut plates missing or incorrect in accessories.json."
+    }
+
 } catch {
     $testFailures += "Error verifying data consistency: $($_.Exception.Message)"
 }

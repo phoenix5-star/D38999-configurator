@@ -162,6 +162,21 @@ function getDustCapOptions(shellSize, finishCode, letterCode) {
     };
 }
 
+function getNutPlate(shellSize) {
+    if (typeof DataService !== 'undefined' && DataService.getNutPlate) {
+        return DataService.getNutPlate(shellSize);
+    }
+    const nutPlates = {
+        "06": { pn: "ATM396-6", thread: "M2.5", desc: "Deutsch AutoSport Nut Plate (Shell 06 - M2.5)", price: 14.50 },
+        "07": { pn: "ATM396-7", thread: "M3", desc: "Deutsch AutoSport Nut Plate (Shell 07 - M3)", price: 14.50 },
+        "08": { pn: "ATM396-8", thread: "M3", desc: "Deutsch AutoSport Nut Plate (Shell 08 - M3)", price: 14.50 },
+        "10": { pn: "ATM396-10", thread: "M3", desc: "Deutsch AutoSport Nut Plate (Shell 10 - M3)", price: 15.50 },
+        "12": { pn: "ATM396-12", thread: "M3", desc: "Deutsch AutoSport Nut Plate (Shell 12 - M3)", price: 16.50 }
+    };
+    const sz = String(shellSize).padStart(2, '0');
+    return nutPlates[sz] || null;
+}
+
 function renderM81969Html(contacts) {
     if (!contacts || !Array.isArray(contacts) || contacts.length === 0) return '';
     const sizes = [...new Set(contacts.map(c => c.size))];
@@ -836,13 +851,15 @@ function calculate() {
                     summary: summaryText, 
                     contacts: priContacts,
                     selectedBackshell: defaultBackshell,
-                    includeDustCap: false
+                    includeDustCap: false,
+                    includeNutPlate: true
                 }, 
                 mating: mating ? { 
                     ...mating, 
                     contacts: matContacts,
                     selectedBackshell: defaultMatBackshell,
-                    includeDustCap: false
+                    includeDustCap: false,
+                    includeNutPlate: true
                 } : null,
                 groupSpecs: groupSpecs,
                 pnType: pnType
@@ -889,11 +906,13 @@ function renderSolutionPairHTML(pair, index) {
     const priIsWall = pri.shellType === 'Wall Mount';
     const priIsBox = pri.shellType === 'Box Mount';
 
+    const priNutPlate = (isAutoSport && priIsFlange) ? getNutPlate(pri.shellSize) : null;
+
     let priFlangeHtml = isAutoSport 
-        ? (priIsFlange ? `<span class="na-text">Integral 2-Hole Flange on Shell</span>` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`)
+        ? (priIsFlange ? (priNutPlate ? `<strong>${priNutPlate.pn}</strong> Nut Plate (${priNutPlate.thread} Thread) (Est. $${priNutPlate.price.toFixed(2)})` : `<span class="na-text">Integral 2-Hole Flange on Shell</span>`) : `<span class="na-text">N/A (Not Required for Shell Type)</span>`)
         : (priIsWall ? `${pri.flangeAcc} (Est. $${pri.unitPriceFlange.toFixed(2)})` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`);
     let priFastenerHtml = isAutoSport
-        ? (priIsFlange ? `2x M3 / 4-40 Stainless Socket Head Screws (@ $4.50/pair)` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`)
+        ? (priIsFlange ? (priNutPlate ? `2x ${priNutPlate.thread} Stainless Socket Head Screws (@ $4.50/pair)` : `2x M3 / 4-40 Stainless Socket Head Screws (@ $4.50/pair)`) : `<span class="na-text">N/A (Not Required for Shell Type)</span>`)
         : ((priIsWall || priIsBox) ? `4x <a href="https://www.mcmaster.com/91737A313/" target="_blank">91737A313</a> - Fillister Head 1" (Sold in Box of 100 @ $10.04 - covers up to 25 connectors)` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`);
 
     let priContactListHtml = pri.contacts.map(c => 
@@ -919,11 +938,13 @@ function renderSolutionPairHTML(pair, index) {
     const matIsWall = mat ? mat.shellType === 'Wall Mount' : false;
     const matIsBox = mat ? mat.shellType === 'Box Mount' : false;
 
+    const matNutPlate = (isAutoSport && matIsFlange && mat) ? getNutPlate(mat.shellSize) : null;
+
     let matFlangeHtml = isAutoSport 
-        ? (matIsFlange ? `<span class="na-text">Integral 2-Hole Flange on Shell</span>` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`)
+        ? (matIsFlange ? (matNutPlate ? `<strong>${matNutPlate.pn}</strong> Nut Plate (${matNutPlate.thread} Thread) (Est. $${matNutPlate.price.toFixed(2)})` : `<span class="na-text">Integral 2-Hole Flange on Shell</span>`) : `<span class="na-text">N/A (Not Required for Shell Type)</span>`)
         : (matIsWall ? `${mat.flangeAcc} (Est. $${mat.unitPriceFlange.toFixed(2)})` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`);
     let matFastenerHtml = isAutoSport
-        ? (matIsFlange ? `2x M3 / 4-40 Stainless Socket Head Screws (@ $4.50/pair)` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`)
+        ? (matIsFlange ? (matNutPlate ? `2x ${matNutPlate.thread} Stainless Socket Head Screws (@ $4.50/pair)` : `2x M3 / 4-40 Stainless Socket Head Screws (@ $4.50/pair)`) : `<span class="na-text">N/A (Not Required for Shell Type)</span>`)
         : ((matIsWall || matIsBox) ? `4x <a href="https://www.mcmaster.com/91737A313/" target="_blank">91737A313</a> - Fillister Head 1" (Sold in Box of 100 @ $10.04 - covers up to 25 connectors)` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`);
 
     let matContactListHtml = mat ? mat.contacts.map(c => 
@@ -1010,8 +1031,8 @@ function renderSolutionPairHTML(pair, index) {
                         <label><strong>${isAutoSport ? 'Heat Shrink Boot:' : 'Backshell Style:'}</strong></label>
                         ${priIsBox ? `<span class="box-mount-notice">Box Mount (No rear accessory threads)</span>` : (isAutoSport ? `
                         <select onchange="updateCardBackshell(${index}, true, this.value)">
-                            <option value="BOOT_STRAIGHT" ${pri.selectedBackshell === 'BOOT_STRAIGHT' ? 'selected' : ''}>Straight Boot (${priBackshellOpts['BOOT_STRAIGHT'] ? priBackshellOpts['BOOT_STRAIGHT'].pn : '202K121'}) - $${priBackshellOpts['BOOT_STRAIGHT'] ? priBackshellOpts['BOOT_STRAIGHT'].price.toFixed(2) : '12.50'}</option>
-                            <option value="BOOT_RA" ${pri.selectedBackshell === 'BOOT_RA' ? 'selected' : ''}>90° Right-Angle Boot (${priBackshellOpts['BOOT_RA'] ? priBackshellOpts['BOOT_RA'].pn : '222K121'}) - $${priBackshellOpts['BOOT_RA'] ? priBackshellOpts['BOOT_RA'].price.toFixed(2) : '14.50'}</option>
+                            <option value="BOOT_STRAIGHT" ${pri.selectedBackshell === 'BOOT_STRAIGHT' ? 'selected' : ''}>Straight Boot (${priBackshellOpts['BOOT_STRAIGHT'] ? priBackshellOpts['BOOT_STRAIGHT'].pn : 'Straight Boot'}) - $${priBackshellOpts['BOOT_STRAIGHT'] ? priBackshellOpts['BOOT_STRAIGHT'].price.toFixed(2) : '12.50'}</option>
+                            <option value="BOOT_RA" ${pri.selectedBackshell === 'BOOT_RA' ? 'selected' : ''}>90° Right-Angle Boot (${priBackshellOpts['BOOT_RA'] ? priBackshellOpts['BOOT_RA'].pn : '90° Boot'}) - $${priBackshellOpts['BOOT_RA'] ? priBackshellOpts['BOOT_RA'].price.toFixed(2) : '14.50'}</option>
                             <option value="NONE" ${pri.selectedBackshell === 'NONE' ? 'selected' : ''}>None (No Boot) - $0.00</option>
                         </select>` : `
                         <select onchange="updateCardBackshell(${index}, true, this.value)">
@@ -1029,6 +1050,13 @@ function renderSolutionPairHTML(pair, index) {
                             Include Protective Dust Cap (${priCap.pn} - Est. $${priCap.price.toFixed(2)})
                         </label>
                     </div>
+                    ${(isAutoSport && priIsFlange && priNutPlate) ? `
+                    <div class="checkbox-row" style="margin-top: 6px;">
+                        <input type="checkbox" id="priNutPlate_${index}" ${pri.includeNutPlate !== false ? 'checked' : ''} onchange="updateCardNutPlate(${index}, true, this.checked)">
+                        <label for="priNutPlate_${index}" style="font-weight: normal; font-size: 12px; margin-bottom: 0;">
+                            Include Bulkhead Mounting Nut Plate (${priNutPlate.pn} - ${priNutPlate.thread} - Est. $${priNutPlate.price.toFixed(2)})
+                        </label>
+                    </div>` : ''}
                 </div>
 
                 <p><strong>Flange Accessory:</strong> ${priFlangeHtml}</p>
@@ -1077,8 +1105,8 @@ function renderSolutionPairHTML(pair, index) {
                         <label><strong>${isAutoSport ? 'Heat Shrink Boot:' : 'Backshell Style:'}</strong></label>
                         ${matIsBox ? `<span class="box-mount-notice">Box Mount (No rear accessory threads)</span>` : (isAutoSport ? `
                         <select onchange="updateCardBackshell(${index}, false, this.value)">
-                            <option value="BOOT_STRAIGHT" ${mat.selectedBackshell === 'BOOT_STRAIGHT' ? 'selected' : ''}>Straight Boot (${matBackshellOpts['BOOT_STRAIGHT'] ? matBackshellOpts['BOOT_STRAIGHT'].pn : '202K121'}) - $${matBackshellOpts['BOOT_STRAIGHT'] ? matBackshellOpts['BOOT_STRAIGHT'].price.toFixed(2) : '12.50'}</option>
-                            <option value="BOOT_RA" ${mat.selectedBackshell === 'BOOT_RA' ? 'selected' : ''}>90° Right-Angle Boot (${matBackshellOpts['BOOT_RA'] ? matBackshellOpts['BOOT_RA'].pn : '222K121'}) - $${matBackshellOpts['BOOT_RA'] ? matBackshellOpts['BOOT_RA'].price.toFixed(2) : '14.50'}</option>
+                            <option value="BOOT_STRAIGHT" ${mat.selectedBackshell === 'BOOT_STRAIGHT' ? 'selected' : ''}>Straight Boot (${matBackshellOpts['BOOT_STRAIGHT'] ? matBackshellOpts['BOOT_STRAIGHT'].pn : 'Straight Boot'}) - $${matBackshellOpts['BOOT_STRAIGHT'] ? matBackshellOpts['BOOT_STRAIGHT'].price.toFixed(2) : '12.50'}</option>
+                            <option value="BOOT_RA" ${mat.selectedBackshell === 'BOOT_RA' ? 'selected' : ''}>90° Right-Angle Boot (${matBackshellOpts['BOOT_RA'] ? matBackshellOpts['BOOT_RA'].pn : '90° Boot'}) - $${matBackshellOpts['BOOT_RA'] ? matBackshellOpts['BOOT_RA'].price.toFixed(2) : '14.50'}</option>
                             <option value="NONE" ${mat.selectedBackshell === 'NONE' ? 'selected' : ''}>None (No Boot) - $0.00</option>
                         </select>` : `
                         <select onchange="updateCardBackshell(${index}, false, this.value)">
@@ -1096,6 +1124,13 @@ function renderSolutionPairHTML(pair, index) {
                             Include Protective Dust Cap (${matCap.pn} - Est. $${matCap.price.toFixed(2)})
                         </label>
                     </div>
+                    ${(isAutoSport && matIsFlange && matNutPlate) ? `
+                    <div class="checkbox-row" style="margin-top: 6px;">
+                        <input type="checkbox" id="matNutPlate_${index}" ${mat.includeNutPlate !== false ? 'checked' : ''} onchange="updateCardNutPlate(${index}, false, this.checked)">
+                        <label for="matNutPlate_${index}" style="font-weight: normal; font-size: 12px; margin-bottom: 0;">
+                            Include Bulkhead Mounting Nut Plate (${matNutPlate.pn} - ${matNutPlate.thread} - Est. $${matNutPlate.price.toFixed(2)})
+                        </label>
+                    </div>` : ''}
                 </div>` : ''}
 
                 <p><strong>Flange Accessory:</strong> ${matFlangeHtml}</p>
@@ -1183,6 +1218,17 @@ function updateCardDustCap(solutionIndex, isPrimary, checked) {
     }
 }
 
+function updateCardNutPlate(solutionIndex, isPrimary, checked) {
+    const pair = currentCalculatedSolutions[solutionIndex];
+    if (!pair) return;
+
+    if (isPrimary) {
+        pair.primary.includeNutPlate = checked;
+    } else if (pair.mating) {
+        pair.mating.includeNutPlate = checked;
+    }
+}
+
 function addSolutionPairToActiveList(solutionIndex) {
     const pair = currentCalculatedSolutions[solutionIndex];
     if (!pair) return;
@@ -1226,6 +1272,15 @@ function addSolutionPairToActiveList(solutionIndex) {
         itemsToAdd.push({ pn: pri.flangeAcc, qty: 1, desc: 'M85049/95 Flange (Primary)', price: pri.unitPriceFlange });
     }
 
+    // Primary Nut Plate (AutoSport 2-Hole Flange)
+    const priIsFlange = pri.shellType === '2-Hole Flange Receptacle' || pri.shellType === '2-Hole Flange PCB Receptacle';
+    if (isAutoSport && priIsFlange && pri.includeNutPlate !== false) {
+        const np = getNutPlate(pri.shellSize);
+        if (np) {
+            itemsToAdd.push({ pn: np.pn, qty: 1, desc: `${seriesTitle} Nut Plate (${np.thread}) (Primary)`, price: np.price });
+        }
+    }
+
     // Primary Contacts
     let isPriLC = pri.activePN.endsWith("LC");
     pri.contacts.forEach(c => {
@@ -1262,6 +1317,15 @@ function addSolutionPairToActiveList(solutionIndex) {
         // Mating Flange Accessory
         if (!isAutoSport && mat.shellType === 'Wall Mount') {
             itemsToAdd.push({ pn: mat.flangeAcc, qty: 1, desc: 'M85049/95 Flange (Mating)', price: mat.unitPriceFlange });
+        }
+
+        // Mating Nut Plate (AutoSport 2-Hole Flange)
+        const matIsFlange = mat.shellType === '2-Hole Flange Receptacle' || mat.shellType === '2-Hole Flange PCB Receptacle';
+        if (isAutoSport && matIsFlange && mat.includeNutPlate !== false) {
+            const np = getNutPlate(mat.shellSize);
+            if (np) {
+                itemsToAdd.push({ pn: np.pn, qty: 1, desc: `${seriesTitle} Nut Plate (${np.thread}) (Mating)`, price: np.price });
+            }
         }
 
         // Mating Contacts

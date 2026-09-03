@@ -120,6 +120,12 @@ const DataService = (function () {
         getDustCapSpecs: () => (_data.accessories && _data.accessories.dustCaps) ? _data.accessories.dustCaps : {},
         getFlangeSpecs: () => (_data.accessories && _data.accessories.flanges) ? _data.accessories.flanges : {},
         getFastenerSpecs: () => (_data.accessories && _data.accessories.fasteners) ? _data.accessories.fasteners : {},
+        getNutPlates: () => (_data.accessories && _data.accessories.nutPlates) ? _data.accessories.nutPlates : {},
+        getNutPlate: function (shellSize) {
+            const plates = this.getNutPlates();
+            const sz = String(shellSize).padStart(2, '0');
+            return plates[sz] || null;
+        },
 
         // Dynamic Calculations
         getBackshellOptions: function (shellSize, finishCode) {

@@ -2675,6 +2675,13 @@
       "10": { "pn": "222K132-25-0", "desc": "Raychem 90Â° Right-Angle Heat Shrink Boot (Size 10 / 12)", "price": 16.50 },
       "12": { "pn": "222K132-25-0", "desc": "Raychem 90Â° Right-Angle Heat Shrink Boot (Size 10 / 12)", "price": 16.50 }
     }
+  },
+  "nutPlates": {
+    "06": { "pn": "ATM396-6", "thread": "M2.5", "desc": "Deutsch AutoSport Nut Plate (Shell 06 - M2.5)", "price": 14.50 },
+    "07": { "pn": "ATM396-7", "thread": "M3", "desc": "Deutsch AutoSport Nut Plate (Shell 07 - M3)", "price": 14.50 },
+    "08": { "pn": "ATM396-8", "thread": "M3", "desc": "Deutsch AutoSport Nut Plate (Shell 08 - M3)", "price": 14.50 },
+    "10": { "pn": "ATM396-10", "thread": "M3", "desc": "Deutsch AutoSport Nut Plate (Shell 10 - M3)", "price": 15.50 },
+    "12": { "pn": "ATM396-12", "thread": "M3", "desc": "Deutsch AutoSport Nut Plate (Shell 12 - M3)", "price": 16.50 }
   }
 }
 };
