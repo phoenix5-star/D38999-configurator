@@ -1,0 +1,83 @@
+[
+  {
+    "code": "W",
+    "name": "Olive Drab Cadmium",
+    "commCode": "RW",
+    "material": "Aluminum",
+    "isComp": false,
+    "costMult": 1.0,
+    "backshellFinish": "W",
+    "description": "Standard military conductive olive drab cadmium over electroless nickel (500 hr salt spray)."
+  },
+  {
+    "code": "F",
+    "name": "Electroless Nickel",
+    "commCode": "RF",
+    "material": "Aluminum",
+    "isComp": false,
+    "costMult": 0.95,
+    "backshellFinish": "N",
+    "description": "Conductive electroless nickel plating (48 hr salt spray, high EMI shielding)."
+  },
+  {
+    "code": "Z",
+    "name": "Black Zinc Nickel",
+    "commCode": "RBZ",
+    "material": "Aluminum",
+    "isComp": false,
+    "costMult": 1.15,
+    "backshellFinish": "Z",
+    "description": "RoHS-compliant non-reflective conductive black zinc nickel (500 hr salt spray)."
+  },
+  {
+    "code": "T",
+    "name": "Nickel PTFE / Durmalon",
+    "commCode": "RNF",
+    "material": "Aluminum",
+    "isComp": false,
+    "costMult": 1.30,
+    "backshellFinish": "T",
+    "description": "RoHS-compliant conductive nickel fluorocarbon polymer / Durmalon (500 hr salt spray)."
+  },
+  {
+    "code": "K",
+    "name": "Passivated Stainless Steel",
+    "commCode": "RK",
+    "material": "Stainless Steel",
+    "isComp": false,
+    "costMult": 1.85,
+    "backshellFinish": "S",
+    "description": "Corrosion-resistant passivated stainless steel firewall construction."
+  },
+  {
+    "code": "J",
+    "name": "Composite Olive Drab Cadmium",
+    "commCode": "RW",
+    "material": "Composite",
+    "isComp": true,
+    "costMult": 1.25,
+    "backshellFinish": "W",
+    "description": "Lightweight composite shell with olive drab cadmium plating (2000 hr salt spray)."
+  },
+  {
+    "code": "M",
+    "name": "Composite Electroless Nickel",
+    "commCode": "RF",
+    "material": "Composite",
+    "isComp": true,
+    "costMult": 1.20,
+    "backshellFinish": "N",
+    "description": "Lightweight composite shell with electroless nickel plating (2000 hr salt spray)."
+  },
+  {
+    "code": "N",
+    "name": "Black Conductive / Electroless Nickel",
+    "commCode": "N",
+    "material": "Aluminum",
+    "isComp": false,
+    "costMult": 1.0,
+    "backshellFinish": "N",
+    "description": "Standard Deutsch AutoSport black conductive non-reflective finish (or Electroless Nickel)."
+  }
+]
+

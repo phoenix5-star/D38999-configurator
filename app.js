@@ -1,52 +1,11 @@
 // Configurator Metadata
-const CONFIG_VERSION = "V001.2";
+const CONFIG_VERSION = "V002.0";
 
-// Shop Tooling Inventory Definition
-const SHOP_TOOLING = {
-    frames: ["AFM8", "AF8"],
-    positioners: ["K40", "K42", "K13-1", "TH163"]
-};
-
-// Tooling Mapping Matrix per contact size and pin/socket gender
-const TOOLING_MATRIX = {
-    "22D": {
-        P: { frame: "AFM8", positioner: "K42", setting: "Color SEL: 4 (AWG 22-28)" },
-        S: { frame: "AFM8", positioner: "K40", setting: "Color SEL: 4 (AWG 22-28)" }
-    },
-    "20": {
-        P: { frame: "AFM8", positioner: "K13-1", setting: "SEL: 4-6 (AWG 20-24)" },
-        S: { frame: "AFM8", positioner: "K13-1", setting: "SEL: 4-6 (AWG 20-24)" }
-    },
-    "16": {
-        P: { frame: "AF8", positioner: "TH163", setting: "Turret Position: BLUE" },
-        S: { frame: "AF8", positioner: "TH163", setting: "Turret Position: BLUE" }
-    },
-    "12": {
-        P: { frame: "AF8", positioner: "TH163", setting: "Turret Position: YELLOW" },
-        S: { frame: "AF8", positioner: "TH163", setting: "Turret Position: YELLOW" }
-    },
-    "8": {
-        P: { frame: "M22520/23-01", positioner: "Die Set / Heavy-Duty Crimp Tool", setting: "Specialty Power/Coax Crimp Tool" },
-        S: { frame: "M22520/23-01", positioner: "Die Set / Heavy-Duty Crimp Tool", setting: "Specialty Power/Coax Crimp Tool" }
-    }
-};
-
-// M81969 Standard Insertion / Extraction Tool Reference Matrix
-const M81969_TOOLS = {
-    "22D": { toolPN: "M81969/14-01", colors: "Green / White", badgeClass: "badge-green", desc: "Plastic Insertion/Extraction (Size 22D)" },
-    "20":  { toolPN: "M81969/14-10", colors: "Red / Orange", badgeClass: "badge-orange", desc: "Plastic Insertion/Extraction (Size 20)" },
-    "16":  { toolPN: "M81969/14-03", colors: "Blue / White", badgeClass: "badge-blue", desc: "Plastic Insertion/Extraction (Size 16)" },
-    "12":  { toolPN: "M81969/14-04", colors: "Yellow / White", badgeClass: "badge-yellow", desc: "Plastic Insertion/Extraction (Size 12)" },
-    "8":   { toolPN: "M81969/14-06", colors: "Red / Blue (Size 8)", badgeClass: "badge-red", desc: "Plastic Insertion/Extraction (Size 8)" }
-};
-
-const contactRatings = [
-    { size: "22D", maxAmps: 5.0,  label: "Size 22D (Max 5A)" },
-    { size: "20",  maxAmps: 7.5,  label: "Size 20 (Max 7.5A)" },
-    { size: "16",  maxAmps: 13.0, label: "Size 16 (Max 13A)" },
-    { size: "12",  maxAmps: 23.0, label: "Size 12 (Max 23A)" },
-    { size: "8",   maxAmps: 46.0, label: "Size 8 (Max 46A - Coax/Twinax/Power)" }
-];
+// Shop Tooling Inventory & Contact Ratings loaded via DataService
+const SHOP_TOOLING = (typeof DataService !== 'undefined') ? DataService.getShopInventory() : { frames: ["AFM8", "AF8"], positioners: ["K40", "K42", "K13-1", "TH163"] };
+const TOOLING_MATRIX = (typeof DataService !== 'undefined') ? DataService.getToolingMatrix() : {};
+const M81969_TOOLS = (typeof DataService !== 'undefined') ? DataService.getInsertionExtractionTools() : {};
+const contactRatings = (typeof DataService !== 'undefined') ? DataService.getContactRatings() : [];
 
 // Map numerical shell sizes to MIL-DTL-38999 Series III letter codes
 const SHELL_LETTER_CODES = {
@@ -76,179 +35,12 @@ const SHELL_LETTER_CODES = {
     return `${letterCode}${layoutNumber}.png`;
   }
 
-const m39029DB = {
-    "STD": {
-        "22D": { P: [{ pn: "M39029/58-360", price: 1.85, desc: "Size 22D Pin Contact", size: "22D", isStd: true }],
-                 S: [{ pn: "M39029/56-348", price: 2.10, desc: "Size 22D Socket Contact", size: "22D", isStd: true }] },
-        "20":  { P: [{ pn: "M39029/58-364", price: 2.15, desc: "Size 20 Pin Contact", size: "20", isStd: true }],
-                 S: [{ pn: "M39029/57-358", price: 2.40, desc: "Size 20 Socket Contact", size: "20", isStd: true }] },
-        "16":  { P: [{ pn: "M39029/58-365", price: 3.10, desc: "Size 16 Pin Contact", size: "16", isStd: true }],
-                 S: [{ pn: "M39029/57-359", price: 3.50, desc: "Size 16 Socket Contact", size: "16", isStd: true }] },
-        "12":  { P: [{ pn: "M39029/58-366", price: 4.50, desc: "Size 12 Pin Contact", size: "12", isStd: true }],
-                 S: [{ pn: "M39029/57-360", price: 5.20, desc: "Size 12 Socket Contact", size: "12", isStd: true }] },
-        "8":   { P: [{ pn: "M39029/60-367", price: 18.50, desc: "Size 8 Pin Power Contact", size: "8", isStd: true }],
-                 S: [{ pn: "M39029/59-366", price: 21.00, desc: "Size 8 Socket Power Contact", size: "8", isStd: true }] }
-    },
-    "TC_K": {
-        "22D": {
-            P: [
-                { pn: "M39029/87-471", price: 7.50, desc: "Size 22D Alumel Pin Contact", size: "22D", isStd: false },
-                { pn: "M39029/87-472", price: 7.50, desc: "Size 22D Chromel Pin Contact", size: "22D", isStd: false }
-            ],
-            S: [
-                { pn: "M39029/88-487", price: 8.00, desc: "Size 22D Alumel Socket Contact", size: "22D", isStd: false },
-                { pn: "M39029/88-488", price: 8.00, desc: "Size 22D Chromel Socket Contact", size: "22D", isStd: false }
-            ]
-        },
-        "20": {
-            P: [
-                { pn: "M39029/87-473", price: 8.50, desc: "Size 20 Alumel Pin Contact", size: "20", isStd: false },
-                { pn: "M39029/87-474", price: 8.50, desc: "Size 20 Chromel Pin Contact", size: "20", isStd: false }
-            ],
-            S: [
-                { pn: "M39029/88-489", price: 9.00, desc: "Size 20 Alumel Socket Contact", size: "20", isStd: false },
-                { pn: "M39029/88-490", price: 9.00, desc: "Size 20 Chromel Socket Contact", size: "20", isStd: false }
-            ]
-        }
-    },
-    "TC_E": {
-        "22D": {
-            P: [
-                { pn: "M39029/87-472", price: 7.50, desc: "Size 22D Chromel Pin Contact", size: "22D", isStd: false },
-                { pn: "M39029/87-470", price: 7.50, desc: "Size 22D Constantan Pin Contact", size: "22D", isStd: false }
-            ],
-            S: [
-                { pn: "M39029/88-488", price: 8.00, desc: "Size 22D Chromel Socket Contact", size: "22D", isStd: false },
-                { pn: "M39029/88-486", price: 8.00, desc: "Size 22D Constantan Socket Contact", size: "22D", isStd: false }
-            ]
-        },
-        "20": {
-            P: [
-                { pn: "M39029/87-474", price: 8.50, desc: "Size 20 Chromel Pin Contact", size: "20", isStd: false },
-                { pn: "M39029/87-470", price: 8.50, desc: "Size 20 Constantan Pin Contact", size: "20", isStd: false }
-            ],
-            S: [
-                { pn: "M39029/88-490", price: 9.00, desc: "Size 20 Chromel Socket Contact", size: "20", isStd: false },
-                { pn: "M39029/88-486", price: 8.00, desc: "Size 20 Constantan Socket Contact", size: "20", isStd: false }
-            ]
-        }
-    },
-    "TC_J": {
-        "22D": {
-            P: [
-                { pn: "M39029/87-469", price: 7.50, desc: "Size 22D Iron Pin Contact", size: "22D", isStd: false },
-                { pn: "M39029/87-470", price: 7.50, desc: "Size 22D Constantan Pin Contact", size: "22D", isStd: false }
-            ],
-            S: [
-                { pn: "M39029/88-485", price: 8.00, desc: "Size 22D Iron Socket Contact", size: "22D", isStd: false },
-                { pn: "M39029/88-486", price: 8.00, desc: "Size 22D Constantan Socket Contact", size: "22D", isStd: false }
-            ]
-        }
-    },
-    "TC_T": {
-        "22D": {
-            P: [
-                { pn: "M39029/87-468", price: 7.50, desc: "Size 22D Copper Pin Contact", size: "22D", isStd: false },
-                { pn: "M39029/87-470", price: 7.50, desc: "Size 22D Constantan Pin Contact", size: "22D", isStd: false }
-            ],
-            S: [
-                { pn: "M39029/88-484", price: 8.00, desc: "Size 22D Copper Socket Contact", size: "22D", isStd: false },
-                { pn: "M39029/88-486", price: 8.00, desc: "Size 22D Constantan Socket Contact", size: "22D", isStd: false }
-            ]
-        }
-    },
-    "COAX": {
-        "16": { P: [{ pn: "M39029/76-424", price: 22.00, desc: "Size 16 Coax Pin Contact", size: "16", isStd: false }],
-                S: [{ pn: "M39029/77-429", price: 25.00, desc: "Size 16 Coax Socket Contact", size: "16", isStd: false }] },
-        "12": { P: [{ pn: "M39029/28-211", price: 34.00, desc: "Size 12 Coax Pin Contact", size: "12", isStd: false }],
-                S: [{ pn: "M39029/75-416", price: 38.00, desc: "Size 12 Coax Socket Contact", size: "12", isStd: false }] },
-        "8":  { P: [{ pn: "M39029/90-529", price: 65.00, desc: "Size 8 Twinax Pin Contact", size: "8", isStd: false }],
-                S: [{ pn: "M39029/91-530", price: 72.00, desc: "Size 8 Twinax Socket Contact", size: "8", isStd: false }] }
-    }
-};
-
-function alphaSeq(count) {
-    const alpha = "ABCDEFGHJKLMNPRSTUVWXYZabcdefghjkmnpqrstuvwxyz".split("");
-    return alpha.slice(0, count);
-}
-function numSeq(count) {
-    return Array.from({length: count}, (_, i) => String(i + 1));
-}
-
-const masterLayouts = [
-    { shellSize: "9",  letterCode: "A", arrangement: "9-5",   counts: { "22D": 5 },             pins: numSeq(5) },
-    { shellSize: "9",  letterCode: "A", arrangement: "9-35",  counts: { "22D": 6 },             pins: numSeq(6) },
-    { shellSize: "9",  letterCode: "A", arrangement: "9-98",  counts: { "20": 3 },              pins: ["A","B","C"] },
-    { shellSize: "11", letterCode: "B", arrangement: "11-2",   counts: { "16": 2 },              pins: ["A","B"] },
-    { shellSize: "11", letterCode: "B", arrangement: "11-4",   counts: { "20": 4 },              pins: ["A","B","C","D"] },
-    { shellSize: "11", letterCode: "B", arrangement: "11-5",   counts: { "20": 5 },              pins: ["A","B","C","D","E"] },
-    { shellSize: "11", letterCode: "B", arrangement: "11-35",  counts: { "22D": 13 },            pins: numSeq(13) },
-    { shellSize: "11", letterCode: "B", arrangement: "11-98",  counts: { "20": 6 },              pins: alphaSeq(6) },
-    { shellSize: "11", letterCode: "B", arrangement: "11-99",  counts: { "20": 7 },              pins: alphaSeq(7) },
-    { shellSize: "13", letterCode: "C", arrangement: "13-4",   counts: { "16": 4 },              pins: ["A","B","C","D"] },
-    { shellSize: "13", letterCode: "C", arrangement: "13-8",   counts: { "20": 8 },              pins: alphaSeq(8) },
-    { shellSize: "13", letterCode: "C", arrangement: "13-13",  counts: { "22D": 10, "16": 2, "12": 1 }, pins: alphaSeq(13) },
-    { shellSize: "13", letterCode: "C", arrangement: "13-26",  counts: { "22D": 26 },            pins: numSeq(26) },
-    { shellSize: "13", letterCode: "C", arrangement: "13-35",  counts: { "22D": 22 },            pins: numSeq(22) },
-    { shellSize: "13", letterCode: "C", arrangement: "13-98",  counts: { "20": 10 },             pins: alphaSeq(10) },
-    { shellSize: "15", letterCode: "D", arrangement: "15-5",   counts: { "16": 5 },              pins: ["A","B","C","D","E"] },
-    { shellSize: "15", letterCode: "D", arrangement: "15-15",  counts: { "20": 14, "16": 1 },    pins: alphaSeq(15) },
-    { shellSize: "15", letterCode: "D", arrangement: "15-18",  counts: { "20": 18 },             pins: alphaSeq(18) },
-    { shellSize: "15", letterCode: "D", arrangement: "15-19",  counts: { "20": 19 },             pins: alphaSeq(19) },
-    { shellSize: "15", letterCode: "D", arrangement: "15-35",  counts: { "22D": 37 },            pins: alphaSeq(37) },
-    { shellSize: "15", letterCode: "D", arrangement: "15-97",  counts: { "20": 8, "16": 4 },     pins: alphaSeq(12) },
-    { shellSize: "17", letterCode: "E", arrangement: "17-2",   counts: { "22D": 38, "8": 2 },    pins: numSeq(40) },
-    { shellSize: "17", letterCode: "E", arrangement: "17-6",   counts: { "12": 6 },              pins: ["A","B","C","D","E","F"] },
-    { shellSize: "17", letterCode: "E", arrangement: "17-8",   counts: { "16": 8 },              pins: alphaSeq(8) },
-    { shellSize: "17", letterCode: "E", arrangement: "17-22",  counts: { "22D": 22, "12": 2 },   pins: numSeq(24) },
-    { shellSize: "17", letterCode: "E", arrangement: "17-26",  counts: { "20": 26 },             pins: numSeq(26) },
-    { shellSize: "17", letterCode: "E", arrangement: "17-35",  counts: { "22D": 55 },            pins: numSeq(55) },
-    { shellSize: "17", letterCode: "E", arrangement: "17-99",  counts: { "20": 21, "16": 2 },    pins: numSeq(23) },
-    { shellSize: "19", letterCode: "F", arrangement: "19-11",  counts: { "16": 11 },             pins: alphaSeq(11) },
-    { shellSize: "19", letterCode: "F", arrangement: "19-18",  counts: { "22D": 14, "8": 4 },    pins: numSeq(18) },
-    { shellSize: "19", letterCode: "F", arrangement: "19-28",  counts: { "20": 26, "16": 2 },    pins: numSeq(28) },
-    { shellSize: "19", letterCode: "F", arrangement: "19-30",  counts: { "20": 29, "16": 1 },    pins: numSeq(30) },
-    { shellSize: "19", letterCode: "F", arrangement: "19-32",  counts: { "20": 32 },             pins: numSeq(32) },
-    { shellSize: "19", letterCode: "F", arrangement: "19-35",  counts: { "22D": 66 },            pins: numSeq(66) },
-    { shellSize: "21", letterCode: "G", arrangement: "21-11",  counts: { "12": 11 },             pins: alphaSeq(11) },
-    { shellSize: "21", letterCode: "G", arrangement: "21-16",  counts: { "16": 16 },             pins: alphaSeq(16) },
-    { shellSize: "21", letterCode: "G", arrangement: "21-25",  counts: { "16": 25 },             pins: alphaSeq(25) },
-    { shellSize: "21", letterCode: "G", arrangement: "21-35",  counts: { "22D": 79 },            pins: numSeq(79) },
-    { shellSize: "21", letterCode: "G", arrangement: "21-39",  counts: { "20": 37, "16": 2 },    pins: numSeq(39) },
-    { shellSize: "21", letterCode: "G", arrangement: "21-41",  counts: { "20": 41 },             pins: numSeq(41) },
-    { shellSize: "21", letterCode: "G", arrangement: "21-75",  counts: { "8": 4 },               pins: ["A","B","C","D"] },
-    { shellSize: "23", letterCode: "H", arrangement: "23-21",  counts: { "16": 21 },             pins: numSeq(21) },
-    { shellSize: "23", letterCode: "H", arrangement: "23-35",  counts: { "22D": 100 },           pins: numSeq(100) },
-    { shellSize: "23", letterCode: "H", arrangement: "23-53",  counts: { "20": 53 },             pins: numSeq(53) },
-    { shellSize: "23", letterCode: "H", arrangement: "23-54",  counts: { "22D": 40, "16": 9, "8": 4 }, pins: numSeq(53) },
-    { shellSize: "23", letterCode: "H", arrangement: "23-55",  counts: { "20": 55 },             pins: numSeq(55) },
-    { shellSize: "25", letterCode: "J", arrangement: "25-4",   counts: { "20": 48, "16": 8 },    pins: numSeq(56) },
-    { shellSize: "25", letterCode: "J", arrangement: "25-8",   counts: { "8": 8 },               pins: alphaSeq(8) },
-    { shellSize: "25", letterCode: "J", arrangement: "25-19",  counts: { "12": 19 },             pins: alphaSeq(19) },
-    { shellSize: "25", letterCode: "J", arrangement: "25-20",  counts: { "20": 10, "16": 13, "12": 4, "8": 3 }, pins: numSeq(30) },
-    { shellSize: "25", letterCode: "J", arrangement: "25-24",  counts: { "16": 12, "12": 12 },   pins: alphaSeq(24) },
-    { shellSize: "25", letterCode: "J", arrangement: "25-29",  counts: { "16": 29 },             pins: alphaSeq(29) },
-    { shellSize: "25", letterCode: "J", arrangement: "25-35",  counts: { "22D": 128 },           pins: numSeq(128) },
-    { shellSize: "25", letterCode: "J", arrangement: "25-43",  counts: { "20": 20, "16": 16, "12": 7 }, pins: numSeq(43) },
-    { shellSize: "25", letterCode: "J", arrangement: "25-61",  counts: { "20": 61 },             pins: numSeq(61) }
-];
-
-const shellTypes = [
-    { type: "Plug", milCode: "26", commPrefix: "TVS06", compPrefix: "CTV06" },
-    { type: "Wall Mount", milCode: "20", commPrefix: "TVPS00", compPrefix: "CTVP00" },
-    { type: "Box Mount", milCode: "22", commPrefix: "TVPS02", compPrefix: "CTVP02" },
-    { type: "Jam Nut", milCode: "24", commPrefix: "TVS07", compPrefix: "CTV07" }
-];
-
-const finishes = [
-    { code: "W", name: "Olive Drab Cadmium", commCode: "RW", isComp: false, costMult: 1.0 },
-    { code: "F", name: "Electroless Nickel", commCode: "RF", isComp: false, costMult: 0.95 },
-    { code: "Z", name: "Black Zinc Nickel", commCode: "RBZ", isComp: false, costMult: 1.15 },
-    { code: "T", name: "Nickel PTFE / Durmalon", commCode: "RNF", isComp: false, costMult: 1.30 },
-    { code: "K", name: "Passivated Stainless Steel", commCode: "RK", isComp: false, costMult: 1.85 },
-    { code: "J", name: "Composite Olive Drab Cadmium", commCode: "RW", isComp: true, costMult: 1.25 },
-    { code: "M", name: "Composite Electroless Nickel", commCode: "RF", isComp: true, costMult: 1.20 }
-];
+// Master Parts Data loaded via DataService
+const m39029DB = (typeof DataService !== 'undefined') ? DataService.getM39029DB() : {};
+const masterLayouts = (typeof DataService !== 'undefined') ? DataService.getLayouts() : [];
+const d38999ShellTypes = (typeof DataService !== 'undefined') ? DataService.getShells('d38999') : [];
+const finishes = (typeof DataService !== 'undefined') ? DataService.getFinishes() : [];
+const d38999Finishes = finishes.filter(f => f.code !== 'N');
 
 const contactTypes = ["P", "S"];
 const keyingPositions = ["N", "A", "B", "C", "D", "E"];
@@ -266,6 +58,46 @@ const CONNECTOR_TO_BACKSHELL_FINISH = {
 };
 
 function getBackshellOptions(shellSize, finishCode) {
+    const isAutoSport = ['06', '07', '08', '10', '12'].includes(String(shellSize));
+    if (isAutoSport) {
+        const sz = String(shellSize).padStart(2, '0');
+        let straightPn = '202K121-25-0';
+        let straightPrice = 12.50;
+        let rightPn = '222K121-25-0';
+        let rightPrice = 14.50;
+
+        if (sz === '06') {
+            straightPn = '204W221-25-0';
+            straightPrice = 12.50;
+            rightPn = '224W221-25-0';
+            rightPrice = 14.50;
+        } else if (['10', '12'].includes(sz)) {
+            straightPn = '202K132-25-0';
+            straightPrice = 14.50;
+            rightPn = '222K132-25-0';
+            rightPrice = 16.50;
+        }
+        return {
+            "BOOT_STRAIGHT": {
+                key: "BOOT_STRAIGHT",
+                pn: straightPn,
+                desc: `Raychem Straight Heat Shrink Boot (${straightPn})`,
+                price: straightPrice
+            },
+            "BOOT_RA": {
+                key: "BOOT_RA",
+                pn: rightPn,
+                desc: `Raychem 90° Right-Angle Heat Shrink Boot (${rightPn})`,
+                price: rightPrice
+            },
+            "NONE": {
+                key: "NONE",
+                pn: "N/A",
+                desc: "No Heat Shrink Boot / Direct Wire Exit",
+                price: 0.00
+            }
+        };
+    }
     const numShell = String(shellSize).padStart(2, '0');
     const szNum = parseInt(shellSize, 10);
     const bsFinish = CONNECTOR_TO_BACKSHELL_FINISH[finishCode] || finishCode;
@@ -298,6 +130,22 @@ function getBackshellOptions(shellSize, finishCode) {
 }
 
 function getDustCapOptions(shellSize, finishCode, letterCode) {
+    const isAutoSport = ['06', '07', '08', '10', '12'].includes(String(shellSize));
+    if (isAutoSport) {
+        const sz = String(shellSize).padStart(2, '0');
+        return {
+            plugCap: {
+                pn: `AS-CAP-${sz}-PLUG`,
+                desc: `AutoSport Protective Cap for Plug (Size ${sz})`,
+                price: 9.50
+            },
+            receptacleCap: {
+                pn: `AS-CAP-${sz}-REC`,
+                desc: `AutoSport Protective Cap for Receptacle (Size ${sz})`,
+                price: 9.50
+            }
+        };
+    }
     const szNum = parseInt(shellSize, 10);
     const price = 15.00 + (szNum * 0.50);
     return {
@@ -312,6 +160,21 @@ function getDustCapOptions(shellSize, finishCode, letterCode) {
             price: price
         }
     };
+}
+
+function getNutPlate(shellSize) {
+    if (typeof DataService !== 'undefined' && DataService.getNutPlate) {
+        return DataService.getNutPlate(shellSize);
+    }
+    const nutPlates = {
+        "06": { pn: "ATM396-6", thread: "M2.5", desc: "Deutsch AutoSport Nut Plate (Shell 06 - M2.5)", price: 14.50 },
+        "07": { pn: "ATM396-7", thread: "M3", desc: "Deutsch AutoSport Nut Plate (Shell 07 - M3)", price: 14.50 },
+        "08": { pn: "ATM396-8", thread: "M3", desc: "Deutsch AutoSport Nut Plate (Shell 08 - M3)", price: 14.50 },
+        "10": { pn: "ATM396-10", thread: "M3", desc: "Deutsch AutoSport Nut Plate (Shell 10 - M3)", price: 15.50 },
+        "12": { pn: "ATM396-12", thread: "M3", desc: "Deutsch AutoSport Nut Plate (Shell 12 - M3)", price: 16.50 }
+    };
+    const sz = String(shellSize).padStart(2, '0');
+    return nutPlates[sz] || null;
 }
 
 function renderM81969Html(contacts) {
@@ -334,53 +197,107 @@ function renderM81969Html(contacts) {
 const database = [];
 
 masterLayouts.forEach(layout => {
-    const numShell = layout.shellSize.padStart(2, '0');
-    const szNum = parseInt(layout.shellSize, 10);
-    
-    let basePrice = 30.00 + (szNum * 3.50);
-    let flangePrice = 9.00 + (szNum * 0.50);
+    if (layout.seriesId === 'deutsch_autosport') {
+        let prefixFamily = 'AS';
+        if (layout.shellSize === '06') prefixFamily = 'ASL';
+        else if (layout.shellSize === '07') prefixFamily = 'ASM';
 
-    let fastenerDesc = "Flange Fasteners, Fillister Head 1\" (McMaster: 91737A313, Box of 100)";
-    let fastenerUrl = "https://www.mcmaster.com/91737A313/";
-    let fastenerPrice = 10.04;
-    let fastenerQty = 4;
+        const asStyles = [
+            { type: 'Plug', asCode: '6', name: 'Free Plug' },
+            { type: '2-Hole Flange Receptacle', asCode: '0', name: '2-Hole Flange Receptacle' },
+            { type: 'Jam Nut Receptacle', asCode: '7', name: 'Jam Nut Receptacle' },
+            { type: 'In-Line Receptacle', asCode: '1', name: 'In-Line Receptacle' },
+            { type: '2-Hole Flange PCB Receptacle', asCode: '2', name: '2-Hole Flange PCB Receptacle' }
+        ];
 
-    shellTypes.forEach(st => {
-        finishes.forEach(fin => {
+        const priceMap = { '06': 48.00, '07': 52.00, '08': 58.00, '10': 66.00, '12': 74.00 };
+        const basePrice = priceMap[layout.shellSize] || 50.00;
+
+        asStyles.forEach(st => {
             contactTypes.forEach(ct => {
                 keyingPositions.forEach(ky => {
-                    const milPN = `D38999/${st.milCode}${fin.code}${layout.letterCode}${layout.arrangement.split('-')[1]}${ct}${ky}`;
-                    const prefix = fin.isComp ? st.compPrefix : st.commPrefix;
-                    const commPN = `${prefix}${fin.commCode}-${layout.arrangement}${ct}${ky !== 'N' ? ky : ''}`;
+                    const asPN = `${prefixFamily}${st.asCode}${layout.arrangement}${ct}${ky}`;
 
                     database.push({
-                        id: `${milPN}_${commPN}`,
+                        id: asPN,
+                        seriesId: 'deutsch_autosport',
                         shellSize: layout.shellSize,
-                        letterCode: layout.letterCode,
+                        letterCode: '',
                         arrangement: layout.arrangement,
                         shellType: st.type,
-                        finish: fin.code,
+                        finish: 'N',
                         contactType: ct,
                         keying: ky,
-                        shellLabel: `Shell ${layout.shellSize} (${layout.arrangement})`,
-                        milPN: milPN,
-                        commPN: commPN,
-                        unitPriceConnector: basePrice * fin.costMult,
-                        flangeAcc: `M85049/95-${numShell}A (3/4 Perimeter Flange)`,
-                        unitPriceFlange: flangePrice,
-                        fastener: fastenerDesc,
-                        fastenerUrl: fastenerUrl,
-                        fastenerQty: fastenerQty,
-                        unitPriceFastener: fastenerPrice,
-                        diagramImg: `assets/inserts/${getInsertImageFilename(layout.arrangement, layout.shellSize)}`,
-                        cutoutImg: `assets/cutouts/Shell${layout.shellSize}.png`,
+                        shellLabel: `Deutsch AutoSport Shell ${layout.shellSize} (${layout.arrangement})`,
+                        milPN: asPN,
+                        commPN: asPN,
+                        asPN: asPN,
+                        unitPriceConnector: basePrice,
+                        flangeAcc: 'N/A (Integral Flange)',
+                        unitPriceFlange: 0,
+                        fastener: 'M3 Motorsport Stainless Fasteners',
+                        fastenerUrl: 'https://www.mcmaster.com/',
+                        fastenerQty: 2,
+                        unitPriceFastener: 4.50,
+                        diagramImg: '',
+                        cutoutImg: '',
                         pins: layout.pins,
                         counts: layout.counts
                     });
                 });
             });
         });
-    });
+    } else {
+        const numShell = layout.shellSize.padStart(2, '0');
+        const szNum = parseInt(layout.shellSize, 10);
+        
+        let basePrice = 30.00 + (szNum * 3.50);
+        let flangePrice = 9.00 + (szNum * 0.50);
+
+        let fastenerDesc = "Flange Fasteners, Fillister Head 1\" (McMaster: 91737A313, Box of 100)";
+        let fastenerUrl = "https://www.mcmaster.com/91737A313/";
+        let fastenerPrice = 10.04;
+        let fastenerQty = 4;
+
+        d38999ShellTypes.forEach(st => {
+            d38999Finishes.forEach(fin => {
+                contactTypes.forEach(ct => {
+                    keyingPositions.forEach(ky => {
+                        const milPN = `D38999/${st.milCode}${fin.code}${layout.letterCode}${layout.arrangement.split('-')[1]}${ct}${ky}`;
+                        const prefix = fin.isComp ? st.compPrefix : st.commPrefix;
+                        const commPN = `${prefix}${fin.commCode}-${layout.arrangement}${ct}${ky !== 'N' ? ky : ''}`;
+
+                        database.push({
+                            id: `${milPN}_${commPN}`,
+                            seriesId: 'd38999',
+                            shellSize: layout.shellSize,
+                            letterCode: layout.letterCode,
+                            arrangement: layout.arrangement,
+                            shellType: st.type,
+                            finish: fin.code,
+                            contactType: ct,
+                            keying: ky,
+                            shellLabel: `Shell ${layout.shellSize} (${layout.arrangement})`,
+                            milPN: milPN,
+                            commPN: commPN,
+                            asPN: milPN,
+                            unitPriceConnector: basePrice * fin.costMult,
+                            flangeAcc: `M85049/95-${numShell}A (3/4 Perimeter Flange)`,
+                            unitPriceFlange: flangePrice,
+                            fastener: fastenerDesc,
+                            fastenerUrl: fastenerUrl,
+                            fastenerQty: fastenerQty,
+                            unitPriceFastener: fastenerPrice,
+                            diagramImg: `assets/inserts/${getInsertImageFilename(layout.arrangement, layout.shellSize)}`,
+                            cutoutImg: `assets/cutouts/Shell${layout.shellSize}.png`,
+                            pins: layout.pins,
+                            counts: layout.counts
+                        });
+                    });
+                });
+            });
+        });
+    }
 });
 
 let currentCalculatedSolutions = [];
@@ -391,7 +308,7 @@ function initTheme() {
     document.documentElement.setAttribute('data-theme', savedTheme);
 }
 
-let currentStandard = 'mil'; // 'mil' or 'comm'
+let currentStandard = 'mil'; // 'mil', 'comm', or 'as'
 
 document.getElementById('themeToggleBtn').addEventListener('click', () => {
     const currentTheme = document.documentElement.getAttribute('data-theme');
@@ -406,17 +323,13 @@ function switchStandardTab(standard) {
     // Update Tab Buttons
     const milBtn = document.getElementById('tabMilBtn');
     const commBtn = document.getElementById('tabCommBtn');
-    if (milBtn && commBtn) {
-        if (standard === 'mil') {
-            milBtn.classList.add('active');
-            commBtn.classList.remove('active');
-        } else {
-            commBtn.classList.add('active');
-            milBtn.classList.remove('active');
-        }
-    }
+    const asBtn = document.getElementById('tabAsBtn');
+    if (milBtn) milBtn.classList.toggle('active', standard === 'mil');
+    if (commBtn) commBtn.classList.toggle('active', standard === 'comm');
+    if (asBtn) asBtn.classList.toggle('active', standard === 'as');
 
     updatePnStandardFilters();
+    populateArrangementDropdown();
 
     if (currentCalculatedSolutions && currentCalculatedSolutions.length > 0) {
         calculate();
@@ -425,14 +338,59 @@ function switchStandardTab(standard) {
 
 function updatePnStandardFilters() {
     const shellTypeSelect = document.getElementById('filterShellType');
-    if (!shellTypeSelect) return;
+    const shellSizeSelect = document.getElementById('filterShellSize');
+    const finishSelect = document.getElementById('filterFinish');
+    if (!shellTypeSelect || !shellSizeSelect || !finishSelect) return;
 
-    if (currentStandard === 'mil') {
+    if (currentStandard === 'as') {
+        shellTypeSelect.innerHTML = `
+            <option value="ALL">All Shell Types (Plug, Flange, Jam Nut, In-Line)</option>
+            <option value="Plug">Free Plug (ASL6 / ASM6 / AS6)</option>
+            <option value="2-Hole Flange Receptacle">2-Hole Flange Receptacle (ASL0 / ASM0 / AS0)</option>
+            <option value="Jam Nut Receptacle">Jam Nut Receptacle (ASL7 / ASM7 / AS7)</option>
+            <option value="In-Line Receptacle">In-Line Receptacle (ASL1 / ASM1 / AS1)</option>
+            <option value="2-Hole Flange PCB Receptacle">2-Hole Flange PCB Receptacle (ASL2 / ASM2 / AS2)</option>
+        `;
+        shellSizeSelect.innerHTML = `
+            <option value="ALL">All Shell Sizes (06, 07, 08, 10, 12)</option>
+            <option value="06">Size 06 (ASL Micro Lite)</option>
+            <option value="07">Size 07 (ASM Mini)</option>
+            <option value="08">Size 08 (AS Standard)</option>
+            <option value="10">Size 10 (AS Standard)</option>
+            <option value="12">Size 12 (AS Standard)</option>
+        `;
+        finishSelect.innerHTML = `
+            <option value="ALL">All Finishes</option>
+            <option value="N">Black Conductive / Electroless Nickel (N)</option>
+        `;
+    } else if (currentStandard === 'mil') {
         shellTypeSelect.innerHTML = `
             <option value="ALL">All Shell Types (D38999/20, /24, /26)</option>
             <option value="Plug">Straight Plug (D38999/26)</option>
             <option value="Wall Mount">Wall Mount Receptacle (D38999/20)</option>
             <option value="Jam Nut">Jam Nut Receptacle (D38999/24)</option>
+        `;
+        shellSizeSelect.innerHTML = `
+            <option value="ALL">All Shell Sizes</option>
+            <option value="9">Size 9 (A)</option>
+            <option value="11">Size 11 (B)</option>
+            <option value="13">Size 13 (C)</option>
+            <option value="15">Size 15 (D)</option>
+            <option value="17">Size 17 (E)</option>
+            <option value="19">Size 19 (F)</option>
+            <option value="21">Size 21 (G)</option>
+            <option value="23">Size 23 (H)</option>
+            <option value="25">Size 25 (J)</option>
+        `;
+        finishSelect.innerHTML = `
+            <option value="ALL">All Finishes</option>
+            <option value="W">Olive Drab Cadmium (W)</option>
+            <option value="F">Electroless Nickel (F)</option>
+            <option value="Z">Black Zinc Nickel (Z)</option>
+            <option value="T">Nickel PTFE (Durmalon) (T)</option>
+            <option value="K">Passivated Stainless Steel (K)</option>
+            <option value="J">Olive Drab Cadmium Composite (J)</option>
+            <option value="M">Electroless Nickel Composite (M)</option>
         `;
     } else {
         shellTypeSelect.innerHTML = `
@@ -441,6 +399,28 @@ function updatePnStandardFilters() {
             <option value="Wall Mount">Wall Mount Receptacle (TVPS00 / CTVP00)</option>
             <option value="Box Mount">Box Mount Receptacle (TVPS02 / CTVP02)</option>
             <option value="Jam Nut">Jam Nut Receptacle (TVS07 / CTV07)</option>
+        `;
+        shellSizeSelect.innerHTML = `
+            <option value="ALL">All Shell Sizes</option>
+            <option value="9">Size 9 (A)</option>
+            <option value="11">Size 11 (B)</option>
+            <option value="13">Size 13 (C)</option>
+            <option value="15">Size 15 (D)</option>
+            <option value="17">Size 17 (E)</option>
+            <option value="19">Size 19 (F)</option>
+            <option value="21">Size 21 (G)</option>
+            <option value="23">Size 23 (H)</option>
+            <option value="25">Size 25 (J)</option>
+        `;
+        finishSelect.innerHTML = `
+            <option value="ALL">All Finishes</option>
+            <option value="W">Olive Drab Cadmium (W / RW)</option>
+            <option value="F">Electroless Nickel (F / RF)</option>
+            <option value="Z">Black Zinc Nickel (Z / RNF)</option>
+            <option value="T">Nickel PTFE (Durmalon) (T)</option>
+            <option value="K">Passivated Stainless Steel (K / RK)</option>
+            <option value="J">Olive Drab Cadmium Composite (J)</option>
+            <option value="M">Electroless Nickel Composite (M)</option>
         `;
     }
 }
@@ -472,7 +452,8 @@ function resetConfiguration() {
     // 4. Reset Contact Requirements to default single group
     const groupsContainer = document.getElementById('groups');
     if (groupsContainer) {
-        let options = contactRatings.map(c => `<option value="${c.size}" ${c.size === '22D' ? 'selected' : ''}>${c.label}</option>`).join('');
+        const defaultSize = currentStandard === 'as' ? '24' : '22D';
+        let options = contactRatings.map(c => `<option value="${c.size}" ${c.size === defaultSize ? 'selected' : ''}>${c.label}</option>`).join('');
         groupsContainer.innerHTML = `
             <div class="row">
                 <div class="val-container">
@@ -510,13 +491,13 @@ function resetConfiguration() {
 
 function init() {
     initTheme();
+    updatePnStandardFilters();
     populateArrangementDropdown();
     updateListDropdown();
     loadActiveList();
     
     document.getElementById('mode').addEventListener('change', toggleInputMode);
     toggleInputMode();
-    updatePnStandardFilters();
 }
 
 function populateArrangementDropdown() {
@@ -526,6 +507,10 @@ function populateArrangementDropdown() {
     select.innerHTML = '<option value="ALL">All Arrangements</option>';
 
     masterLayouts.forEach(layout => {
+        const isAutoSport = layout.seriesId === 'deutsch_autosport';
+        if (currentStandard === 'as' && !isAutoSport) return;
+        if ((currentStandard === 'mil' || currentStandard === 'comm') && isAutoSport) return;
+
         if (selectedShellSize === "ALL" || layout.shellSize === selectedShellSize) {
             let descParts = Object.entries(layout.counts).map(([sz, qty]) => `${qty}x Size ${sz}`).join(', ');
             let opt = document.createElement('option');
@@ -554,183 +539,12 @@ const MIL_SLASH_TO_SHELL_TYPE = {
 };
 
 /**
- * Parses a MIL-DTL-38999 Series III or Amphenol Commercial part number string (full or partial).
- * Supports:
- *   - Full Mil: D38999/26WE35PN, D38999/20FJ35SN
- *   - Short Mil: 26WE35PN, 20FJ35SN, 26W-E-35, 26WE35
- *   - Commercial: TVS06RF-11-35P, TVPS00RF-17-35S, TVPS02RW-15-19P, TVS07RBZ-21-35SN, CTV06RW-17-35P, CTVP00RF-13-35S
+ * Delegates part number parsing to DecoderEngine.
  */
 function parsePartNumber(input) {
-    if (!input || typeof input !== 'string') return null;
-    let raw = input.trim().toUpperCase().replace(/[\s\t]+/g, '');
-    if (!raw) return null;
-
-    let res = {
-        standard: null, // 'mil' or 'comm'
-        shellType: null, // 'Plug', 'Wall Mount', 'Box Mount', 'Jam Nut'
-        finish: null,    // 'W', 'F', 'Z', 'T', 'K', 'J', 'M'
-        shellSize: null, // '9', '11', '13', '15', '17', '19', '21', '23', '25'
-        arrangement: null, // '11-35', '17-35', etc.
-        contactType: null, // 'P' or 'S'
-        keying: null,     // 'N', 'A', 'B', 'C', 'D', 'E'
-        raw: raw,
-        confidence: 0
-    };
-
-    // Check Commercial pattern: starts with TVS06, TVPS00, TVPS02, TVS07, CTV06, CTVP00, CTVP02, CTV07
-    const commPrefixMatch = raw.match(/^(TVS06|TVPS00|TVPS02|TVS07|CTV06|CTVP00|CTVP02|CTV07)/);
-    if (commPrefixMatch) {
-        res.standard = 'comm';
-        let prefix = commPrefixMatch[1];
-        let foundType = shellTypes.find(st => st.commPrefix === prefix || st.compPrefix === prefix);
-        if (foundType) res.shellType = foundType.type;
-
-        let remainder = raw.slice(prefix.length).replace(/^[-_]/, '');
-        
-        // Find finish in commercial remainder (RW, RF, RBZ, RNF, RK, W, F, Z, T, K, J, M)
-        let finishMatched = null;
-        for (let f of finishes) {
-            if (remainder.startsWith(f.commCode)) {
-                finishMatched = f.code;
-                remainder = remainder.slice(f.commCode.length).replace(/^[-_]/, '');
-                break;
-            }
-        }
-        if (!finishMatched) {
-            for (let f of finishes) {
-                if (remainder.startsWith(f.code)) {
-                    finishMatched = f.code;
-                    remainder = remainder.slice(f.code.length).replace(/^[-_]/, '');
-                    break;
-                }
-            }
-        }
-        if (finishMatched) res.finish = finishMatched;
-
-        // Next part is shell size + layout or letter code + layout, e.g. 17-35, 1735, E35, 11-35, 25-35
-        let matchLayout = remainder.match(/^(\d{1,2}|[A-J])[-_]?([0-9]{1,3})/);
-        if (matchLayout) {
-            let sizeOrLetter = matchLayout[1];
-            let layoutNum = matchLayout[2];
-            let sz = null;
-            if (LETTER_CODE_TO_SHELL_SIZE[sizeOrLetter]) {
-                sz = LETTER_CODE_TO_SHELL_SIZE[sizeOrLetter];
-            } else if (parseInt(sizeOrLetter, 10) >= 9 && parseInt(sizeOrLetter, 10) <= 25) {
-                sz = sizeOrLetter;
-            }
-            if (sz) {
-                res.shellSize = sz;
-                let fullArr = `${sz}-${layoutNum}`;
-                if (masterLayouts.some(ml => ml.arrangement === fullArr)) {
-                    res.arrangement = fullArr;
-                }
-            }
-            remainder = remainder.slice(matchLayout[0].length).replace(/^[-_]/, '');
-        }
-
-        // Check contact type
-        if (remainder.startsWith('P')) {
-            res.contactType = 'P';
-            remainder = remainder.slice(1);
-        } else if (remainder.startsWith('S')) {
-            res.contactType = 'S';
-            remainder = remainder.slice(1);
-        }
-
-        // Check keying
-        if (remainder.length > 0 && keyingPositions.includes(remainder[0])) {
-            res.keying = remainder[0];
-        }
-
-        let fieldsFound = [res.shellType, res.finish, res.shellSize, res.arrangement, res.contactType, res.keying].filter(Boolean).length;
-        if (fieldsFound > 0) {
-            res.confidence = fieldsFound;
-            return res;
-        }
+    if (typeof DecoderEngine !== 'undefined') {
+        return DecoderEngine.parse(input);
     }
-
-    // Check Military pattern: D38999/26... or 26... or 20... or 22... or 24...
-    let milClean = raw;
-    if (milClean.startsWith('D38999/')) {
-        milClean = milClean.slice(7);
-        res.standard = 'mil';
-    } else if (milClean.startsWith('D38999')) {
-        milClean = milClean.slice(6).replace(/^\//, '');
-        res.standard = 'mil';
-    } else if (milClean.startsWith('38999/')) {
-        milClean = milClean.slice(6);
-        res.standard = 'mil';
-    }
-
-    // Now milClean starts with slash sheet: 20, 22, 24, 26
-    let slashMatch = milClean.match(/^(20|22|24|26)/);
-    if (slashMatch) {
-        if (!res.standard) res.standard = 'mil';
-        let slash = slashMatch[1];
-        res.shellType = MIL_SLASH_TO_SHELL_TYPE[slash];
-        milClean = milClean.slice(slash.length).replace(/^[-_]/, '');
-    }
-
-    // Finish code: W, F, Z, T, K, J, M
-    if (milClean.length > 0) {
-        let fChar = milClean[0];
-        let foundFinish = finishes.find(f => f.code === fChar);
-        if (foundFinish) {
-            res.finish = fChar;
-            milClean = milClean.slice(1).replace(/^[-_]/, '');
-        }
-    }
-
-    // Shell size letter code (A-J) and layout number
-    if (milClean.length > 0) {
-        let letter = milClean[0];
-        if (LETTER_CODE_TO_SHELL_SIZE[letter]) {
-            res.shellSize = LETTER_CODE_TO_SHELL_SIZE[letter];
-            milClean = milClean.slice(1).replace(/^[-_]/, '');
-
-            // Layout number
-            let layoutMatch = milClean.match(/^([0-9]{1,3})/);
-            if (layoutMatch) {
-                let layoutNum = layoutMatch[1];
-                let fullArr = `${res.shellSize}-${layoutNum}`;
-                if (masterLayouts.some(ml => ml.arrangement === fullArr)) {
-                    res.arrangement = fullArr;
-                }
-                milClean = milClean.slice(layoutNum.length).replace(/^[-_]/, '');
-            }
-        }
-    }
-
-    // Contact type (P, S, A, B, C, D)
-    if (milClean.length > 0) {
-        let cChar = milClean[0];
-        if (cChar === 'P' || cChar === 'S') {
-            res.contactType = cChar;
-            milClean = milClean.slice(1);
-        } else if (cChar === 'A') { // Less Contacts - Pin
-            res.contactType = 'P';
-            milClean = milClean.slice(1);
-        } else if (cChar === 'B') { // Less Contacts - Socket
-            res.contactType = 'S';
-            milClean = milClean.slice(1);
-        }
-    }
-
-    // Keying position (N, A, B, C, D, E)
-    if (milClean.length > 0) {
-        let kChar = milClean[0];
-        if (keyingPositions.includes(kChar)) {
-            res.keying = kChar;
-            milClean = milClean.slice(1);
-        }
-    }
-
-    let fieldsCount = [res.shellType, res.finish, res.shellSize, res.arrangement, res.contactType, res.keying].filter(Boolean).length;
-    if (fieldsCount > 0) {
-        res.confidence = fieldsCount;
-        return res;
-    }
-
     return null;
 }
 
@@ -748,7 +562,7 @@ function liveDecodePN(val) {
     const decoded = parsePartNumber(val);
     if (!decoded || decoded.confidence === 0) {
         resultDiv.style.display = 'block';
-        resultDiv.innerHTML = `<span style="color: #e53e3e;">Could not parse part number. Try format like <code>26WE35PN</code>, <code>D38999/20FJ35SN</code>, or <code>TVS06RF-11-35P</code>.</span>`;
+        resultDiv.innerHTML = `<span style="color: #e53e3e;">Could not parse part number. Try format like <code>26WE35PN</code>, <code>TVS06RF-11-35P</code>, or <code>ASL606-05PN</code>.</span>`;
         applyBtn.disabled = true;
         return;
     }
@@ -758,17 +572,19 @@ function liveDecodePN(val) {
 
     let chipsHtml = [];
     if (decoded.standard) {
-        chipsHtml.push(`<span class="pn-decode-chip"><strong>Standard:</strong> ${decoded.standard === 'mil' ? 'Military' : 'Commercial'}</span>`);
+        let stdLabel = decoded.standard === 'as' ? 'Deutsch AutoSport' : (decoded.standard === 'mil' ? 'Military' : 'Commercial');
+        chipsHtml.push(`<span class="pn-decode-chip"><strong>Standard:</strong> ${stdLabel}</span>`);
     }
     if (decoded.shellType) {
         chipsHtml.push(`<span class="pn-decode-chip"><strong>Shell Type:</strong> ${decoded.shellType}</span>`);
     }
     if (decoded.finish) {
         let fObj = finishes.find(f => f.code === decoded.finish);
-        chipsHtml.push(`<span class="pn-decode-chip"><strong>Finish:</strong> ${decoded.finish} (${fObj ? fObj.name : ''})</span>`);
+        chipsHtml.push(`<span class="pn-decode-chip"><strong>Finish:</strong> ${decoded.finish}${fObj ? ` (${fObj.name})` : ''}</span>`);
     }
     if (decoded.shellSize) {
-        chipsHtml.push(`<span class="pn-decode-chip"><strong>Shell Size:</strong> ${decoded.shellSize} (${SHELL_LETTER_CODES[decoded.shellSize] || ''})</span>`);
+        let letter = SHELL_LETTER_CODES[decoded.shellSize];
+        chipsHtml.push(`<span class="pn-decode-chip"><strong>Shell Size:</strong> ${decoded.shellSize}${letter ? ` (${letter})` : ''}</span>`);
     }
     if (decoded.arrangement) {
         let lObj = masterLayouts.find(l => l.arrangement === decoded.arrangement);
@@ -922,86 +738,22 @@ function addGroup() {
 }
 
 function resolveGroupContacts(groupSpecs, gender) {
-    let totals = {};
-
-    groupSpecs.forEach(g => {
-        let typeMap = m39029DB[g.matType] || m39029DB["STD"];
-        let sizeEntry = typeMap[g.size] || (m39029DB["STD"][g.size] || m39029DB["STD"]["22D"]);
-        let list = gender === 'P' ? sizeEntry.P : sizeEntry.S;
-
-        if (g.matType.startsWith("TC_")) {
-            let channels = Math.ceil(g.qty / 2);
-            list.forEach(item => {
-                let totalQty = channels * 1;
-                if (!totals[item.pn]) {
-                    totals[item.pn] = { ...item, qty: totalQty, gender: gender };
-                } else {
-                    totals[item.pn].qty += totalQty;
-                }
-            });
-        } else {
-            list.forEach(item => {
-                let totalQty = g.qty;
-                if (!totals[item.pn]) {
-                    totals[item.pn] = { ...item, qty: totalQty, gender: gender };
-                } else {
-                    totals[item.pn].qty += totalQty;
-                }
-            });
-        }
-    });
-
-    return Object.values(totals);
+    if (typeof ConfiguratorEngine !== 'undefined') {
+        return ConfiguratorEngine.resolveGroupContacts(groupSpecs, gender, m39029DB);
+    }
+    return [];
 }
 
 function getToolingStatus(contacts) {
-    let results = [];
-    let missingTools = [];
-
-    contacts.forEach(c => {
-        let tool = TOOLING_MATRIX[c.size] ? TOOLING_MATRIX[c.size][c.gender] : null;
-        if (!tool) return;
-
-        let frameAvailable = SHOP_TOOLING.frames.includes(tool.frame);
-        let posAvailable = SHOP_TOOLING.positioners.includes(tool.positioner);
-        let isAvailable = frameAvailable && posAvailable;
-
-        let status = {
-            contactSize: c.size,
-            gender: c.gender === 'P' ? 'Pin' : 'Socket',
-            frame: tool.frame,
-            positioner: tool.positioner,
-            setting: tool.setting,
-            available: isAvailable
-        };
-
-        results.push(status);
-        if (!isAvailable) {
-            missingTools.push(status);
-        }
-    });
-
-    return { results, missingTools };
+    if (typeof ToolingEngine !== 'undefined') {
+        return ToolingEngine.getToolingStatus(contacts, SHOP_TOOLING, TOOLING_MATRIX);
+    }
+    return { results: [], missingTools: [] };
 }
 
 function getMatingConnector(primary, pnType, targetShellType) {
-    if (!targetShellType) {
-        targetShellType = primary.shellType === 'Plug' ? 'Wall Mount' : 'Plug';
-    }
-    let targetContactType = primary.contactType === 'P' ? 'S' : 'P';
-    
-    let match = database.find(d => 
-        d.shellSize === primary.shellSize &&
-        d.arrangement === primary.arrangement &&
-        d.shellType === targetShellType &&
-        d.finish === primary.finish &&
-        d.contactType === targetContactType &&
-        d.keying === primary.keying
-    );
-
-    if (match) {
-        let activePN = pnType === 'mil' ? match.milPN : match.commPN;
-        return { ...match, activePN };
+    if (typeof ConfiguratorEngine !== 'undefined') {
+        return ConfiguratorEngine.getMatingConnector(primary, pnType, targetShellType, database);
     }
     return null;
 }
@@ -1052,7 +804,12 @@ function calculate() {
     }
 
     let matches = database.filter(entry => {
-        if (pnType === 'mil' && entry.shellType === 'Box Mount') return false;
+        if (pnType === 'as') {
+            if (entry.seriesId !== 'deutsch_autosport') return false;
+        } else {
+            if (entry.seriesId === 'deutsch_autosport') return false;
+            if (pnType === 'mil' && entry.shellType === 'Box Mount') return false;
+        }
         if (filterShellType !== "ALL" && entry.shellType !== filterShellType) return false;
         if (filterFinish !== "ALL" && entry.finish !== filterFinish) return false;
         if (filterShellSize !== "ALL" && entry.shellSize !== filterShellSize) return false;
@@ -1076,12 +833,16 @@ function calculate() {
 
     if (matches.length > 0) {
         currentCalculatedSolutions = matches.map(match => {
-            let activePN = pnType === 'mil' ? match.milPN : match.commPN;
-            let defaultMatingShell = match.shellType === 'Plug' ? 'Wall Mount' : 'Plug';
+            let activePN = pnType === 'mil' ? match.milPN : (pnType === 'comm' ? match.commPN : (match.asPN || match.milPN));
+            let isAutoSport = pnType === 'as' || match.seriesId === 'deutsch_autosport';
+            let defaultMatingShell = match.shellType === 'Plug' ? (isAutoSport ? '2-Hole Flange Receptacle' : 'Wall Mount') : 'Plug';
             let mating = getMatingConnector(match, pnType, defaultMatingShell);
 
             let priContacts = resolveGroupContacts(groupSpecs, match.contactType);
             let matContacts = mating ? resolveGroupContacts(groupSpecs, mating.contactType) : [];
+
+            let defaultBackshell = isAutoSport ? 'BOOT_STRAIGHT' : (match.shellType === 'Box Mount' ? 'NONE' : 'M85049/38');
+            let defaultMatBackshell = mating ? (isAutoSport ? 'BOOT_STRAIGHT' : (mating.shellType === 'Box Mount' ? 'NONE' : 'M85049/38')) : 'NONE';
 
             return { 
                 primary: { 
@@ -1089,14 +850,16 @@ function calculate() {
                     activePN, 
                     summary: summaryText, 
                     contacts: priContacts,
-                    selectedBackshell: match.shellType === 'Box Mount' ? 'NONE' : 'M85049/38',
-                    includeDustCap: false
+                    selectedBackshell: defaultBackshell,
+                    includeDustCap: false,
+                    includeNutPlate: true
                 }, 
                 mating: mating ? { 
                     ...mating, 
                     contacts: matContacts,
-                    selectedBackshell: mating.shellType === 'Box Mount' ? 'NONE' : 'M85049/38',
-                    includeDustCap: false
+                    selectedBackshell: defaultMatBackshell,
+                    includeDustCap: false,
+                    includeNutPlate: true
                 } : null,
                 groupSpecs: groupSpecs,
                 pnType: pnType
@@ -1137,15 +900,20 @@ function renderSolutionPairHTML(pair, index) {
     const priDustCaps = getDustCapOptions(pri.shellSize, pri.finish, pri.letterCode);
     const priCap = pri.shellType === 'Plug' ? priDustCaps.plugCap : priDustCaps.receptacleCap;
 
+    const isAutoSport = pnType === 'as' || ['06','07','08','10','12'].includes(pri.shellSize);
+
+    const priIsFlange = pri.shellType === '2-Hole Flange Receptacle' || pri.shellType === '2-Hole Flange PCB Receptacle' || pri.shellType === 'Wall Mount';
     const priIsWall = pri.shellType === 'Wall Mount';
     const priIsBox = pri.shellType === 'Box Mount';
 
-    let priFlangeHtml = priIsWall 
-        ? `${pri.flangeAcc} (Est. $${pri.unitPriceFlange.toFixed(2)})`
-        : `<span class="na-text">N/A (Not Required for Shell Type)</span>`;
-    let priFastenerHtml = (priIsWall || priIsBox)
-        ? `4x <a href="https://www.mcmaster.com/91737A313/" target="_blank">91737A313</a> - Fillister Head 1" (Sold in Box of 100 @ $10.04 - covers up to 25 connectors)`
-        : `<span class="na-text">N/A (Not Required for Shell Type)</span>`;
+    const priNutPlate = (isAutoSport && priIsFlange) ? getNutPlate(pri.shellSize) : null;
+
+    let priFlangeHtml = isAutoSport 
+        ? (priIsFlange ? (priNutPlate ? `<strong>${priNutPlate.pn}</strong> Nut Plate (${priNutPlate.thread} Thread) (Est. $${priNutPlate.price.toFixed(2)})` : `<span class="na-text">Integral 2-Hole Flange on Shell</span>`) : `<span class="na-text">N/A (Not Required for Shell Type)</span>`)
+        : (priIsWall ? `${pri.flangeAcc} (Est. $${pri.unitPriceFlange.toFixed(2)})` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`);
+    let priFastenerHtml = isAutoSport
+        ? (priIsFlange ? (priNutPlate ? `2x ${priNutPlate.thread} Stainless Socket Head Screws (@ $4.50/pair)` : `2x M3 / 4-40 Stainless Socket Head Screws (@ $4.50/pair)`) : `<span class="na-text">N/A (Not Required for Shell Type)</span>`)
+        : ((priIsWall || priIsBox) ? `4x <a href="https://www.mcmaster.com/91737A313/" target="_blank">91737A313</a> - Fillister Head 1" (Sold in Box of 100 @ $10.04 - covers up to 25 connectors)` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`);
 
     let priContactListHtml = pri.contacts.map(c => 
         `<li><strong>${c.qty}x ${c.pn}</strong> - ${c.desc} (Est. $${c.price.toFixed(2)}/ea) ${c.isStd ? '<span class="na-text">(Standard Contact)</span>' : '<span style="color:#d97706; font-weight:bold;">(Specialty TC/Coax Contact)</span>'}</li>`
@@ -1166,15 +934,18 @@ function renderSolutionPairHTML(pair, index) {
     let matDustCaps = mat ? getDustCapOptions(mat.shellSize, mat.finish, mat.letterCode) : null;
     let matCap = (mat && matDustCaps) ? (mat.shellType === 'Plug' ? matDustCaps.plugCap : matDustCaps.receptacleCap) : { pn: "N/A", price: 0 };
 
+    const matIsFlange = mat ? (mat.shellType === '2-Hole Flange Receptacle' || mat.shellType === '2-Hole Flange PCB Receptacle' || mat.shellType === 'Wall Mount') : false;
     const matIsWall = mat ? mat.shellType === 'Wall Mount' : false;
     const matIsBox = mat ? mat.shellType === 'Box Mount' : false;
 
-    let matFlangeHtml = matIsWall 
-        ? `${mat.flangeAcc} (Est. $${mat.unitPriceFlange.toFixed(2)})`
-        : `<span class="na-text">N/A (Not Required for Shell Type)</span>`;
-    let matFastenerHtml = (matIsWall || matIsBox)
-        ? `4x <a href="https://www.mcmaster.com/91737A313/" target="_blank">91737A313</a> - Fillister Head 1" (Sold in Box of 100 @ $10.04 - covers up to 25 connectors)`
-        : `<span class="na-text">N/A (Not Required for Shell Type)</span>`;
+    const matNutPlate = (isAutoSport && matIsFlange && mat) ? getNutPlate(mat.shellSize) : null;
+
+    let matFlangeHtml = isAutoSport 
+        ? (matIsFlange ? (matNutPlate ? `<strong>${matNutPlate.pn}</strong> Nut Plate (${matNutPlate.thread} Thread) (Est. $${matNutPlate.price.toFixed(2)})` : `<span class="na-text">Integral 2-Hole Flange on Shell</span>`) : `<span class="na-text">N/A (Not Required for Shell Type)</span>`)
+        : (matIsWall ? `${mat.flangeAcc} (Est. $${mat.unitPriceFlange.toFixed(2)})` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`);
+    let matFastenerHtml = isAutoSport
+        ? (matIsFlange ? (matNutPlate ? `2x ${matNutPlate.thread} Stainless Socket Head Screws (@ $4.50/pair)` : `2x M3 / 4-40 Stainless Socket Head Screws (@ $4.50/pair)`) : `<span class="na-text">N/A (Not Required for Shell Type)</span>`)
+        : ((matIsWall || matIsBox) ? `4x <a href="https://www.mcmaster.com/91737A313/" target="_blank">91737A313</a> - Fillister Head 1" (Sold in Box of 100 @ $10.04 - covers up to 25 connectors)` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`);
 
     let matContactListHtml = mat ? mat.contacts.map(c => 
         `<li><strong>${c.qty}x ${c.pn}</strong> - ${c.desc} (Est. $${c.price.toFixed(2)}/ea) ${c.isStd ? '<span class="na-text">(Standard Contact)</span>' : '<span style="color:#d97706; font-weight:bold;">(Specialty TC/Coax Contact)</span>'}</li>`
@@ -1191,9 +962,21 @@ function renderSolutionPairHTML(pair, index) {
 
     // Mating shell style selector HTML
     let matingShellSelectorHtml = '';
+    const matContactTypeStr = mat ? (mat.contactType === 'P' ? 'Pins' : 'Sockets') : 'N/A';
     if (pri.shellType === 'Plug') {
-        const isMil = pnType === 'mil';
-        if (isMil) {
+        if (pnType === 'as') {
+            matingShellSelectorHtml = `
+                <div style="margin-bottom: 8px;">
+                    <label for="matingShellSelect_${index}"><strong>Mating Shell Style:</strong></label>
+                    <select id="matingShellSelect_${index}" class="mating-shell-select" onchange="changeMatingShellType(${index}, this.value)">
+                        <option value="2-Hole Flange Receptacle" ${mat && mat.shellType === '2-Hole Flange Receptacle' ? 'selected' : ''}>2-Hole Flange Receptacle (ASL0 / ASM0 / AS0)</option>
+                        <option value="Jam Nut Receptacle" ${mat && mat.shellType === 'Jam Nut Receptacle' ? 'selected' : ''}>Jam Nut Receptacle (ASL7 / ASM7 / AS7)</option>
+                        <option value="In-Line Receptacle" ${mat && mat.shellType === 'In-Line Receptacle' ? 'selected' : ''}>In-Line Receptacle (ASL1 / ASM1 / AS1)</option>
+                    </select>
+                </div>
+                <p><strong>Contact Type:</strong> ${matContactTypeStr} | <strong>Keying:</strong> ${mat ? mat.keying : 'N/A'}</p>
+            `;
+        } else if (pnType === 'mil') {
             matingShellSelectorHtml = `
                 <div style="margin-bottom: 8px;">
                     <label for="matingShellSelect_${index}"><strong>Mating Shell Style:</strong></label>
@@ -1202,6 +985,7 @@ function renderSolutionPairHTML(pair, index) {
                         <option value="Jam Nut" ${mat && mat.shellType === 'Jam Nut' ? 'selected' : ''}>Jam Nut Receptacle (D38999/24)</option>
                     </select>
                 </div>
+                <p><strong>Contact Type:</strong> ${matContactTypeStr} | <strong>Keying:</strong> ${mat ? mat.keying : 'N/A'}</p>
             `;
         } else {
             matingShellSelectorHtml = `
@@ -1213,10 +997,11 @@ function renderSolutionPairHTML(pair, index) {
                         <option value="Jam Nut" ${mat && mat.shellType === 'Jam Nut' ? 'selected' : ''}>Jam Nut Receptacle (TVS07 / CTV07)</option>
                     </select>
                 </div>
+                <p><strong>Contact Type:</strong> ${matContactTypeStr} | <strong>Keying:</strong> ${mat ? mat.keying : 'N/A'}</p>
             `;
         }
     } else {
-        matingShellSelectorHtml = `<p><strong>Shell Type:</strong> ${mat ? mat.shellType : 'N/A'} (Mates with Receptacle) | <strong>Keying:</strong> ${mat ? mat.keying : 'N/A'}</p>`;
+        matingShellSelectorHtml = `<p><strong>Shell Type:</strong> ${mat ? mat.shellType : 'N/A'} (Mates with Receptacle) | <strong>Contact Type:</strong> ${matContactTypeStr} | <strong>Keying:</strong> ${mat ? mat.keying : 'N/A'}</p>`;
     }
 
     return `
@@ -1224,18 +1009,26 @@ function renderSolutionPairHTML(pair, index) {
         <div class="solution-grid">
             <div class="solution-card primary-card">
                 <h4 style="margin-top:0; color:var(--accent);">Primary Connector: ${pri.activePN}</h4>
-                <p><strong>Shell Type:</strong> ${pri.shellType} | <strong>Keying:</strong> ${pri.keying}</p>
+                <p><strong>Shell Type:</strong> ${pri.shellType} | <strong>Contact Type:</strong> ${pri.contactType === 'P' ? 'Pins' : 'Sockets'} | <strong>Keying:</strong> ${pri.keying}</p>
                 <p><strong>Arrangement:</strong> ${pri.shellLabel}</p>
                 
                 <div class="diagram-section">
                     <div class="diagram-box">
                         <label>Insert Diagram:</label>
-                        <a href="javascript:void(0)" onclick="openImageModal('${pri.diagramImg}', 'Insert Diagram - ${pri.shellLabel}')"><img class="preview-img" src="${pri.diagramImg}" alt="Insert Diagram" onerror="this.parentElement.style.display='none'"></a>
+                        ${isAutoSport ? `
+                            <div class="diagram-placeholder">Insert arrangements coming soon!</div>
+                        ` : `
+                            <a href="javascript:void(0)" onclick="openImageModal('${pri.diagramImg}', 'Insert Diagram - ${pri.shellLabel}')"><img class="preview-img" src="${pri.diagramImg}" alt="Insert Diagram" onerror="this.parentElement.style.display='none'"></a>
+                        `}
                     </div>
                     ${pri.shellType !== 'Plug' ? `
                     <div class="diagram-box">
                         <label>Panel Cutout:</label>
-                        <a href="javascript:void(0)" onclick="openImageModal('${pri.cutoutImg}', 'Panel Cutout - Shell ${pri.shellSize}')"><img class="preview-img" src="${pri.cutoutImg}" alt="Panel Cutout" onerror="this.parentElement.style.display='none'"></a>
+                        ${isAutoSport ? `
+                            <div class="diagram-placeholder">Panel cutout coming soon!</div>
+                        ` : `
+                            <a href="javascript:void(0)" onclick="openImageModal('${pri.cutoutImg}', 'Panel Cutout - Shell ${pri.shellSize}')"><img class="preview-img" src="${pri.cutoutImg}" alt="Panel Cutout" onerror="this.parentElement.style.display='none'"></a>
+                        `}
                     </div>` : ''}
                 </div>
 
@@ -1243,16 +1036,21 @@ function renderSolutionPairHTML(pair, index) {
 
                 <div class="accessory-section">
                     <div class="accessory-row">
-                        <label><strong>Backshell Style:</strong></label>
-                        ${priIsBox ? `<span class="box-mount-notice">Box Mount (No rear accessory threads)</span>` : `
+                        <label><strong>${isAutoSport ? 'Heat Shrink Boot:' : 'Backshell Style:'}</strong></label>
+                        ${priIsBox ? `<span class="box-mount-notice">Box Mount (No rear accessory threads)</span>` : (isAutoSport ? `
+                        <select onchange="updateCardBackshell(${index}, true, this.value)">
+                            <option value="BOOT_STRAIGHT" ${pri.selectedBackshell === 'BOOT_STRAIGHT' ? 'selected' : ''}>Straight Boot (${priBackshellOpts['BOOT_STRAIGHT'] ? priBackshellOpts['BOOT_STRAIGHT'].pn : 'Straight Boot'}) - $${priBackshellOpts['BOOT_STRAIGHT'] ? priBackshellOpts['BOOT_STRAIGHT'].price.toFixed(2) : '12.50'}</option>
+                            <option value="BOOT_RA" ${pri.selectedBackshell === 'BOOT_RA' ? 'selected' : ''}>90° Right-Angle Boot (${priBackshellOpts['BOOT_RA'] ? priBackshellOpts['BOOT_RA'].pn : '90° Boot'}) - $${priBackshellOpts['BOOT_RA'] ? priBackshellOpts['BOOT_RA'].price.toFixed(2) : '14.50'}</option>
+                            <option value="NONE" ${pri.selectedBackshell === 'NONE' ? 'selected' : ''}>None (No Boot) - $0.00</option>
+                        </select>` : `
                         <select onchange="updateCardBackshell(${index}, true, this.value)">
                             <option value="M85049/38" ${pri.selectedBackshell === 'M85049/38' ? 'selected' : ''}>Strain Relief (M85049/38) - $${priBackshellOpts['M85049/38'].price.toFixed(2)}</option>
                             <option value="M85049/88" ${pri.selectedBackshell === 'M85049/88' ? 'selected' : ''}>EMI Banding (M85049/88) - $${priBackshellOpts['M85049/88'].price.toFixed(2)}</option>
                             <option value="M85049/49" ${pri.selectedBackshell === 'M85049/49' ? 'selected' : ''}>Shrink Boot (M85049/49) - $${priBackshellOpts['M85049/49'].price.toFixed(2)}</option>
                             <option value="NONE" ${pri.selectedBackshell === 'NONE' ? 'selected' : ''}>None (No Backshell) - $0.00</option>
-                        </select>`}
+                        </select>`)}
                     </div>
-                    ${(!priIsBox && pri.selectedBackshell !== 'NONE') ? `<p style="margin: 4px 0 8px 0; font-size: 12px;"><strong>Active Backshell:</strong> ${priSelectedBs.pn} (Est. $${priSelectedBs.price.toFixed(2)})</p>` : ''}
+                    ${(!priIsBox && pri.selectedBackshell !== 'NONE') ? `<p style="margin: 4px 0 8px 0; font-size: 12px;"><strong>Active ${isAutoSport ? 'Boot' : 'Backshell'}:</strong> ${priSelectedBs.pn} (Est. $${priSelectedBs.price.toFixed(2)})</p>` : ''}
                     
                     <div class="checkbox-row" style="margin-top: 6px;">
                         <input type="checkbox" id="priCap_${index}" ${pri.includeDustCap ? 'checked' : ''} onchange="updateCardDustCap(${index}, true, this.checked)">
@@ -1260,6 +1058,13 @@ function renderSolutionPairHTML(pair, index) {
                             Include Protective Dust Cap (${priCap.pn} - Est. $${priCap.price.toFixed(2)})
                         </label>
                     </div>
+                    ${(isAutoSport && priIsFlange && priNutPlate) ? `
+                    <div class="checkbox-row" style="margin-top: 6px;">
+                        <input type="checkbox" id="priNutPlate_${index}" ${pri.includeNutPlate !== false ? 'checked' : ''} onchange="updateCardNutPlate(${index}, true, this.checked)">
+                        <label for="priNutPlate_${index}" style="font-weight: normal; font-size: 12px; margin-bottom: 0;">
+                            Include Bulkhead Mounting Nut Plate (${priNutPlate.pn} - ${priNutPlate.thread} - Est. $${priNutPlate.price.toFixed(2)})
+                        </label>
+                    </div>` : ''}
                 </div>
 
                 <p><strong>Flange Accessory:</strong> ${priFlangeHtml}</p>
@@ -1291,12 +1096,20 @@ function renderSolutionPairHTML(pair, index) {
                 <div class="diagram-section">
                     <div class="diagram-box">
                         <label>Insert Diagram:</label>
-                        <a href="javascript:void(0)" onclick="openImageModal('${mat ? mat.diagramImg : ''}', 'Insert Diagram - ${mat ? mat.shellLabel : ''}')"><img class="preview-img" src="${mat ? mat.diagramImg : ''}" alt="Mating Insert Diagram" onerror="this.parentElement.style.display='none'"></a>
+                        ${isAutoSport ? `
+                            <div class="diagram-placeholder">Insert arrangements coming soon!</div>
+                        ` : `
+                            <a href="javascript:void(0)" onclick="openImageModal('${mat ? mat.diagramImg : ''}', 'Insert Diagram - ${mat ? mat.shellLabel : ''}')"><img class="preview-img" src="${mat ? mat.diagramImg : ''}" alt="Mating Insert Diagram" onerror="this.parentElement.style.display='none'"></a>
+                        `}
                     </div>
                     ${mat && mat.shellType !== 'Plug' ? `
                     <div class="diagram-box">
                         <label>Panel Cutout:</label>
-                        <a href="javascript:void(0)" onclick="openImageModal('${mat ? mat.cutoutImg : ''}', 'Panel Cutout - Shell ${mat ? mat.shellSize : ''}')"><img class="preview-img" src="${mat ? mat.cutoutImg : ''}" alt="Panel Cutout" onerror="this.parentElement.style.display='none'"></a>
+                        ${isAutoSport ? `
+                            <div class="diagram-placeholder">Panel cutout coming soon!</div>
+                        ` : `
+                            <a href="javascript:void(0)" onclick="openImageModal('${mat ? mat.cutoutImg : ''}', 'Panel Cutout - Shell ${mat ? mat.shellSize : ''}')"><img class="preview-img" src="${mat ? mat.cutoutImg : ''}" alt="Panel Cutout" onerror="this.parentElement.style.display='none'"></a>
+                        `}
                     </div>` : ''}
                 </div>
 
@@ -1305,16 +1118,21 @@ function renderSolutionPairHTML(pair, index) {
                 ${mat ? `
                 <div class="accessory-section">
                     <div class="accessory-row">
-                        <label><strong>Backshell Style:</strong></label>
-                        ${matIsBox ? `<span class="box-mount-notice">Box Mount (No rear accessory threads)</span>` : `
+                        <label><strong>${isAutoSport ? 'Heat Shrink Boot:' : 'Backshell Style:'}</strong></label>
+                        ${matIsBox ? `<span class="box-mount-notice">Box Mount (No rear accessory threads)</span>` : (isAutoSport ? `
+                        <select onchange="updateCardBackshell(${index}, false, this.value)">
+                            <option value="BOOT_STRAIGHT" ${mat.selectedBackshell === 'BOOT_STRAIGHT' ? 'selected' : ''}>Straight Boot (${matBackshellOpts['BOOT_STRAIGHT'] ? matBackshellOpts['BOOT_STRAIGHT'].pn : 'Straight Boot'}) - $${matBackshellOpts['BOOT_STRAIGHT'] ? matBackshellOpts['BOOT_STRAIGHT'].price.toFixed(2) : '12.50'}</option>
+                            <option value="BOOT_RA" ${mat.selectedBackshell === 'BOOT_RA' ? 'selected' : ''}>90° Right-Angle Boot (${matBackshellOpts['BOOT_RA'] ? matBackshellOpts['BOOT_RA'].pn : '90° Boot'}) - $${matBackshellOpts['BOOT_RA'] ? matBackshellOpts['BOOT_RA'].price.toFixed(2) : '14.50'}</option>
+                            <option value="NONE" ${mat.selectedBackshell === 'NONE' ? 'selected' : ''}>None (No Boot) - $0.00</option>
+                        </select>` : `
                         <select onchange="updateCardBackshell(${index}, false, this.value)">
                             <option value="M85049/38" ${mat.selectedBackshell === 'M85049/38' ? 'selected' : ''}>Strain Relief (M85049/38) - $${matBackshellOpts['M85049/38'].price.toFixed(2)}</option>
                             <option value="M85049/88" ${mat.selectedBackshell === 'M85049/88' ? 'selected' : ''}>EMI Banding (M85049/88) - $${matBackshellOpts['M85049/88'].price.toFixed(2)}</option>
                             <option value="M85049/49" ${mat.selectedBackshell === 'M85049/49' ? 'selected' : ''}>Shrink Boot (M85049/49) - $${matBackshellOpts['M85049/49'].price.toFixed(2)}</option>
                             <option value="NONE" ${mat.selectedBackshell === 'NONE' ? 'selected' : ''}>None (No Backshell) - $0.00</option>
-                        </select>`}
+                        </select>`)}
                     </div>
-                    ${(!matIsBox && mat.selectedBackshell !== 'NONE') ? `<p style="margin: 4px 0 8px 0; font-size: 12px;"><strong>Active Backshell:</strong> ${matSelectedBs.pn} (Est. $${matSelectedBs.price.toFixed(2)})</p>` : ''}
+                    ${(!matIsBox && mat.selectedBackshell !== 'NONE') ? `<p style="margin: 4px 0 8px 0; font-size: 12px;"><strong>Active ${isAutoSport ? 'Boot' : 'Backshell'}:</strong> ${matSelectedBs.pn} (Est. $${matSelectedBs.price.toFixed(2)})</p>` : ''}
                     
                     <div class="checkbox-row" style="margin-top: 6px;">
                         <input type="checkbox" id="matCap_${index}" ${mat.includeDustCap ? 'checked' : ''} onchange="updateCardDustCap(${index}, false, this.checked)">
@@ -1322,6 +1140,13 @@ function renderSolutionPairHTML(pair, index) {
                             Include Protective Dust Cap (${matCap.pn} - Est. $${matCap.price.toFixed(2)})
                         </label>
                     </div>
+                    ${(isAutoSport && matIsFlange && matNutPlate) ? `
+                    <div class="checkbox-row" style="margin-top: 6px;">
+                        <input type="checkbox" id="matNutPlate_${index}" ${mat.includeNutPlate !== false ? 'checked' : ''} onchange="updateCardNutPlate(${index}, false, this.checked)">
+                        <label for="matNutPlate_${index}" style="font-weight: normal; font-size: 12px; margin-bottom: 0;">
+                            Include Bulkhead Mounting Nut Plate (${matNutPlate.pn} - ${matNutPlate.thread} - Est. $${matNutPlate.price.toFixed(2)})
+                        </label>
+                    </div>` : ''}
                 </div>` : ''}
 
                 <p><strong>Flange Accessory:</strong> ${matFlangeHtml}</p>
@@ -1409,6 +1234,17 @@ function updateCardDustCap(solutionIndex, isPrimary, checked) {
     }
 }
 
+function updateCardNutPlate(solutionIndex, isPrimary, checked) {
+    const pair = currentCalculatedSolutions[solutionIndex];
+    if (!pair) return;
+
+    if (isPrimary) {
+        pair.primary.includeNutPlate = checked;
+    } else if (pair.mating) {
+        pair.mating.includeNutPlate = checked;
+    }
+}
+
 function addSolutionPairToActiveList(solutionIndex) {
     const pair = currentCalculatedSolutions[solutionIndex];
     if (!pair) return;
@@ -1420,11 +1256,14 @@ function addSolutionPairToActiveList(solutionIndex) {
 
     let itemsToAdd = [];
 
+    const isAutoSport = pair.pnType === 'as' || pri.seriesId === 'deutsch_autosport';
+    const seriesTitle = isAutoSport ? 'Deutsch AutoSport' : (pair.pnType === 'comm' ? 'Commercial Tri-Start' : '38999 Series III');
+
     // Primary connector
     itemsToAdd.push({ 
         pn: pri.activePN, 
         qty: 1, 
-        desc: `38999 Series III Primary ${pri.shellLabel} ${pri.shellType}`, 
+        desc: `${seriesTitle} Primary ${pri.shellLabel} ${pri.shellType}`, 
         price: pri.unitPriceConnector 
     });
 
@@ -1445,8 +1284,17 @@ function addSolutionPairToActiveList(solutionIndex) {
     }
 
     // Primary Flange Accessory
-    if (pri.shellType === 'Wall Mount') {
+    if (!isAutoSport && pri.shellType === 'Wall Mount') {
         itemsToAdd.push({ pn: pri.flangeAcc, qty: 1, desc: 'M85049/95 Flange (Primary)', price: pri.unitPriceFlange });
+    }
+
+    // Primary Nut Plate (AutoSport 2-Hole Flange)
+    const priIsFlange = pri.shellType === '2-Hole Flange Receptacle' || pri.shellType === '2-Hole Flange PCB Receptacle';
+    if (isAutoSport && priIsFlange && pri.includeNutPlate !== false) {
+        const np = getNutPlate(pri.shellSize);
+        if (np) {
+            itemsToAdd.push({ pn: np.pn, qty: 1, desc: `${seriesTitle} Nut Plate (${np.thread}) (Primary)`, price: np.price });
+        }
     }
 
     // Primary Contacts
@@ -1462,7 +1310,7 @@ function addSolutionPairToActiveList(solutionIndex) {
         itemsToAdd.push({ 
             pn: mat.activePN, 
             qty: 1, 
-            desc: `38999 Series III Mating ${mat.shellLabel} ${mat.shellType}`, 
+            desc: `${seriesTitle} Mating ${mat.shellLabel} ${mat.shellType}`, 
             price: mat.unitPriceConnector 
         });
 
@@ -1483,8 +1331,17 @@ function addSolutionPairToActiveList(solutionIndex) {
         }
 
         // Mating Flange Accessory
-        if (mat.shellType === 'Wall Mount') {
+        if (!isAutoSport && mat.shellType === 'Wall Mount') {
             itemsToAdd.push({ pn: mat.flangeAcc, qty: 1, desc: 'M85049/95 Flange (Mating)', price: mat.unitPriceFlange });
+        }
+
+        // Mating Nut Plate (AutoSport 2-Hole Flange)
+        const matIsFlange = mat.shellType === '2-Hole Flange Receptacle' || mat.shellType === '2-Hole Flange PCB Receptacle';
+        if (isAutoSport && matIsFlange && mat.includeNutPlate !== false) {
+            const np = getNutPlate(mat.shellSize);
+            if (np) {
+                itemsToAdd.push({ pn: np.pn, qty: 1, desc: `${seriesTitle} Nut Plate (${np.thread}) (Mating)`, price: np.price });
+            }
         }
 
         // Mating Contacts

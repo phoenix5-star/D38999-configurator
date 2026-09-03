@@ -1,0 +1,85 @@
+{
+  "backshells": [
+    {
+      "key": "M85049/38",
+      "name": "M85049/38 Strain Relief Clamp",
+      "pnTemplate": "M85049/38-{numShell}{finish}",
+      "descTemplate": "M85049/38 Strain Relief Clamp (Size {shellSize})",
+      "basePrice": 14.00,
+      "sizeStep": 0.85
+    },
+    {
+      "key": "M85049/88",
+      "name": "M85049/88 EMI/RFI Banding Backshell w/ Band",
+      "pnTemplate": "M85049/88-{numShell}{finish}02",
+      "descTemplate": "M85049/88 EMI/RFI Banding Backshell w/ Band (Size {shellSize})",
+      "basePrice": 28.00,
+      "sizeStep": 1.10
+    },
+    {
+      "key": "M85049/49",
+      "name": "M85049/49 Shrink Boot Adapter",
+      "pnTemplate": "M85049/49-2-{numShell}{finish}",
+      "descTemplate": "M85049/49 Shrink Boot Adapter (Size {shellSize})",
+      "basePrice": 18.00,
+      "sizeStep": 0.95
+    },
+    {
+      "key": "NONE",
+      "name": "No Backshell / Box Mount Pass-through",
+      "pnTemplate": "N/A",
+      "descTemplate": "No Backshell / Box Mount Pass-through",
+      "basePrice": 0.00,
+      "sizeStep": 0.00
+    }
+  ],
+  "dustCaps": {
+    "plug": {
+      "pnTemplate": "D38999/32{finish}{letterCode}N",
+      "descTemplate": "D38999/32 Protective Dust Cap for Plug (Size {letterCode})",
+      "basePrice": 15.00,
+      "sizeStep": 0.50
+    },
+    "receptacle": {
+      "pnTemplate": "D38999/33{finish}{letterCode}N",
+      "descTemplate": "D38999/33 Protective Dust Cap for Receptacle (Size {letterCode})",
+      "basePrice": 15.00,
+      "sizeStep": 0.50
+    }
+  },
+  "flanges": {
+    "accTemplate": "M85049/95-{numShell}A (3/4 Perimeter Flange)",
+    "basePrice": 9.00,
+    "sizeStep": 0.50
+  },
+  "fasteners": {
+    "desc": "Flange Fasteners, Fillister Head 1\" (McMaster: 91737A313, Box of 100)",
+    "url": "https://www.mcmaster.com/91737A313/",
+    "price": 10.04,
+    "qty": 4
+  },
+  "shrinkBoots": {
+    "straight": {
+      "06": { "pn": "204W221-25-0", "desc": "Raychem Straight Heat Shrink Boot (ASL Size 06)", "price": 12.50 },
+      "07": { "pn": "202K121-25-0", "desc": "Raychem Straight Heat Shrink Boot (Size 07 / 08)", "price": 12.50 },
+      "08": { "pn": "202K121-25-0", "desc": "Raychem Straight Heat Shrink Boot (Size 07 / 08)", "price": 12.50 },
+      "10": { "pn": "202K132-25-0", "desc": "Raychem Straight Heat Shrink Boot (Size 10 / 12)", "price": 14.50 },
+      "12": { "pn": "202K132-25-0", "desc": "Raychem Straight Heat Shrink Boot (Size 10 / 12)", "price": 14.50 }
+    },
+    "rightAngle": {
+      "06": { "pn": "224W221-25-0", "desc": "Raychem 90° Right-Angle Heat Shrink Boot (ASL Size 06)", "price": 14.50 },
+      "07": { "pn": "222K121-25-0", "desc": "Raychem 90° Right-Angle Heat Shrink Boot (Size 07 / 08)", "price": 14.50 },
+      "08": { "pn": "222K121-25-0", "desc": "Raychem 90° Right-Angle Heat Shrink Boot (Size 07 / 08)", "price": 14.50 },
+      "10": { "pn": "222K132-25-0", "desc": "Raychem 90° Right-Angle Heat Shrink Boot (Size 10 / 12)", "price": 16.50 },
+      "12": { "pn": "222K132-25-0", "desc": "Raychem 90° Right-Angle Heat Shrink Boot (Size 10 / 12)", "price": 16.50 }
+    }
+  },
+  "nutPlates": {
+    "06": { "pn": "ATM396-6", "thread": "M2.5", "desc": "Deutsch AutoSport Nut Plate (Shell 06 - M2.5)", "price": 14.50 },
+    "07": { "pn": "ATM396-7", "thread": "M3", "desc": "Deutsch AutoSport Nut Plate (Shell 07 - M3)", "price": 14.50 },
+    "08": { "pn": "ATM396-8", "thread": "M3", "desc": "Deutsch AutoSport Nut Plate (Shell 08 - M3)", "price": 14.50 },
+    "10": { "pn": "ATM396-10", "thread": "M3", "desc": "Deutsch AutoSport Nut Plate (Shell 10 - M3)", "price": 15.50 },
+    "12": { "pn": "ATM396-12", "thread": "M3", "desc": "Deutsch AutoSport Nut Plate (Shell 12 - M3)", "price": 16.50 }
+  }
+}
+

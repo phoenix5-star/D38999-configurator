@@ -1,0 +1,89 @@
+[
+  {
+    "seriesId": "d38999",
+    "type": "Plug",
+    "name": "Straight Plug",
+    "milCode": "26",
+    "commPrefix": "TVS06",
+    "compPrefix": "CTV06",
+    "description": "Cable-connecting straight plug with anti-decoupling ratchet coupling ring."
+  },
+  {
+    "seriesId": "d38999",
+    "type": "Wall Mount",
+    "name": "Wall Mount Receptacle",
+    "milCode": "20",
+    "commPrefix": "TVPS00",
+    "compPrefix": "CTVP00",
+    "description": "Square flange 4-hole receptacle with rear accessory threads."
+  },
+  {
+    "seriesId": "d38999",
+    "type": "Box Mount",
+    "name": "Box Mount Receptacle",
+    "milCode": "22",
+    "commPrefix": "TVPS02",
+    "compPrefix": "CTVP02",
+    "description": "Square flange 4-hole receptacle without rear accessory threads (low profile)."
+  },
+  {
+    "seriesId": "d38999",
+    "type": "Jam Nut",
+    "name": "Jam Nut Receptacle",
+    "milCode": "24",
+    "commPrefix": "TVS07",
+    "compPrefix": "CTV07",
+    "description": "Single-hole mounting receptacle with O-ring seal and rear hex jam nut."
+  },
+  {
+    "seriesId": "deutsch_autosport",
+    "type": "Plug",
+    "name": "Free Plug",
+    "asCode": "6",
+    "aslPrefix": "ASL6",
+    "asmPrefix": "ASM6",
+    "asPrefix": "AS6",
+    "description": "Free plug with bayonet coupling ring."
+  },
+  {
+    "seriesId": "deutsch_autosport",
+    "type": "2-Hole Flange Receptacle",
+    "name": "2-Hole Flange Receptacle",
+    "asCode": "0",
+    "aslPrefix": "ASL0",
+    "asmPrefix": "ASM0",
+    "asPrefix": "AS0",
+    "description": "Front/rear panel 2-hole mounting flange receptacle."
+  },
+  {
+    "seriesId": "deutsch_autosport",
+    "type": "In-Line Receptacle",
+    "name": "In-Line Receptacle",
+    "asCode": "1",
+    "aslPrefix": "ASL1",
+    "asmPrefix": "ASM1",
+    "asPrefix": "AS1",
+    "description": "Free-hanging in-line receptacle for cable-to-cable connections."
+  },
+  {
+    "seriesId": "deutsch_autosport",
+    "type": "2-Hole Flange PCB Receptacle",
+    "name": "2-Hole Flange PCB Receptacle",
+    "asCode": "2",
+    "aslPrefix": "ASL2",
+    "asmPrefix": "ASM2",
+    "asPrefix": "AS2",
+    "description": "Low profile 2-hole flange receptacle with PCB/solder contacts."
+  },
+  {
+    "seriesId": "deutsch_autosport",
+    "type": "Jam Nut Receptacle",
+    "name": "Jam Nut Receptacle",
+    "asCode": "7",
+    "aslPrefix": "ASL7",
+    "asmPrefix": "ASM7",
+    "asPrefix": "AS7",
+    "description": "Single-hole jam nut receptacle."
+  }
+]
+
