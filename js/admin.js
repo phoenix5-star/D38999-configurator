@@ -193,6 +193,25 @@ async function loadData() {
         if (saved) {
             try {
                 workingData = JSON.parse(saved);
+                // Ensure catalog baseline fields are preserved if workingData has missing or empty structures
+                if (!workingData.contacts || !workingData.contacts.ratings || workingData.contacts.ratings.length === 0) {
+                    workingData.contacts = JSON.parse(JSON.stringify(baselineData.contacts));
+                }
+                if (!workingData.layouts || workingData.layouts.length < 10) {
+                    workingData.layouts = JSON.parse(JSON.stringify(baselineData.layouts));
+                }
+                if (!workingData.finishes || workingData.finishes.length === 0) {
+                    workingData.finishes = JSON.parse(JSON.stringify(baselineData.finishes));
+                }
+                if (!workingData.shells || (Array.isArray(workingData.shells) && workingData.shells.length === 0)) {
+                    workingData.shells = JSON.parse(JSON.stringify(baselineData.shells));
+                }
+                if (!workingData.series || workingData.series.length === 0) {
+                    workingData.series = JSON.parse(JSON.stringify(baselineData.series));
+                }
+                if (!workingData.accessories || (Array.isArray(workingData.accessories) && workingData.accessories.length === 0)) {
+                    workingData.accessories = JSON.parse(JSON.stringify(baselineData.accessories));
+                }
             } catch (e) {
                 workingData = JSON.parse(JSON.stringify(baselineData));
             }

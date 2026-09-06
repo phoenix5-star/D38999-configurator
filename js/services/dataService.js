@@ -25,18 +25,52 @@ const DataService = (function () {
             if (saved) {
                 const parsed = JSON.parse(saved);
                 if (parsed && typeof parsed === 'object') {
+                    // Only overlay tooling inventory modifications if present
+                    if (parsed.tooling && parsed.tooling.shopInventory) {
+                        target.tooling = target.tooling || {};
+                        target.tooling.shopInventory = parsed.tooling.shopInventory;
+                    }
+                    // Overlay diagramImg and custom layouts safely without wiping baseline
                     if (Array.isArray(parsed.layouts) && parsed.layouts.length > 0) {
-                        target.layouts = parsed.layouts.map(l => {
-                            if (l.seriesId === 'deutsch_asl') return Object.assign({}, l, { seriesId: 'deutsch_autosport' });
-                            return l;
+                        parsed.layouts.forEach(adminLayout => {
+                            if (!adminLayout || !adminLayout.arrangement) return;
+                            const targetLayout = (target.layouts || []).find(l => 
+                                l.arrangement === adminLayout.arrangement && 
+                                (l.seriesId === adminLayout.seriesId || (adminLayout.seriesId === 'deutsch_asl' && l.seriesId === 'deutsch_autosport'))
+                            );
+                            if (targetLayout) {
+                                if (adminLayout.diagramImg) {
+                                    targetLayout.diagramImg = adminLayout.diagramImg;
+                                }
+                                if (adminLayout.counts && Object.keys(adminLayout.counts).length > 0) {
+                                    targetLayout.counts = adminLayout.counts;
+                                }
+                            } else {
+                                // New layout added by admin
+                                const newL = Object.assign({}, adminLayout);
+                                if (newL.seriesId === 'deutsch_asl') newL.seriesId = 'deutsch_autosport';
+                                target.layouts.push(newL);
+                            }
                         });
                     }
-                    if (parsed.tooling) target.tooling = parsed.tooling;
-                    if (parsed.contacts) target.contacts = parsed.contacts;
-                    if (parsed.finishes) target.finishes = parsed.finishes;
-                    if (parsed.shells) target.shells = parsed.shells;
-                    if (parsed.series) target.series = parsed.series;
-                    if (parsed.accessories) target.accessories = parsed.accessories;
+
+                    // Clean up corrupted or empty catalog domains from localStorage
+                    let needsResave = false;
+                    if (parsed.contacts) { delete parsed.contacts; needsResave = true; }
+                    if (parsed.finishes) { delete parsed.finishes; needsResave = true; }
+                    if (parsed.shells) { delete parsed.shells; needsResave = true; }
+                    if (parsed.series) { delete parsed.series; needsResave = true; }
+                    if (parsed.accessories) { delete parsed.accessories; needsResave = true; }
+                    if (Array.isArray(parsed.layouts) && parsed.layouts.length < 10) {
+                        // Truncated layouts array in storage: remove to avoid corrupting master dataset
+                        delete parsed.layouts;
+                        needsResave = true;
+                    }
+                    if (needsResave && typeof localStorage !== 'undefined') {
+                        try {
+                            localStorage.setItem('admin_working_data', JSON.stringify(parsed));
+                        } catch (err) {}
+                    }
                 }
             }
         } catch (e) {

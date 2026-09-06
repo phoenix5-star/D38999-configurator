@@ -5,7 +5,17 @@ const CONFIG_VERSION = "V002.0";
 const SHOP_TOOLING = (typeof DataService !== 'undefined') ? DataService.getShopInventory() : { frames: ["AFM8", "AF8"], positioners: ["K40", "K42", "K13-1", "TH163"] };
 const TOOLING_MATRIX = (typeof DataService !== 'undefined') ? DataService.getToolingMatrix() : {};
 const M81969_TOOLS = (typeof DataService !== 'undefined') ? DataService.getInsertionExtractionTools() : {};
-const contactRatings = (typeof DataService !== 'undefined') ? DataService.getContactRatings() : [];
+const contactRatings = (typeof DataService !== 'undefined' && DataService.getContactRatings().length > 0) 
+    ? DataService.getContactRatings() 
+    : [
+        { "size": "24", "maxAmps": 3.0, "label": "Size 24 (Max 3A - Micro/ASL)" },
+        { "size": "22", "maxAmps": 5.0, "label": "Size 22 (Max 5A - ASL/Standard)" },
+        { "size": "22D", "maxAmps": 5.0, "label": "Size 22D (Max 5A - D38999 High Density)" },
+        { "size": "20", "maxAmps": 7.5, "label": "Size 20 (Max 7.5A)" },
+        { "size": "16", "maxAmps": 13.0, "label": "Size 16 (Max 13A)" },
+        { "size": "12", "maxAmps": 23.0, "label": "Size 12 (Max 23A)" },
+        { "size": "8", "maxAmps": 46.0, "label": "Size 8 (Max 46A - Coax/Twinax/Power)" }
+    ];
 
 // Map numerical shell sizes to MIL-DTL-38999 Series III letter codes
 const SHELL_LETTER_CODES = {
@@ -36,10 +46,18 @@ const SHELL_LETTER_CODES = {
   }
 
 // Master Parts Data loaded via DataService
-const m39029DB = (typeof DataService !== 'undefined') ? DataService.getM39029DB() : {};
-const masterLayouts = (typeof DataService !== 'undefined') ? DataService.getLayouts() : [];
-const d38999ShellTypes = (typeof DataService !== 'undefined') ? DataService.getShells('d38999') : [];
-const finishes = (typeof DataService !== 'undefined') ? DataService.getFinishes() : [];
+const m39029DB = (typeof DataService !== 'undefined' && DataService.getM39029DB() && Object.keys(DataService.getM39029DB()).length > 0) 
+    ? DataService.getM39029DB() 
+    : ((typeof window !== 'undefined' && window.CONNECTOR_DATA_FALLBACK && window.CONNECTOR_DATA_FALLBACK.contacts) ? window.CONNECTOR_DATA_FALLBACK.contacts.m39029DB : {});
+const masterLayouts = (typeof DataService !== 'undefined' && DataService.getLayouts().length > 0) 
+    ? DataService.getLayouts() 
+    : ((typeof window !== 'undefined' && window.CONNECTOR_DATA_FALLBACK) ? window.CONNECTOR_DATA_FALLBACK.layouts : []);
+const d38999ShellTypes = (typeof DataService !== 'undefined' && DataService.getShells('d38999').length > 0) 
+    ? DataService.getShells('d38999') 
+    : ((typeof window !== 'undefined' && window.CONNECTOR_DATA_FALLBACK && window.CONNECTOR_DATA_FALLBACK.shells) ? window.CONNECTOR_DATA_FALLBACK.shells.filter(s => s.seriesId === 'd38999') : []);
+const finishes = (typeof DataService !== 'undefined' && DataService.getFinishes().length > 0) 
+    ? DataService.getFinishes() 
+    : ((typeof window !== 'undefined' && window.CONNECTOR_DATA_FALLBACK) ? window.CONNECTOR_DATA_FALLBACK.finishes : []);
 const d38999Finishes = finishes.filter(f => f.code !== 'N');
 
 const contactTypes = ["P", "S"];
@@ -237,7 +255,7 @@ masterLayouts.forEach(layout => {
                         fastenerUrl: 'https://www.mcmaster.com/',
                         fastenerQty: 2,
                         unitPriceFastener: 4.50,
-                        diagramImg: layout.diagramImg || '',
+                        diagramImg: layout.diagramImg || ((layout.arrangement === '06-05') ? '' : `assets/inserts/${layout.arrangement}.png`),
                         cutoutImg: '',
                         pins: layout.pins,
                         counts: layout.counts
@@ -328,6 +346,20 @@ function switchStandardTab(standard) {
 
     updatePnStandardFilters();
     populateArrangementDropdown();
+
+    // Ensure contact size dropdown has a valid default for the switched standard
+    const rows = document.querySelectorAll('#groups .row');
+    rows.forEach(row => {
+        const valSelect = row.querySelector('select.val');
+        if (valSelect) {
+            const currentVal = valSelect.value;
+            if (standard === 'as' && currentVal === '22D') {
+                valSelect.value = '22';
+            } else if ((standard === 'mil' || standard === 'comm') && (currentVal === '24' || currentVal === '22')) {
+                valSelect.value = '22D';
+            }
+        }
+    });
 
     if (currentCalculatedSolutions && currentCalculatedSolutions.length > 0) {
         calculate();
@@ -488,6 +520,25 @@ function resetConfiguration() {
 }
 
 function init() {
+    try {
+        const rawWd = localStorage.getItem('admin_working_data');
+        if (rawWd) {
+            const parsed = JSON.parse(rawWd);
+            if (parsed && typeof parsed === 'object') {
+                let cleaned = false;
+                if (parsed.contacts) { delete parsed.contacts; cleaned = true; }
+                if (parsed.finishes) { delete parsed.finishes; cleaned = true; }
+                if (parsed.shells) { delete parsed.shells; cleaned = true; }
+                if (parsed.series) { delete parsed.series; cleaned = true; }
+                if (parsed.accessories) { delete parsed.accessories; cleaned = true; }
+                if (Array.isArray(parsed.layouts) && parsed.layouts.length < 10) { delete parsed.layouts; cleaned = true; }
+                if (cleaned) {
+                    localStorage.setItem('admin_working_data', JSON.stringify(parsed));
+                }
+            }
+        }
+    } catch (e) {}
+
     initTheme();
     updatePnStandardFilters();
     populateArrangementDropdown();
@@ -531,20 +582,27 @@ function checkAdminAccess() {
 
 function populateArrangementDropdown() {
     const select = document.getElementById('filterArrangement');
-    const selectedShellSize = document.getElementById('filterShellSize').value;
+    if (!select) return;
+    const shellSizeSelect = document.getElementById('filterShellSize');
+    const selectedShellSize = shellSizeSelect ? shellSizeSelect.value : "ALL";
     
     select.innerHTML = '<option value="ALL">All Arrangements</option>';
 
-    masterLayouts.forEach(layout => {
+    const layoutsToUse = (masterLayouts && masterLayouts.length > 0) 
+        ? masterLayouts 
+        : ((typeof window !== 'undefined' && window.CONNECTOR_DATA_FALLBACK) ? window.CONNECTOR_DATA_FALLBACK.layouts : []);
+
+    layoutsToUse.forEach(layout => {
+        if (!layout || !layout.arrangement) return;
         const isAutoSport = layout.seriesId === 'deutsch_autosport';
         if (currentStandard === 'as' && !isAutoSport) return;
         if ((currentStandard === 'mil' || currentStandard === 'comm') && isAutoSport) return;
 
         if (selectedShellSize === "ALL" || layout.shellSize === selectedShellSize) {
-            let descParts = Object.entries(layout.counts).map(([sz, qty]) => `${qty}x Size ${sz}`).join(', ');
+            let descParts = Object.entries(layout.counts || {}).map(([sz, qty]) => `${qty}x Size ${sz}`).join(', ');
             let opt = document.createElement('option');
             opt.value = layout.arrangement;
-            opt.textContent = `${layout.arrangement} (${descParts})`;
+            opt.textContent = `${layout.arrangement}${descParts ? ` (${descParts})` : ''}`;
             select.appendChild(opt);
         }
     });
@@ -617,7 +675,7 @@ function liveDecodePN(val) {
     }
     if (decoded.arrangement) {
         let lObj = masterLayouts.find(l => l.arrangement === decoded.arrangement);
-        let countDesc = lObj ? Object.entries(lObj.counts).map(([sz, q]) => `${q}x Size ${sz}`).join(', ') : '';
+        let countDesc = (lObj && lObj.counts) ? Object.entries(lObj.counts).map(([sz, q]) => `${q}x Size ${sz}`).join(', ') : '';
         chipsHtml.push(`<span class="pn-decode-chip"><strong>Layout:</strong> ${decoded.arrangement}${countDesc ? ` [${countDesc}]` : ''}</span>`);
     }
     if (decoded.contactType) {
@@ -674,7 +732,7 @@ function applyDecodedPN() {
             const groupsContainer = document.getElementById('groups');
             groupsContainer.innerHTML = '';
             
-            Object.entries(lObj.counts).forEach(([size, count]) => {
+            Object.entries((lObj && lObj.counts) || {}).forEach(([size, count]) => {
                 const row = document.createElement('div');
                 row.className = 'row';
                 let options = contactRatings.map(c => `<option value="${c.size}" ${c.size === size ? 'selected' : ''}>${c.label}</option>`).join('');
@@ -725,13 +783,14 @@ function applyDecodedPN() {
 function toggleInputMode() {
     const mode = document.getElementById('mode').value;
     const rows = document.querySelectorAll('#groups .row');
+    const defaultSize = (currentStandard === 'as') ? '22' : '22D';
 
     rows.forEach(row => {
         const valContainer = row.querySelector('.val-container');
         if (mode === 'amps') {
             valContainer.innerHTML = `<label>Current Load</label><input type="number" class="val" value="10" placeholder="Amps (e.g. 10)">`;
         } else {
-            let options = contactRatings.map(c => `<option value="${c.size}">${c.label}</option>`).join('');
+            let options = contactRatings.map(c => `<option value="${c.size}" ${c.size === defaultSize ? 'selected' : ''}>${c.label}</option>`).join('');
             valContainer.innerHTML = `<label>Contact Size</label><select class="val">${options}</select>`;
         }
     });
@@ -742,10 +801,11 @@ function addGroup() {
     const container = document.getElementById('groups');
     const row = document.createElement('div');
     row.className = 'row';
+    const defaultSize = (currentStandard === 'as') ? '22' : '22D';
 
     let inputHtml = mode === 'amps' 
         ? `<label>Current Load</label><input type="number" class="val" value="5" placeholder="Amps">`
-        : `<label>Contact Size</label><select class="val">${contactRatings.map(c => `<option value="${c.size}">${c.label}</option>`).join('')}</select>`;
+        : `<label>Contact Size</label><select class="val">${contactRatings.map(c => `<option value="${c.size}" ${c.size === defaultSize ? 'selected' : ''}>${c.label}</option>`).join('')}</select>`;
 
     row.innerHTML = `
         <div class="val-container">${inputHtml}</div>
@@ -1125,10 +1185,10 @@ function renderSolutionPairHTML(pair, index) {
                 <div class="diagram-section">
                     <div class="diagram-box">
                         <label>Insert Diagram:</label>
-                        ${isAutoSport ? `
-                            <div class="diagram-placeholder">Insert arrangements coming soon!</div>
+                        ${(mat && mat.diagramImg) ? `
+                            <a href="javascript:void(0)" onclick="openImageModal('${mat.diagramImg}', 'Insert Diagram - ${mat.shellLabel}')"><img class="preview-img" src="${mat.diagramImg}" alt="Mating Insert Diagram" onerror="this.parentElement.style.display='none'"></a>
                         ` : `
-                            <a href="javascript:void(0)" onclick="openImageModal('${mat ? mat.diagramImg : ''}', 'Insert Diagram - ${mat ? mat.shellLabel : ''}')"><img class="preview-img" src="${mat ? mat.diagramImg : ''}" alt="Mating Insert Diagram" onerror="this.parentElement.style.display='none'"></a>
+                            <div class="diagram-placeholder">${isAutoSport ? 'Insert arrangements coming soon!' : 'No diagram available'}</div>
                         `}
                     </div>
                     ${mat && mat.shellType !== 'Plug' ? `
