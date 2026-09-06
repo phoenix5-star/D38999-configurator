@@ -99,7 +99,7 @@ const HistoryService = {
 };
 
 function checkAdminAuthentication() {
-    const isAuthed = sessionStorage.getItem('admin_session_auth') === 'true' || localStorage.getItem('admin_authenticated') === 'true';
+    const isAuthed = sessionStorage.getItem('admin_session_auth') === 'true';
     const authOverlay = document.getElementById('adminAuthOverlay');
     const mainApp = document.getElementById('adminMainApp');
 
@@ -128,7 +128,7 @@ function verifyAdminPass() {
 
     if (VALID_KEYS.includes(entered) || (customPin && rawEntered === customPin)) {
         sessionStorage.setItem('admin_session_auth', 'true');
-        localStorage.setItem('admin_authenticated', 'true');
+        // Do NOT store persistent admin_authenticated in localStorage
         const authOverlay = document.getElementById('adminAuthOverlay');
         const mainApp = document.getElementById('adminMainApp');
         if (authOverlay) authOverlay.style.display = 'none';
@@ -148,11 +148,21 @@ function verifyAdminPass() {
 function lockAdminConsole() {
     sessionStorage.removeItem('admin_session_auth');
     localStorage.removeItem('admin_authenticated');
+    localStorage.removeItem('admin_unlocked');
     checkAdminAuthentication();
+}
+
+function logoutAndReturn(event) {
+    if (event) event.preventDefault();
+    sessionStorage.removeItem('admin_session_auth');
+    localStorage.removeItem('admin_authenticated');
+    localStorage.removeItem('admin_unlocked');
+    window.location.href = 'index.html';
 }
 
 window.verifyAdminPass = verifyAdminPass;
 window.lockAdminConsole = lockAdminConsole;
+window.logoutAndReturn = logoutAndReturn;
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', async () => {
@@ -188,6 +198,20 @@ async function loadData() {
             }
         } else {
             workingData = JSON.parse(JSON.stringify(baselineData));
+        }
+
+        // Auto-heal any errant deutsch_asl seriesId entries back to deutsch_autosport
+        if (workingData && Array.isArray(workingData.layouts)) {
+            let healed = false;
+            workingData.layouts.forEach(l => {
+                if (l.seriesId === 'deutsch_asl') {
+                    l.seriesId = 'deutsch_autosport';
+                    healed = true;
+                }
+            });
+            if (healed) {
+                saveWorkingDataState();
+            }
         }
     }
 }
@@ -667,7 +691,8 @@ function renderLayoutsTab(container) {
         );
     }
 
-    const rowsHtml = layouts.map((l, idx) => {
+    const rowsHtml = layouts.map((l) => {
+        const realIdx = workingData.layouts.indexOf(l);
         let countDesc = Object.entries(l.counts || {}).map(([sz, q]) => `<strong>${q}x</strong> Size ${sz}`).join(', ');
         let totalContacts = Object.values(l.counts || {}).reduce((sum, v) => sum + v, 0);
         return `
@@ -677,9 +702,18 @@ function renderLayoutsTab(container) {
                 <td><strong>${escapeHtml(l.arrangement)}</strong></td>
                 <td>${countDesc}</td>
                 <td>${totalContacts} contacts (${(l.pins || []).length} pins)</td>
-                <td style="text-align: right;">
-                    <button class="admin-btn-sm" onclick="editLayout(${idx})">Edit</button>
-                    <button class="admin-btn-sm admin-btn-danger" onclick="deleteLayout(${idx})">Delete</button>
+                <td style="text-align: center; width: 60px;">
+                    ${l.diagramImg ? `
+                        <img class="admin-table-thumb" src="${escapeHtml(l.diagramImg)}" alt="${escapeHtml(l.arrangement)}" title="Click to enlarge" onclick="openAdminImageModal('${escapeHtml(l.diagramImg)}', 'Layout ${escapeHtml(l.arrangement)}')">
+                    ` : `
+                        <span class="admin-thumb-badge">No Image</span>
+                    `}
+                </td>
+                <td style="text-align: right; width: 140px; white-space: nowrap;">
+                    <div class="admin-table-actions">
+                        <button class="admin-btn-sm" onclick="editLayout(${realIdx})">Edit</button>
+                        <button class="admin-btn-sm admin-btn-danger" onclick="deleteLayout(${realIdx})">Delete</button>
+                    </div>
                 </td>
             </tr>
         `;
@@ -734,10 +768,11 @@ function renderLayoutsTab(container) {
                             <th>Arrangement</th>
                             <th>Cavity Breakdown</th>
                             <th>Total Pins</th>
-                            <th style="text-align: right;">Actions</th>
+                            <th style="text-align: center; width: 60px;">Diagram</th>
+                            <th style="text-align: right; width: 140px; white-space: nowrap;">Actions</th>
                         </tr>
                     </thead>
-                    <tbody>${rowsHtml || '<tr><td colspan="6" style="text-align:center;">No matching arrangements found</td></tr>'}</tbody>
+                    <tbody>${rowsHtml || '<tr><td colspan="7" style="text-align:center;">No matching arrangements found</td></tr>'}</tbody>
                 </table>
             </div>
         </div>
@@ -752,6 +787,8 @@ function openAddLayoutModal() {
     document.getElementById('layoutFormLetter').value = 'B';
     document.getElementById('layoutFormArrangement').value = '';
     document.getElementById('layoutFormCounts').value = '{"20": 4}';
+    document.getElementById('layoutFormImageUrl').value = '';
+    clearLayoutImagePreview();
     document.getElementById('layoutFormEditIndex').value = '-1';
     modal.classList.add('active');
 }
@@ -761,14 +798,95 @@ function editLayout(index) {
     if (!layout) return;
     const modal = document.getElementById('layoutModal');
     document.getElementById('layoutModalTitle').textContent = `Edit Arrangement: ${layout.arrangement}`;
-    document.getElementById('layoutFormSeries').value = layout.seriesId || 'd38999';
+    let seriesVal = layout.seriesId || 'd38999';
+    if (seriesVal === 'deutsch_asl') seriesVal = 'deutsch_autosport';
+    document.getElementById('layoutFormSeries').value = seriesVal;
     document.getElementById('layoutFormShell').value = layout.shellSize || '';
     document.getElementById('layoutFormLetter').value = layout.letterCode || '';
     document.getElementById('layoutFormArrangement').value = layout.arrangement || '';
     document.getElementById('layoutFormCounts').value = JSON.stringify(layout.counts || {});
+    
+    const imgUrl = layout.diagramImg || '';
+    document.getElementById('layoutFormImageUrl').value = imgUrl;
+    if (imgUrl) {
+        showLayoutImagePreview(imgUrl, 'Attached diagram image');
+    } else {
+        clearLayoutImagePreview();
+    }
+
     document.getElementById('layoutFormEditIndex').value = index;
     modal.classList.add('active');
 }
+
+function handleLayoutImageFile(input) {
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const dataUrl = e.target.result;
+            document.getElementById('layoutFormImageUrl').value = dataUrl;
+            showLayoutImagePreview(dataUrl, `${file.name} (${(file.size / 1024).toFixed(1)} KB)`);
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function updateLayoutImagePreviewFromUrl() {
+    const url = document.getElementById('layoutFormImageUrl').value.trim();
+    if (url) {
+        showLayoutImagePreview(url, 'Linked diagram image');
+    } else {
+        clearLayoutImagePreview();
+    }
+}
+
+function showLayoutImagePreview(src, info) {
+    const preview = document.getElementById('layoutFormImagePreview');
+    const previewImg = document.getElementById('layoutFormPreviewImg');
+    const previewInfo = document.getElementById('layoutFormPreviewInfo');
+    if (preview && previewImg) {
+        previewImg.src = src;
+        if (previewInfo) previewInfo.textContent = info || '';
+        preview.style.display = 'flex';
+    }
+}
+
+function clearLayoutImagePreview() {
+    const preview = document.getElementById('layoutFormImagePreview');
+    const previewImg = document.getElementById('layoutFormPreviewImg');
+    const input = document.getElementById('layoutFormImageUrl');
+    const fileInput = document.getElementById('layoutFormImageFile');
+    if (input) input.value = '';
+    if (fileInput) fileInput.value = '';
+    if (previewImg) previewImg.src = '';
+    if (preview) preview.style.display = 'none';
+}
+
+function openAdminImageModal(src, title) {
+    const modal = document.getElementById('adminImageModal');
+    const modalImg = document.getElementById('adminImageModalSrc');
+    const modalTitle = document.getElementById('adminImageModalTitle');
+    if (modal && modalImg) {
+        modalImg.src = src;
+        if (modalTitle) modalTitle.textContent = title || 'Diagram Preview';
+        modal.classList.add('active');
+    }
+}
+
+function closeAdminImageModal() {
+    const modal = document.getElementById('adminImageModal');
+    if (modal) {
+        modal.classList.remove('active');
+        const modalImg = document.getElementById('adminImageModalSrc');
+        if (modalImg) modalImg.src = '';
+    }
+}
+
+window.handleLayoutImageFile = handleLayoutImageFile;
+window.updateLayoutImagePreviewFromUrl = updateLayoutImagePreviewFromUrl;
+window.clearLayoutImagePreview = clearLayoutImagePreview;
+window.openAdminImageModal = openAdminImageModal;
+window.closeAdminImageModal = closeAdminImageModal;
 
 function deleteLayout(index) {
     const layout = workingData.layouts[index];
@@ -782,11 +900,13 @@ function deleteLayout(index) {
 }
 
 function saveLayoutModal() {
-    const seriesId = document.getElementById('layoutFormSeries').value;
+    let seriesId = document.getElementById('layoutFormSeries').value;
+    if (seriesId === 'deutsch_asl') seriesId = 'deutsch_autosport';
     const shellSize = document.getElementById('layoutFormShell').value.trim();
     const letterCode = document.getElementById('layoutFormLetter').value.trim().toUpperCase();
     const arrangement = document.getElementById('layoutFormArrangement').value.trim();
     const countsStr = document.getElementById('layoutFormCounts').value.trim();
+    const diagramImg = document.getElementById('layoutFormImageUrl').value.trim();
     const editIndex = parseInt(document.getElementById('layoutFormEditIndex').value, 10);
 
     let countsObj = {};
@@ -814,6 +934,10 @@ function saveLayoutModal() {
         counts: countsObj,
         pins
     };
+
+    if (diagramImg) {
+        newLayout.diagramImg = diagramImg;
+    }
 
     if (editIndex >= 0 && editIndex < workingData.layouts.length) {
         const old = workingData.layouts[editIndex];

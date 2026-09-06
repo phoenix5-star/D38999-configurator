@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connector Database &amp; Shop Tooling Manager</title>
-    <link rel="stylesheet" href="styles.css?v=2.0.4">
-    <link rel="stylesheet" href="admin.css?v=2.0.4">
-    <script src="data/fallbackData.js?v=2.0.4"></script>
-    <script src="js/services/dataService.js?v=2.0.4"></script>
-    <script src="js/admin.js?v=2.0.4" defer></script>
+    <link rel="stylesheet" href="styles.css?v=2.1.1">
+    <link rel="stylesheet" href="admin.css?v=2.1.1">
+    <script src="data/fallbackData.js?v=2.1.1"></script>
+    <script src="js/services/dataService.js?v=2.1.1"></script>
+    <script src="js/admin.js?v=2.1.1" defer></script>
 </head>
 <body>
 
@@ -25,7 +25,7 @@
             <div id="adminAuthError" style="color: #ef4444; font-size: 12px; margin-bottom: 14px; display: none; font-weight: 600;">Incorrect PIN. Access denied.</div>
             <div style="display: flex; gap: 10px; justify-content: center;">
                 <button type="button" onclick="verifyAdminPass()" class="admin-btn admin-btn-primary" style="padding: 10px 24px; font-weight: 600; cursor: pointer;">Unlock Console</button>
-                <a href="index.html" class="admin-btn admin-btn-secondary" style="text-decoration: none; padding: 10px 18px; display: inline-flex; align-items: center; cursor: pointer;">Return to Configurator</a>
+                <a href="index.html" onclick="logoutAndReturn(event)" class="admin-btn admin-btn-secondary" style="text-decoration: none; padding: 10px 18px; display: inline-flex; align-items: center; cursor: pointer;">Return to Configurator</a>
             </div>
         </form>
     </div>
@@ -40,7 +40,7 @@
     </div>
     
     <div class="admin-toolbar-actions">
-        <a href="index.html" class="admin-quick-nav" title="Return to Configurator">
+        <a href="index.html" onclick="logoutAndReturn(event)" class="admin-quick-nav" title="Return to Configurator">
             <svg style="width: 14px; height: 14px; fill: currentColor;" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
             Configurator Tool
         </a>
@@ -151,7 +151,7 @@
                 <label for="layoutFormSeries">Connector Series</label>
                 <select id="layoutFormSeries">
                     <option value="d38999">MIL-DTL-38999 / Commercial Tri-Start</option>
-                    <option value="deutsch_asl">Deutsch AutoSport ASL Series</option>
+                    <option value="deutsch_autosport">Deutsch AutoSport Family</option>
                 </select>
             </div>
             <div class="admin-form-group">
@@ -159,7 +159,7 @@
                 <input type="text" id="layoutFormShell" required placeholder="e.g. 11 or 06">
             </div>
             <div class="admin-form-group">
-                <label for="layoutFormLetter">Shell Letter Code (A-J for D38999, or leave blank for ASL)</label>
+                <label for="layoutFormLetter">Shell Letter Code (A-J for D38999, or leave blank for AutoSport)</label>
                 <input type="text" id="layoutFormLetter" placeholder="e.g. B">
             </div>
             <div class="admin-form-group">
@@ -170,6 +170,21 @@
                 <label for="layoutFormCounts">Cavity Breakdown JSON (e.g. {"22D": 13} or {"24": 5})</label>
                 <input type="text" id="layoutFormCounts" required placeholder='{"22D": 13}'>
                 <small style="opacity: 0.8; font-size: 0.75rem;">Total contact count will automatically determine pin sequence 1..N.</small>
+            </div>
+            <div class="admin-form-group">
+                <label for="layoutFormImageUrl">Insert Arrangement Diagram Image</label>
+                <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                    <input type="text" id="layoutFormImageUrl" placeholder="assets/inserts/... or paste image URL / Data URL" style="flex: 1;" oninput="updateLayoutImagePreviewFromUrl()">
+                    <label class="btn-outline admin-btn-sm" style="padding: 7px 14px; cursor: pointer; white-space: nowrap; margin: 0; display: inline-flex; align-items: center; gap: 6px;">
+                        📁 Upload Image
+                        <input type="file" id="layoutFormImageFile" accept="image/*" style="display: none;" onchange="handleLayoutImageFile(this)">
+                    </label>
+                </div>
+                <div id="layoutFormImagePreview" style="display: none; align-items: center; gap: 12px; padding: 8px; border: 1px dashed var(--input-border); border-radius: 6px; background: rgba(0,0,0,0.03);">
+                    <img id="layoutFormPreviewImg" src="" alt="Preview" style="max-height: 52px; max-width: 80px; object-fit: contain; border-radius: 4px; border: 1px solid var(--card-border); background: #ffffff;">
+                    <span id="layoutFormPreviewInfo" style="font-size: 0.8rem; opacity: 0.85;"></span>
+                    <button type="button" class="btn-outline admin-btn-sm admin-btn-danger" onclick="clearLayoutImagePreview()" style="margin-left: auto; padding: 4px 10px;">Remove</button>
+                </div>
             </div>
             <div class="admin-form-actions">
                 <button type="button" class="btn-outline btn-modal-cancel" style="width: auto; padding: 7px 16px;">Cancel</button>
@@ -280,6 +295,17 @@
         <div class="admin-form-actions" style="margin-top: 14px;">
             <button type="button" class="btn-outline btn-modal-cancel" style="width: auto; padding: 7px 20px;">Done</button>
         </div>
+    </div>
+</div>
+
+<!-- Admin Image Lightbox Modal -->
+<div id="adminImageModal" class="admin-modal-overlay" onclick="closeAdminImageModal()">
+    <div class="admin-modal-card" style="max-width: 520px; text-align: center; padding: 20px;" onclick="event.stopPropagation()">
+        <div class="admin-modal-header" style="margin-bottom: 12px;">
+            <h3 id="adminImageModalTitle" style="margin: 0;">Diagram Preview</h3>
+            <button type="button" class="admin-modal-close" onclick="closeAdminImageModal()" aria-label="Close">&times;</button>
+        </div>
+        <img id="adminImageModalSrc" src="" alt="Diagram" style="max-width: 100%; max-height: 420px; object-fit: contain; border-radius: 6px; border: 1px solid var(--card-border); background: #ffffff;">
     </div>
 </div>
 

@@ -18,6 +18,33 @@ const DataService = (function () {
     let _isLoaded = false;
     let _loadPromise = null;
 
+    function applyAdminOverlay(target) {
+        if (!target) return target;
+        try {
+            const saved = (typeof localStorage !== 'undefined') ? localStorage.getItem('admin_working_data') : null;
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                if (parsed && typeof parsed === 'object') {
+                    if (Array.isArray(parsed.layouts) && parsed.layouts.length > 0) {
+                        target.layouts = parsed.layouts.map(l => {
+                            if (l.seriesId === 'deutsch_asl') return Object.assign({}, l, { seriesId: 'deutsch_autosport' });
+                            return l;
+                        });
+                    }
+                    if (parsed.tooling) target.tooling = parsed.tooling;
+                    if (parsed.contacts) target.contacts = parsed.contacts;
+                    if (parsed.finishes) target.finishes = parsed.finishes;
+                    if (parsed.shells) target.shells = parsed.shells;
+                    if (parsed.series) target.series = parsed.series;
+                    if (parsed.accessories) target.accessories = parsed.accessories;
+                }
+            }
+        } catch (e) {
+            console.warn('DataService: Failed to overlay admin_working_data', e);
+        }
+        return target;
+    }
+
     async function load() {
         if (_isLoaded) return _data;
         if (_loadPromise) return _loadPromise;
@@ -39,6 +66,7 @@ const DataService = (function () {
                     ]);
 
                     _data = { series, shells, finishes, layouts, contacts, tooling, accessories };
+                    applyAdminOverlay(_data);
                     _isLoaded = true;
                     return _data;
                 } catch (err) {
@@ -48,7 +76,8 @@ const DataService = (function () {
 
             // Fallback to window.CONNECTOR_DATA_FALLBACK
             if (window.CONNECTOR_DATA_FALLBACK) {
-                _data = window.CONNECTOR_DATA_FALLBACK;
+                _data = JSON.parse(JSON.stringify(window.CONNECTOR_DATA_FALLBACK));
+                applyAdminOverlay(_data);
                 _isLoaded = true;
                 return _data;
             }
@@ -63,7 +92,8 @@ const DataService = (function () {
     // Synchronous fallback initializer if script executed synchronously
     function loadSyncFromFallback() {
         if (!_isLoaded && window.CONNECTOR_DATA_FALLBACK) {
-            _data = window.CONNECTOR_DATA_FALLBACK;
+            _data = JSON.parse(JSON.stringify(window.CONNECTOR_DATA_FALLBACK));
+            applyAdminOverlay(_data);
             _isLoaded = true;
         }
         return _data;

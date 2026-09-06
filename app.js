@@ -237,7 +237,7 @@ masterLayouts.forEach(layout => {
                         fastenerUrl: 'https://www.mcmaster.com/',
                         fastenerQty: 2,
                         unitPriceFastener: 4.50,
-                        diagramImg: '',
+                        diagramImg: layout.diagramImg || '',
                         cutoutImg: '',
                         pins: layout.pins,
                         counts: layout.counts
@@ -286,7 +286,7 @@ masterLayouts.forEach(layout => {
                             fastenerUrl: fastenerUrl,
                             fastenerQty: fastenerQty,
                             unitPriceFastener: fastenerPrice,
-                            diagramImg: `assets/inserts/${getInsertImageFilename(layout.arrangement, layout.shellSize)}`,
+                            diagramImg: layout.diagramImg || `assets/inserts/${getInsertImageFilename(layout.arrangement, layout.shellSize)}`,
                             cutoutImg: `assets/cutouts/Shell${layout.shellSize}.png`,
                             pins: layout.pins,
                             counts: layout.counts
@@ -503,12 +503,17 @@ function checkAdminAccess() {
     const gearLink = document.getElementById('adminGearLink');
     if (!gearLink) return;
 
+    // Clean up any legacy persistent keys if left behind
+    localStorage.removeItem('admin_unlocked');
+    localStorage.removeItem('admin_authenticated');
+
     const urlParams = new URLSearchParams(window.location.search);
     const hasAdminParam = urlParams.has('admin') && (urlParams.get('admin') === '1' || urlParams.get('admin') === 'true');
-    const isUnlocked = localStorage.getItem('admin_unlocked') === 'true';
 
-    if (hasAdminParam || isUnlocked) {
+    if (hasAdminParam) {
         gearLink.style.display = 'inline-flex';
+    } else {
+        gearLink.style.display = 'none';
     }
 
     window.addEventListener('keydown', (e) => {
@@ -517,9 +522,8 @@ function checkAdminAccess() {
             const current = gearLink.style.display;
             const nextState = (current === 'none' || !current) ? 'inline-flex' : 'none';
             gearLink.style.display = nextState;
-            localStorage.setItem('admin_unlocked', nextState === 'inline-flex' ? 'true' : 'false');
             if (nextState === 'inline-flex') {
-                alert('Admin mode unlocked. Database gear icon is now visible in the header.');
+                alert('Admin mode unlocked for this session. Database gear icon is now visible in the header.');
             }
         }
     });
@@ -1040,10 +1044,10 @@ function renderSolutionPairHTML(pair, index) {
                 <div class="diagram-section">
                     <div class="diagram-box">
                         <label>Insert Diagram:</label>
-                        ${isAutoSport ? `
-                            <div class="diagram-placeholder">Insert arrangements coming soon!</div>
-                        ` : `
+                        ${pri.diagramImg ? `
                             <a href="javascript:void(0)" onclick="openImageModal('${pri.diagramImg}', 'Insert Diagram - ${pri.shellLabel}')"><img class="preview-img" src="${pri.diagramImg}" alt="Insert Diagram" onerror="this.parentElement.style.display='none'"></a>
+                        ` : `
+                            <div class="diagram-placeholder">${isAutoSport ? 'Insert arrangements coming soon!' : 'No diagram available'}</div>
                         `}
                     </div>
                     ${pri.shellType !== 'Plug' ? `
