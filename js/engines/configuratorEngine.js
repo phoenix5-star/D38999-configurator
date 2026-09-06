@@ -77,13 +77,36 @@ const ConfiguratorEngine = (function () {
         }
         let targetContactType = primary.contactType === 'P' ? 'S' : 'P';
         
-        let match = db.find(d => 
-            d.shellSize === primary.shellSize &&
-            d.arrangement === primary.arrangement &&
-            d.shellType === targetShellType &&
-            d.contactType === targetContactType &&
-            d.keying === primary.keying
-        );
+        let match = null;
+        if (db._cacheMap) {
+            const targetSeries = isAutoSport ? 'deutsch_autosport' : (primary.seriesId || 'd38999');
+            const key = `${targetSeries}:${primary.shellSize}:${primary.arrangement}:${targetShellType}:${targetContactType}:${primary.keying}`;
+            match = db._cacheMap.get(key);
+        } else {
+            // Lazily build Map cache on database array
+            if (Array.isArray(db) && db.length > 50) {
+                const cache = new Map();
+                for (let i = 0; i < db.length; i++) {
+                    const d = db[i];
+                    const k = `${d.seriesId || 'd38999'}:${d.shellSize}:${d.arrangement}:${d.shellType}:${d.contactType}:${d.keying}`;
+                    cache.set(k, d);
+                }
+                db._cacheMap = cache;
+                const targetSeries = isAutoSport ? 'deutsch_autosport' : (primary.seriesId || 'd38999');
+                const key = `${targetSeries}:${primary.shellSize}:${primary.arrangement}:${targetShellType}:${targetContactType}:${primary.keying}`;
+                match = cache.get(key);
+            }
+        }
+
+        if (!match) {
+            match = db.find(d => 
+                d.shellSize === primary.shellSize &&
+                d.arrangement === primary.arrangement &&
+                d.shellType === targetShellType &&
+                d.contactType === targetContactType &&
+                d.keying === primary.keying
+            );
+        }
 
         if (match) {
             let activePN = pnType === 'mil' ? match.milPN : (pnType === 'comm' ? match.commPN : (match.asPN || match.milPN));

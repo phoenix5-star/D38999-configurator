@@ -316,6 +316,15 @@ masterLayouts.forEach(layout => {
     }
 });
 
+// Pre-index database for O(1) mating connector resolution
+const initialCacheMap = new Map();
+for (let i = 0; i < database.length; i++) {
+    const d = database[i];
+    const k = `${d.seriesId || 'd38999'}:${d.shellSize}:${d.arrangement}:${d.shellType}:${d.contactType}:${d.keying}`;
+    initialCacheMap.set(k, d);
+}
+database._cacheMap = initialCacheMap;
+
 let currentCalculatedSolutions = [];
 let projectLists = JSON.parse(localStorage.getItem('connector_projects')) || { "Default Project": [] };
 
@@ -362,7 +371,7 @@ function switchStandardTab(standard) {
     });
 
     if (currentCalculatedSolutions && currentCalculatedSolutions.length > 0) {
-        calculate();
+        calculate(true);
     }
 }
 
@@ -371,6 +380,10 @@ function updatePnStandardFilters() {
     const shellSizeSelect = document.getElementById('filterShellSize');
     const finishSelect = document.getElementById('filterFinish');
     if (!shellTypeSelect || !shellSizeSelect || !finishSelect) return;
+
+    const prevType = shellTypeSelect.value;
+    const prevSize = shellSizeSelect.value;
+    const prevFinish = finishSelect.value;
 
     if (currentStandard === 'as') {
         shellTypeSelect.innerHTML = `
@@ -453,6 +466,25 @@ function updatePnStandardFilters() {
             <option value="M">Electroless Nickel Composite (M)</option>
         `;
     }
+
+    // Preserve previous selections across tabs if option exists in the target standard
+    if (prevType && Array.from(shellTypeSelect.options).some(o => o.value === prevType)) {
+        shellTypeSelect.value = prevType;
+    } else {
+        shellTypeSelect.value = 'ALL';
+    }
+
+    if (prevSize && Array.from(shellSizeSelect.options).some(o => o.value === prevSize)) {
+        shellSizeSelect.value = prevSize;
+    } else {
+        shellSizeSelect.value = 'ALL';
+    }
+
+    if (prevFinish && Array.from(finishSelect.options).some(o => o.value === prevFinish)) {
+        finishSelect.value = prevFinish;
+    } else {
+        finishSelect.value = 'ALL';
+    }
 }
 
 function resetConfiguration() {
@@ -515,6 +547,7 @@ function resetConfiguration() {
 
     // 6. Clear calculated results container
     currentCalculatedSolutions = [];
+    visibleSolutionCount = 50;
     const resultsContainer = document.getElementById('resultsContainer');
     if (resultsContainer) resultsContainer.innerHTML = '';
 }
@@ -583,6 +616,7 @@ function checkAdminAccess() {
 function populateArrangementDropdown() {
     const select = document.getElementById('filterArrangement');
     if (!select) return;
+    const prevArrangement = select.value;
     const shellSizeSelect = document.getElementById('filterShellSize');
     const selectedShellSize = shellSizeSelect ? shellSizeSelect.value : "ALL";
     
@@ -592,6 +626,7 @@ function populateArrangementDropdown() {
         ? masterLayouts 
         : ((typeof window !== 'undefined' && window.CONNECTOR_DATA_FALLBACK) ? window.CONNECTOR_DATA_FALLBACK.layouts : []);
 
+    let foundPrev = false;
     layoutsToUse.forEach(layout => {
         if (!layout || !layout.arrangement) return;
         const isAutoSport = layout.seriesId === 'deutsch_autosport';
@@ -604,8 +639,17 @@ function populateArrangementDropdown() {
             opt.value = layout.arrangement;
             opt.textContent = `${layout.arrangement}${descParts ? ` (${descParts})` : ''}`;
             select.appendChild(opt);
+            if (prevArrangement && prevArrangement !== 'ALL' && layout.arrangement === prevArrangement) {
+                foundPrev = true;
+            }
         }
     });
+
+    if (foundPrev) {
+        select.value = prevArrangement;
+    } else {
+        select.value = 'ALL';
+    }
 }
 
 function filterArrangementDropdown() {
@@ -847,7 +891,9 @@ function getMatingConnector(primary, pnType, targetShellType) {
     return null;
 }
 
-function calculate() {
+let visibleSolutionCount = 50;
+
+function calculate(isSilent = false) {
     const mode = document.getElementById('mode').value;
     const pnType = currentStandard;
     
@@ -888,6 +934,7 @@ function calculate() {
     });
 
     if (invalid) {
+        if (isSilent) return;
         alert('One or more inputs exceed maximum contact ampacity (46A).');
         return;
     }
@@ -955,9 +1002,20 @@ function calculate() {
             };
         });
 
+        visibleSolutionCount = 50;
         renderSolutionCards();
     } else {
-        alert('No matching configurations found for these filter settings and pin requirements.');
+        currentCalculatedSolutions = [];
+        if (isSilent) {
+            resultsContainer.innerHTML = `
+                <div style="padding: 24px; text-align: center; background: var(--card-bg); border: 1px dashed var(--border-color); border-radius: 8px; margin-top: 15px;">
+                    <h4 style="color: var(--heading-color); margin-bottom: 8px;">No Matching Configurations Found</h4>
+                    <p style="color: var(--subtext-color); font-size: 0.95em;">No connector configurations match the selected filters for this series tab. Try adjusting your Shell Type, Shell Size, or Pin Requirements.</p>
+                </div>
+            `;
+        } else {
+            alert('No matching configurations found for these filter settings and pin requirements.');
+        }
     }
 }
 
@@ -965,17 +1023,46 @@ function renderSolutionCards() {
     const resultsContainer = document.getElementById('resultsContainer');
     resultsContainer.innerHTML = '';
 
+    const total = currentCalculatedSolutions.length;
+    const toRender = currentCalculatedSolutions.slice(0, visibleSolutionCount);
+
     const headerDiv = document.createElement('div');
-    headerDiv.innerHTML = `<h3 style="color:var(--heading-color); margin-bottom: 15px;">Found ${currentCalculatedSolutions.length} Matching Mating Solution Pair(s)</h3>`;
+    if (total > visibleSolutionCount) {
+        headerDiv.innerHTML = `
+            <h3 style="color:var(--heading-color); margin-bottom: 5px;">Found ${total} Matching Mating Solution Pair(s)</h3>
+            <div style="background: rgba(59, 130, 246, 0.1); border-left: 4px solid #3b82f6; padding: 8px 12px; margin-bottom: 15px; border-radius: 4px; font-size: 0.9em; color: var(--text-color);">
+                Showing top <strong>${toRender.length}</strong> of <strong>${total}</strong> matches to maintain peak responsiveness. Refine your filters (e.g. Shell Size, Shell Type, Finish, or Arrangement) to narrow results.
+            </div>
+        `;
+    } else {
+        headerDiv.innerHTML = `<h3 style="color:var(--heading-color); margin-bottom: 15px;">Found ${total} Matching Mating Solution Pair(s)</h3>`;
+    }
     resultsContainer.appendChild(headerDiv);
 
-    currentCalculatedSolutions.forEach((pair, index) => {
+    toRender.forEach((pair, index) => {
         const wrapper = document.createElement('div');
         wrapper.className = 'solution-pair-wrapper';
         wrapper.id = `solution-pair-${index}`;
         wrapper.innerHTML = renderSolutionPairHTML(pair, index);
         resultsContainer.appendChild(wrapper);
     });
+
+    if (total > visibleSolutionCount) {
+        const loadMoreDiv = document.createElement('div');
+        loadMoreDiv.style.textAlign = 'center';
+        loadMoreDiv.style.margin = '20px 0 30px 0';
+        loadMoreDiv.innerHTML = `
+            <button class="btn btn-secondary" onclick="loadMoreSolutions()" style="padding: 10px 24px; font-weight: 600; cursor: pointer;">
+                Load Next 50 Solutions (${total - visibleSolutionCount} remaining)
+            </button>
+        `;
+        resultsContainer.appendChild(loadMoreDiv);
+    }
+}
+
+function loadMoreSolutions() {
+    visibleSolutionCount += 50;
+    renderSolutionCards();
 }
 
 function renderSolutionPairHTML(pair, index) {
