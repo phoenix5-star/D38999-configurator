@@ -1,5 +1,5 @@
 // Configurator Metadata
-const CONFIG_VERSION = "V002.0";
+const CONFIG_VERSION = "V002.1";
 
 // Shop Tooling Inventory & Contact Ratings loaded via DataService
 const SHOP_TOOLING = (typeof DataService !== 'undefined') ? DataService.getShopInventory() : { frames: ["AFM8", "AF8"], positioners: ["K40", "K42", "K13-1", "TH163"] };
@@ -550,6 +550,15 @@ function resetConfiguration() {
     visibleSolutionCount = 50;
     const resultsContainer = document.getElementById('resultsContainer');
     if (resultsContainer) resultsContainer.innerHTML = '';
+}
+
+function resetConfigurationFilters() {
+    const filterIds = ['filterShellType', 'filterFinish', 'filterShellSize', 'filterArrangement', 'filterContactType', 'filterKeying'];
+    filterIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = 'ALL';
+    });
+    populateArrangementDropdown();
 }
 
 function init() {

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MIL-DTL-38999 Series III Advanced Configurator - V002.0</title>
+    <title>Connector Configurator - V002.1</title>
     <link rel="stylesheet" href="styles.css?v=2.1.4">
     <script src="data/fallbackData.js?v=2.1.4"></script>
     <script src="js/services/dataService.js?v=2.1.4"></script>
@@ -16,8 +16,8 @@
 
 <div class="header-toolbar">
     <div class="title-container">
-        <h1 style="margin: 0; color: var(--heading-color); font-size: 1.6rem;">MIL-DTL-38999 Series III Configurator</h1>
-        <span class="version-tag">V002.0</span>
+        <h1 style="margin: 0; color: var(--heading-color); font-size: 1.6rem;">Connector Configurator</h1>
+        <span class="version-tag">V002.1</span>
     </div>
     
     <div style="display: flex; align-items: center; gap: 8px;">
@@ -73,8 +73,14 @@
 
 <div class="card">
     <h2>Connector Configuration &amp; Filter Selection</h2>
-    <div class="row" style="margin-bottom: 16px;">
-        <div style="max-width: 320px;">
+
+    <!-- Section 1: Contact Requirements (Top) -->
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+        <div>
+            <h3 style="margin: 0; font-size: 1.15rem;">1. Contact Requirements</h3>
+            <span style="font-size: 12px; color: var(--text-color); opacity: 0.8;">Specify contact quantities and sizes required for your application.</span>
+        </div>
+        <div style="min-width: 220px;">
             <label for="mode">Input Mode:</label>
             <select id="mode">
                 <option value="size" selected>Known Contact Size</option>
@@ -83,7 +89,44 @@
         </div>
     </div>
 
-    <h3>Configuration Filters (Optional)</h3>
+    <div id="groups">
+        <div class="row">
+            <div class="val-container"></div>
+            <div style="flex: 1.2;">
+                <label>Contact Material / Type</label>
+                <select class="contact-material">
+                    <option value="STD">Standard Crimp (Copper Alloy - Gold Plated)</option>
+                    <option value="TC_K">Thermocouple Type K (Alumel / Chromel)</option>
+                    <option value="TC_J">Thermocouple Type J (Iron / Constantan)</option>
+                    <option value="TC_E">Thermocouple Type E (Chromel / Constantan)</option>
+                    <option value="TC_T">Thermocouple Type T (Copper / Constantan)</option>
+                    <option value="COAX">Coax / Shielded Contact (Size 8/12/16)</option>
+                </select>
+            </div>
+            <div style="flex: 0.4;">
+                <label>Qty</label>
+                <input type="number" class="qty" value="4" placeholder="Qty">
+            </div>
+        </div>
+    </div>
+
+    <div class="checkbox-row" style="margin-top: 10px;">
+        <input type="checkbox" id="includeStdContacts">
+        <label for="includeStdContacts" style="font-weight: normal; margin-bottom: 0;">Include Standard Gold-Plated Contacts in BOM (Unchecked = Included with Connector Housing)</label>
+    </div>
+
+    <div style="margin-top: 12px; display: flex; gap: 10px;">
+        <button type="button" class="btn-outline" onclick="addGroup()">+ Add Contact Group</button>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- Section 2: Housing & Configuration Filters (Optional) -->
+    <div style="margin-bottom: 12px;">
+        <h3 style="margin: 0 0 4px 0; font-size: 1.15rem;">2. Housing &amp; Configuration Filters (Optional)</h3>
+        <span style="font-size: 12px; color: var(--text-color); opacity: 0.8;">Narrow down by shell styles, materials, and sizes, or leave at defaults for maximum matches.</span>
+    </div>
+
     <div class="filter-grid">
         <div>
             <label for="filterShellType">Shell Type:</label>
@@ -151,36 +194,9 @@
         </div>
     </div>
 
-    <h3>Contact Requirements</h3>
-    <div id="groups">
-        <div class="row">
-            <div class="val-container"></div>
-            <div style="flex: 1.2;">
-                <label>Contact Material / Type</label>
-                <select class="contact-material">
-                    <option value="STD">Standard Crimp (Copper Alloy - Gold Plated)</option>
-                    <option value="TC_K">Thermocouple Type K (Alumel / Chromel)</option>
-                    <option value="TC_J">Thermocouple Type J (Iron / Constantan)</option>
-                    <option value="TC_E">Thermocouple Type E (Chromel / Constantan)</option>
-                    <option value="TC_T">Thermocouple Type T (Copper / Constantan)</option>
-                    <option value="COAX">Coax / Shielded Contact (Size 8/12/16)</option>
-                </select>
-            </div>
-            <div style="flex: 0.4;">
-                <label>Qty</label>
-                <input type="number" class="qty" value="4" placeholder="Qty">
-            </div>
-        </div>
-    </div>
-
-    <div class="checkbox-row">
-        <input type="checkbox" id="includeStdContacts">
-        <label for="includeStdContacts" style="font-weight: normal; margin-bottom: 0;">Include Standard Gold-Plated Contacts in BOM (Unchecked = Included with Connector Housing)</label>
-    </div>
-
-    <div style="margin-top: 15px; display: flex; gap: 10px;">
-        <button type="button" class="btn-outline" onclick="addGroup()">+ Add Contact Group</button>
+    <div style="margin-top: 15px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
         <button type="button" onclick="calculate()">Calculate Solution</button>
+        <button type="button" class="btn-outline" onclick="resetConfigurationFilters()" style="padding: 10px 18px;">Reset Optional Filters</button>
     </div>
 </div>
 
@@ -229,16 +245,22 @@
 </div>
 
 <div class="floating-nav" id="floatingNav">
-    <button type="button" class="floating-nav-btn" onclick="scrollToTop()" aria-label="Return to Top" title="Return to Top">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="18 15 12 9 6 15"></polyline>
-        </svg>
-    </button>
-    <button type="button" class="floating-nav-btn" onclick="scrollToBOM()" aria-label="Skip to BOM" title="Skip to BOM / Export Manager">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="6 9 12 15 18 9"></polyline>
-        </svg>
-    </button>
+    <div class="floating-nav-item">
+        <span class="floating-nav-label">Return to Top</span>
+        <button type="button" class="floating-nav-btn" onclick="scrollToTop()" aria-label="Return to Top">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
+        </button>
+    </div>
+    <div class="floating-nav-item">
+        <span class="floating-nav-label">Skip to BOM</span>
+        <button type="button" class="floating-nav-btn" onclick="scrollToBOM()" aria-label="Skip to BOM">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+        </button>
+    </div>
 </div>
 
 <!-- Image Lightbox Modal -->
