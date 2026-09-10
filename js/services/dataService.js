@@ -193,7 +193,7 @@ const DataService = (function () {
 
         // Dynamic Calculations
         getBackshellOptions: function (shellSize, finishCode) {
-            const isAutoSport = ['06', '07', '08', '10', '12'].includes(String(shellSize));
+            const isAutoSport = ['06', '07', '08', '10', '12', '14', '16', '18', '20', '22', '24'].includes(String(shellSize));
             if (isAutoSport) {
                 const sz = String(shellSize).padStart(2, '0');
                 let straightPn = '202K121-25-0';
@@ -211,6 +211,21 @@ const DataService = (function () {
                     straightPrice = 14.50;
                     rightPn = '222K132-25-0';
                     rightPrice = 16.50;
+                } else if (['14', '16'].includes(sz)) {
+                    straightPn = '202K142-25-0';
+                    straightPrice = 16.50;
+                    rightPn = '222K142-25-0';
+                    rightPrice = 18.50;
+                } else if (['18', '20'].includes(sz)) {
+                    straightPn = '202K153-25-0';
+                    straightPrice = 18.50;
+                    rightPn = '222K153-25-0';
+                    rightPrice = 20.50;
+                } else if (['22', '24'].includes(sz)) {
+                    straightPn = '202K163-25-0';
+                    straightPrice = 20.50;
+                    rightPn = '222K163-25-0';
+                    rightPrice = 22.50;
                 }
 
                 return {
@@ -269,7 +284,7 @@ const DataService = (function () {
         },
 
         getDustCapOptions: function (shellSize, finishCode, letterCode) {
-            const isAutoSport = ['06', '07', '08', '10', '12'].includes(String(shellSize));
+            const isAutoSport = ['06', '07', '08', '10', '12', '14', '16', '18', '20', '22', '24'].includes(String(shellSize));
             if (isAutoSport) {
                 const sz = String(shellSize).padStart(2, '0');
                 return {

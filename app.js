@@ -76,7 +76,7 @@ const CONNECTOR_TO_BACKSHELL_FINISH = {
 };
 
 function getBackshellOptions(shellSize, finishCode) {
-    const isAutoSport = ['06', '07', '08', '10', '12'].includes(String(shellSize));
+    const isAutoSport = ['06', '07', '08', '10', '12', '14', '16', '18', '20', '22', '24'].includes(String(shellSize));
     if (isAutoSport) {
         const sz = String(shellSize).padStart(2, '0');
         let straightPn = '202K121-25-0';
@@ -94,6 +94,21 @@ function getBackshellOptions(shellSize, finishCode) {
             straightPrice = 14.50;
             rightPn = '222K132-25-0';
             rightPrice = 16.50;
+        } else if (['14', '16'].includes(sz)) {
+            straightPn = '202K142-25-0';
+            straightPrice = 16.50;
+            rightPn = '222K142-25-0';
+            rightPrice = 18.50;
+        } else if (['18', '20'].includes(sz)) {
+            straightPn = '202K153-25-0';
+            straightPrice = 18.50;
+            rightPn = '222K153-25-0';
+            rightPrice = 20.50;
+        } else if (['22', '24'].includes(sz)) {
+            straightPn = '202K163-25-0';
+            straightPrice = 20.50;
+            rightPn = '222K163-25-0';
+            rightPrice = 22.50;
         }
         return {
             "BOOT_STRAIGHT": {
@@ -148,7 +163,7 @@ function getBackshellOptions(shellSize, finishCode) {
 }
 
 function getDustCapOptions(shellSize, finishCode, letterCode) {
-    const isAutoSport = ['06', '07', '08', '10', '12'].includes(String(shellSize));
+    const isAutoSport = ['06', '07', '08', '10', '12', '14', '16', '18', '20', '22', '24'].includes(String(shellSize));
     if (isAutoSport) {
         const sz = String(shellSize).padStart(2, '0');
         return {
@@ -226,7 +241,10 @@ masterLayouts.forEach(layout => {
             { type: '2-Hole Flange PCB Receptacle', asCode: '2', name: '2-Hole Flange PCB Receptacle' }
         ];
 
-        const priceMap = { '06': 48.00, '07': 52.00, '08': 58.00, '10': 66.00, '12': 74.00 };
+        const priceMap = { 
+            '06': 48.00, '07': 52.00, '08': 58.00, '10': 66.00, '12': 74.00,
+            '14': 82.00, '16': 90.00, '18': 98.00, '20': 106.00, '22': 114.00, '24': 122.00
+        };
         const basePrice = priceMap[layout.shellSize] || 50.00;
 
         asStyles.forEach(st => {
@@ -255,7 +273,7 @@ masterLayouts.forEach(layout => {
                         fastenerUrl: 'https://www.mcmaster.com/',
                         fastenerQty: 2,
                         unitPriceFastener: 4.50,
-                        diagramImg: layout.diagramImg || ((layout.arrangement === '06-05') ? '' : `assets/inserts/${layout.arrangement}.png`),
+                        diagramImg: layout.diagramImg || `assets/inserts/${layout.arrangement}.png`,
                         cutoutImg: '',
                         pins: layout.pins,
                         counts: layout.counts
@@ -395,12 +413,18 @@ function updatePnStandardFilters() {
             <option value="2-Hole Flange PCB Receptacle">2-Hole Flange PCB Receptacle (ASL2 / AS2)</option>
         `;
         shellSizeSelect.innerHTML = `
-            <option value="ALL">All Shell Sizes (06, 07, 08, 10, 12)</option>
+            <option value="ALL">All Shell Sizes (06 - 24)</option>
             <option value="06">Size 06 (ASL Micro Lite)</option>
             <option value="07">Size 07 (AS Mini)</option>
             <option value="08">Size 08 (AS Standard)</option>
             <option value="10">Size 10 (AS Standard)</option>
             <option value="12">Size 12 (AS Standard)</option>
+            <option value="14">Size 14 (AS Standard)</option>
+            <option value="16">Size 16 (AS Standard)</option>
+            <option value="18">Size 18 (AS Standard)</option>
+            <option value="20">Size 20 (AS Standard)</option>
+            <option value="22">Size 22 (AS Standard)</option>
+            <option value="24">Size 24 (AS Standard)</option>
         `;
         finishSelect.innerHTML = `
             <option value="ALL">All Finishes</option>
@@ -1085,7 +1109,7 @@ function renderSolutionPairHTML(pair, index) {
     const priDustCaps = getDustCapOptions(pri.shellSize, pri.finish, pri.letterCode);
     const priCap = pri.shellType === 'Plug' ? priDustCaps.plugCap : priDustCaps.receptacleCap;
 
-    const isAutoSport = pnType === 'as' || ['06','07','08','10','12'].includes(pri.shellSize);
+    const isAutoSport = pnType === 'as' || ['06','07','08','10','12','14','16','18','20','22','24'].includes(pri.shellSize);
 
     const priIsFlange = pri.shellType === '2-Hole Flange Receptacle' || pri.shellType === '2-Hole Flange PCB Receptacle' || pri.shellType === 'Wall Mount';
     const priIsWall = pri.shellType === 'Wall Mount';

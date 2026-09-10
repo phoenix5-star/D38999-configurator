@@ -32,11 +32,13 @@
 
                 if (condition) {
                     passed++;
+                    item.className = 'test-pass';
                     item.style.background = '#e6ffed';
                     item.style.color = '#155724';
                     item.innerHTML = `✅ <strong>PASS:</strong> ${desc}`;
                 } else {
                     failed++;
+                    item.className = 'test-fail';
                     item.style.background = '#ffeef0';
                     item.style.color = '#721c24';
                     item.innerHTML = `❌ <strong>FAIL:</strong> ${desc} - <small>${details || ''}</small>`;
@@ -96,6 +98,21 @@
                 assert('Decoder: AutoSport AS010-13SN shellType is 2-Hole Flange Receptacle', dAS && dAS.shellType === '2-Hole Flange Receptacle');
                 assert('Decoder: AutoSport AS010-13SN arrangement is 10-13', dAS && dAS.arrangement === '10-13');
                 assert('Decoder: AutoSport AS010-13SN contactType is S', dAS && dAS.contactType === 'S');
+
+                const dAS14 = DecoderEngine.parse('AS614-19PN');
+                assert('Decoder: AutoSport AS614-19PN standard is as', dAS14 && dAS14.standard === 'as');
+                assert('Decoder: AutoSport AS614-19PN shellSize is 14', dAS14 && dAS14.shellSize === '14');
+                assert('Decoder: AutoSport AS614-19PN arrangement is 14-19', dAS14 && dAS14.arrangement === '14-19');
+
+                const dAS20 = DecoderEngine.parse('AS620-16PN');
+                assert('Decoder: AutoSport AS620-16PN standard is as', dAS20 && dAS20.standard === 'as');
+                assert('Decoder: AutoSport AS620-16PN shellSize is 20', dAS20 && dAS20.shellSize === '20');
+                assert('Decoder: AutoSport AS620-16PN arrangement is 20-16', dAS20 && dAS20.arrangement === '20-16');
+
+                const dAS24 = DecoderEngine.parse('AS024-61SN');
+                assert('Decoder: AutoSport AS024-61SN standard is as', dAS24 && dAS24.standard === 'as');
+                assert('Decoder: AutoSport AS024-61SN shellSize is 24', dAS24 && dAS24.shellSize === '24');
+                assert('Decoder: AutoSport AS024-61SN arrangement is 24-61', dAS24 && dAS24.arrangement === '24-61');
 
                 // TEST 5: ToolingEngine - 22D Pin and Socket
                 const shop = DataService.getShopInventory();

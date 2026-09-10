@@ -115,8 +115,12 @@ try {
         $testFailures += "Deutsch AutoSport series definition missing or incorrect in series.json."
     }
 
-    # Verify authentic TE AutoSport layouts from catalog pages 11 & 12
-    $expectedAsArrangements = @('06-05', '07-35', '07-98', '08-35', '08-98', '10-02', '10-03', '10-35', '10-98', '12-04', '12-35', '12-98')
+    # Verify authentic TE AutoSport layouts (including expanded shells 14-24)
+    $expectedAsArrangements = @(
+        '06-05', '07-35', '07-98', '08-35', '08-98', '10-02', '10-03', '10-35', '10-98', '12-04', '12-35', '12-98',
+        '14-19', '14-35', '14-97', '16-08', '16-26', '16-35', '18-32', '18-35',
+        '20-16', '20-35', '20-39', '20-41', '22-21', '22-35', '22-55', '24-29', '24-35', '24-61'
+    )
     $asLayouts = $layouts | Where-Object { $_.seriesId -eq "deutsch_autosport" }
     $missingAs = @()
     foreach ($arr in $expectedAsArrangements) {
@@ -125,7 +129,7 @@ try {
         }
     }
     if ($missingAs.Count -eq 0) {
-        Write-Host "[PASS] All 12 authentic Deutsch AutoSport catalog arrangements verified ($($expectedAsArrangements -join ', '))." -ForegroundColor Green
+        Write-Host "[PASS] All 30 authentic Deutsch AutoSport catalog arrangements verified ($($expectedAsArrangements.Count) arrangements across shells 06-24)." -ForegroundColor Green
     } else {
         $testFailures += "Missing authentic AutoSport arrangements: $($missingAs -join ', ')"
     }

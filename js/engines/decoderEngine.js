@@ -54,8 +54,8 @@ const DecoderEngine = (function () {
         };
 
         // 0. Check Deutsch AutoSport pattern (ASL, ASM, AS)
-        // e.g. ASL606-05PN, ASL006-05SN, ASM607-05PN, AS608-04PN, AS010-13SN, AS710-05PN, AS612-10SN
-        const asMatch = raw.match(/^(ASL|ASM|AS)([01267])[-_]?([01]?[0-9])[-_]?([0-9]{2,3})([PSAB])([NABCDEU]?)/);
+        // e.g. ASL606-05PN, ASL006-05SN, ASM607-05PN, AS608-04PN, AS010-13SN, AS710-05PN, AS612-10SN, AS620-16PN, AS624-61PN
+        const asMatch = raw.match(/^(ASL|ASM|AS)([01267])[-_]?([0-2]?[0-9])[-_]?([0-9]{2,3})([PSAB])([NABCDEU]?)/);
         if (asMatch) {
             res.standard = 'as';
             const styleCode = asMatch[2];    // '6', '0', '7', '1', '2'

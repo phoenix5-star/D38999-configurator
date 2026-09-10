@@ -66,7 +66,7 @@ const ConfiguratorEngine = (function () {
         if (!primary) return null;
         const db = database || [];
 
-        const isAutoSport = primary.seriesId === 'deutsch_autosport' || pnType === 'as' || ['06','07','08','10','12'].includes(primary.shellSize);
+        const isAutoSport = primary.seriesId === 'deutsch_autosport' || pnType === 'as' || ['06','07','08','10','12','14','16','18','20','22','24'].includes(primary.shellSize);
 
         if (!targetShellType) {
             if (isAutoSport) {
