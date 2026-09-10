@@ -24,12 +24,73 @@ let currentTab = 'tooling';
 let isUnlocked = true; // Default unlocked for local author workflow
 let baselineData = null;
 
+// GitHub staging & batch publishing state
+let dirtyDomains = new Set();
+let pendingImages = new Map(); // path -> { filename, path, base64Data, previewUrl, size, originalName }
+
+function stagePendingImage(path, obj) {
+    pendingImages.set(path, obj);
+    dirtyDomains.add('layouts');
+    updateStagingBar();
+}
+
+function updateStagingBar() {
+    const bar = document.getElementById('adminStagingBar');
+    const badge = document.getElementById('stagingCountBadge');
+    const summary = document.getElementById('stagingSummaryText');
+    if (!bar) return;
+
+    const totalChanges = dirtyDomains.size + pendingImages.size;
+    if (totalChanges === 0) {
+        bar.style.display = 'none';
+        return;
+    }
+
+    bar.style.display = 'flex';
+    if (badge) {
+        badge.textContent = `${totalChanges} Staged Change${totalChanges === 1 ? '' : 's'}`;
+    }
+    if (summary) {
+        const parts = [];
+        if (dirtyDomains.size > 0) {
+            parts.push(`Modified domains: ${Array.from(dirtyDomains).map(d => `data/${d}.json`).join(', ')}`);
+        }
+        if (pendingImages.size > 0) {
+            parts.push(`${pendingImages.size} diagram image${pendingImages.size === 1 ? '' : 's'} attached`);
+        }
+        summary.textContent = parts.join(' • ');
+    }
+}
+
+function discardStagedChanges() {
+    if (dirtyDomains.size === 0 && pendingImages.size === 0) {
+        alert('No uncommitted changes in working draft.');
+        return;
+    }
+    if (!confirm('Are you sure you want to discard all staged working changes? All unsaved edits and attached images will be reverted to the baseline catalog.')) {
+        return;
+    }
+
+    if (baselineData) {
+        workingData = JSON.parse(JSON.stringify(baselineData));
+    } else if (typeof DataService !== 'undefined') {
+        workingData = JSON.parse(JSON.stringify(DataService.rawData));
+    }
+    localStorage.removeItem('admin_working_data');
+    dirtyDomains.clear();
+    pendingImages.clear();
+    updateStagingBar();
+    renderActiveTab();
+    alert('Working draft discarded. Reverted to clean baseline catalog.');
+}
+
 function saveWorkingDataState() {
     try {
         localStorage.setItem('admin_working_data', JSON.stringify(workingData));
     } catch (e) {
         console.warn('Storage quota warning:', e);
     }
+    updateStagingBar();
 }
 
 const HistoryService = {
@@ -58,6 +119,10 @@ const HistoryService = {
             localStorage.setItem('admin_change_history', JSON.stringify(history));
         } catch (e) {
             console.warn('Storage quota warning:', e);
+        }
+        if (category) {
+            dirtyDomains.add(category);
+            updateStagingBar();
         }
         return entry;
     },
@@ -88,6 +153,9 @@ const HistoryService = {
         }
         localStorage.removeItem('admin_working_data');
         localStorage.removeItem('admin_change_history');
+        dirtyDomains.clear();
+        pendingImages.clear();
+        updateStagingBar();
         if (baselineData) {
             workingData = JSON.parse(JSON.stringify(baselineData));
         } else if (typeof DataService !== 'undefined') {
@@ -228,10 +296,9 @@ async function loadData() {
                     healed = true;
                 }
             });
-            if (healed) {
-                saveWorkingDataState();
-            }
         }
+        updateGitHubStatusPill();
+        updateStagingBar();
     }
 }
 
@@ -581,11 +648,14 @@ function saveRemovalToolModal() {
     const tool = workingData.tooling.insertionExtractionTools[sz];
     if (!tool) return;
 
+    const prevObj = JSON.parse(JSON.stringify(tool));
     tool.toolPN = document.getElementById('removalToolFormPN').value.trim();
     tool.colors = document.getElementById('removalToolFormColors').value.trim();
     tool.desc = document.getElementById('removalToolFormDesc').value.trim();
     tool.status = document.getElementById('removalToolFormStatus').value;
 
+    HistoryService.logChange('tooling', 'UPDATE', `Insertion/Extraction tool size ${sz} (${tool.toolPN})`, prevObj, tool);
+    saveWorkingDataState();
     closeAllModals();
     renderActiveTab();
 }
@@ -843,8 +913,27 @@ function handleLayoutImageFile(input) {
         const reader = new FileReader();
         reader.onload = function(e) {
             const dataUrl = e.target.result;
-            document.getElementById('layoutFormImageUrl').value = dataUrl;
-            showLayoutImagePreview(dataUrl, `${file.name} (${(file.size / 1024).toFixed(1)} KB)`);
+            const arrangement = (document.getElementById('layoutFormArrangement')?.value || '').trim();
+            let targetFilename = file.name;
+            if (arrangement) {
+                const ext = file.name.split('.').pop() || 'png';
+                targetFilename = arrangement.replace(/[^a-zA-Z0-9_-]/g, '_') + '.' + ext;
+            }
+            const repoPath = 'assets/inserts/' + targetFilename;
+
+            stagePendingImage(repoPath, {
+                filename: targetFilename,
+                path: repoPath,
+                base64Data: dataUrl,
+                previewUrl: dataUrl,
+                size: file.size,
+                originalName: file.name
+            });
+
+            document.getElementById('layoutFormImageUrl').value = repoPath;
+            showLayoutImagePreview(dataUrl, `${targetFilename} (${(file.size / 1024).toFixed(1)} KB) • Staged for GitHub`);
+            dirtyDomains.add('layouts');
+            updateStagingBar();
         };
         reader.readAsDataURL(file);
     }
@@ -954,8 +1043,24 @@ function saveLayoutModal() {
         pins
     };
 
-    if (diagramImg) {
-        newLayout.diagramImg = diagramImg;
+    let finalDiagramImg = diagramImg;
+    if (diagramImg && diagramImg.startsWith('data:image/')) {
+        // Automatically stage data URLs as clean insert assets
+        const sanitized = arrangement.replace(/[^a-zA-Z0-9_-]/g, '_');
+        const repoPath = `assets/inserts/${sanitized}.png`;
+        stagePendingImage(repoPath, {
+            filename: `${sanitized}.png`,
+            path: repoPath,
+            base64Data: diagramImg,
+            previewUrl: diagramImg,
+            size: Math.round((diagramImg.length * 3) / 4),
+            originalName: `${sanitized}.png`
+        });
+        finalDiagramImg = repoPath;
+    }
+
+    if (finalDiagramImg) {
+        newLayout.diagramImg = finalDiagramImg;
     }
 
     if (editIndex >= 0 && editIndex < workingData.layouts.length) {
@@ -1363,4 +1468,301 @@ function escapeHtml(str) {
     if (typeof str !== 'string') return String(str || '');
     return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
+
+/* ==========================================================================
+   GitHub Settings & Publish Modal Controllers
+   ========================================================================== */
+
+function openGitHubSettingsModal() {
+    const modal = document.getElementById('githubSettingsModal');
+    if (!modal) return;
+
+    const settings = (typeof GitHubService !== 'undefined') ? GitHubService.getSettings() : { repo: 'phoenix5-star/D38999-configurator', branch: 'main', token: '', remember: false };
+    const repoInput = document.getElementById('ghSettingsRepo');
+    const branchInput = document.getElementById('ghSettingsBranch');
+    const tokenInput = document.getElementById('ghSettingsToken');
+    const rememberInput = document.getElementById('ghSettingsRemember');
+    const alertBox = document.getElementById('ghSettingsAlert');
+
+    if (repoInput) repoInput.value = settings.repo;
+    if (branchInput) branchInput.value = settings.branch;
+    if (tokenInput) tokenInput.value = settings.token;
+    if (rememberInput) rememberInput.checked = settings.remember;
+    if (alertBox) alertBox.style.display = 'none';
+
+    modal.classList.add('active');
+}
+
+function closeGitHubSettingsModal() {
+    const modal = document.getElementById('githubSettingsModal');
+    if (modal) modal.classList.remove('active');
+}
+
+function toggleGitHubTokenVisibility() {
+    const input = document.getElementById('ghSettingsToken');
+    const btn = document.getElementById('ghTokenToggleBtn');
+    if (!input) return;
+    if (input.type === 'password') {
+        input.type = 'text';
+        if (btn) btn.textContent = '🔒';
+    } else {
+        input.type = 'password';
+        if (btn) btn.textContent = '👁️';
+    }
+}
+
+async function testGitHubConnection() {
+    const alertBox = document.getElementById('ghSettingsAlert');
+    const testBtn = document.getElementById('ghTestBtn');
+    const repo = (document.getElementById('ghSettingsRepo')?.value || '').trim();
+    const branch = (document.getElementById('ghSettingsBranch')?.value || '').trim();
+    const token = (document.getElementById('ghSettingsToken')?.value || '').trim();
+
+    if (!token) {
+        if (alertBox) {
+            alertBox.style.display = 'block';
+            alertBox.style.background = 'rgba(239, 68, 68, 0.1)';
+            alertBox.style.color = '#dc2626';
+            alertBox.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+            alertBox.innerHTML = '❌ Please enter a GitHub Personal Access Token to test.';
+        }
+        return;
+    }
+
+    if (testBtn) {
+        testBtn.disabled = true;
+        testBtn.textContent = 'Testing...';
+    }
+
+    try {
+        const res = await GitHubService.testConnection({ repo, branch, token });
+        if (alertBox) {
+            alertBox.style.display = 'block';
+            alertBox.style.background = 'rgba(34, 197, 94, 0.1)';
+            alertBox.style.color = '#15803d';
+            alertBox.style.border = '1px solid rgba(34, 197, 94, 0.3)';
+            alertBox.innerHTML = `✅ <strong>Connected!</strong> Repository <code>${escapeHtml(res.repoName)}</code> verified on branch <code>${escapeHtml(res.targetBranch)}</code>. Push permissions: <strong>${res.canPush ? 'Verified (Ready to publish)' : 'Read-Only'}</strong>`;
+        }
+    } catch (err) {
+        if (alertBox) {
+            alertBox.style.display = 'block';
+            alertBox.style.background = 'rgba(239, 68, 68, 0.1)';
+            alertBox.style.color = '#dc2626';
+            alertBox.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+            alertBox.innerHTML = `❌ <strong>Connection Failed:</strong> ${escapeHtml(err.message)}`;
+        }
+    } finally {
+        if (testBtn) {
+            testBtn.disabled = false;
+            testBtn.textContent = '🔌 Test Connection';
+        }
+    }
+}
+
+function saveGitHubSettingsForm() {
+    const repo = (document.getElementById('ghSettingsRepo')?.value || '').trim();
+    const branch = (document.getElementById('ghSettingsBranch')?.value || '').trim();
+    const token = (document.getElementById('ghSettingsToken')?.value || '').trim();
+    const remember = Boolean(document.getElementById('ghSettingsRemember')?.checked);
+
+    if (typeof GitHubService !== 'undefined') {
+        GitHubService.saveSettings({ repo, branch, token, remember });
+    }
+    updateGitHubStatusPill();
+    closeGitHubSettingsModal();
+}
+
+function clearGitHubSettingsForm() {
+    if (confirm('Clear saved GitHub credentials from this browser?')) {
+        if (typeof GitHubService !== 'undefined') {
+            GitHubService.clearSettings();
+        }
+        const tokenInput = document.getElementById('ghSettingsToken');
+        if (tokenInput) tokenInput.value = '';
+        updateGitHubStatusPill();
+        const alertBox = document.getElementById('ghSettingsAlert');
+        if (alertBox) alertBox.style.display = 'none';
+        alert('GitHub credentials cleared.');
+    }
+}
+
+function updateGitHubStatusPill() {
+    const pill = document.getElementById('githubStatusPill');
+    const text = document.getElementById('githubStatusText');
+    if (!pill || !text) return;
+
+    const settings = (typeof GitHubService !== 'undefined') ? GitHubService.getSettings() : { isConnected: false };
+    if (settings.isConnected) {
+        pill.className = 'github-status-pill connected';
+        text.textContent = `GitHub: ${settings.branch}`;
+        pill.title = `Connected to ${settings.repo} (${settings.branch}) - Click to configure`;
+    } else {
+        pill.className = 'github-status-pill unconfigured';
+        text.textContent = 'GitHub Setup';
+        pill.title = 'GitHub Sync Settings (Click to configure token)';
+    }
+}
+
+/* Review & Publish Modal Handlers */
+function openGitHubPublishModal() {
+    if (dirtyDomains.size === 0 && pendingImages.size === 0) {
+        alert('No uncommitted changes in working draft. Make edits to layouts or tooling first.');
+        return;
+    }
+
+    const settings = (typeof GitHubService !== 'undefined') ? GitHubService.getSettings() : { isConnected: false };
+    if (!settings.isConnected) {
+        alert('GitHub token is not configured yet. Opening GitHub Sync Settings...');
+        openGitHubSettingsModal();
+        return;
+    }
+
+    const modal = document.getElementById('githubPublishModal');
+    if (!modal) return;
+
+    // Reset progress/success boxes
+    const progressBox = document.getElementById('ghPublishProgressBox');
+    const successBox = document.getElementById('ghPublishSuccessBox');
+    const actionButtons = document.getElementById('ghPublishActionButtons');
+    if (progressBox) progressBox.style.display = 'none';
+    if (successBox) successBox.style.display = 'none';
+    if (actionButtons) actionButtons.style.display = 'flex';
+
+    // Target info
+    const targetRepo = document.getElementById('ghPublishTargetRepo');
+    const targetBranch = document.getElementById('ghPublishTargetBranch');
+    const summaryBadge = document.getElementById('ghPublishChangeSummaryBadge');
+    if (targetRepo) targetRepo.textContent = settings.repo;
+    if (targetBranch) targetBranch.textContent = settings.branch;
+    const totalFiles = dirtyDomains.size + pendingImages.size;
+    if (summaryBadge) summaryBadge.textContent = `${totalFiles} file${totalFiles === 1 ? '' : 's'} to commit`;
+
+    // Render diff list
+    const diffContainer = document.getElementById('ghPublishDiffContainer');
+    if (diffContainer) {
+        let diffHtml = '';
+        // JSON Domains
+        dirtyDomains.forEach(domain => {
+            const count = Array.isArray(workingData[domain]) ? `${workingData[domain].length} items` : 'updated';
+            diffHtml += `
+                <div class="gh-diff-item">
+                    <div class="gh-diff-item-left">
+                        <span class="gh-diff-badge badge-file">JSON</span>
+                        <div>
+                            <strong>data/${escapeHtml(domain)}.json</strong>
+                            <div style="font-size: 0.75rem; opacity: 0.75;">Catalog dataset (${count})</div>
+                        </div>
+                    </div>
+                    <span class="admin-header-badge unlocked">Modified</span>
+                </div>
+            `;
+        });
+
+        // Images
+        pendingImages.forEach((imgObj, imgPath) => {
+            diffHtml += `
+                <div class="gh-diff-item">
+                    <div class="gh-diff-item-left">
+                        ${imgObj.previewUrl ? `<img src="${escapeHtml(imgObj.previewUrl)}" class="gh-diff-thumb" alt="thumb">` : `<span class="gh-diff-badge badge-image">IMG</span>`}
+                        <div>
+                            <strong>${escapeHtml(imgPath)}</strong>
+                            <div style="font-size: 0.75rem; opacity: 0.75;">${escapeHtml(imgObj.filename)} (${(imgObj.size / 1024).toFixed(1)} KB)</div>
+                        </div>
+                    </div>
+                    <span class="admin-header-badge unlocked">New Diagram</span>
+                </div>
+            `;
+        });
+
+        diffContainer.innerHTML = diffHtml;
+    }
+
+    // Default commit message
+    const msgInput = document.getElementById('ghCommitMessage');
+    if (msgInput) {
+        if (pendingImages.size > 0 && dirtyDomains.has('layouts')) {
+            const firstImg = Array.from(pendingImages.values())[0];
+            const baseName = firstImg.filename.replace(/\.[^/.]+$/, '');
+            msgInput.value = `feat(catalog): add AS ${baseName} insert arrangement and diagram image`;
+        } else {
+            msgInput.value = `feat(catalog): batch update ${Array.from(dirtyDomains).join(', ')} from admin console`;
+        }
+    }
+
+    modal.classList.add('active');
+}
+
+function closeGitHubPublishModal() {
+    const modal = document.getElementById('githubPublishModal');
+    if (modal) modal.classList.remove('active');
+}
+
+async function executeGitHubPublish() {
+    const settings = (typeof GitHubService !== 'undefined') ? GitHubService.getSettings() : null;
+    if (!settings || !settings.token) {
+        alert('GitHub token is missing. Please configure your settings.');
+        openGitHubSettingsModal();
+        return;
+    }
+
+    const commitMsg = (document.getElementById('ghCommitMessage')?.value || '').trim() || 'feat(catalog): catalog database updates';
+    const progressBox = document.getElementById('ghPublishProgressBox');
+    const stepTitle = document.getElementById('ghPublishStepTitle');
+    const stepDetail = document.getElementById('ghPublishStepDetail');
+    const actionButtons = document.getElementById('ghPublishActionButtons');
+    const successBox = document.getElementById('ghPublishSuccessBox');
+    const successBranch = document.getElementById('ghSuccessBranch');
+    const successCommitLink = document.getElementById('ghSuccessCommitLink');
+
+    if (actionButtons) actionButtons.style.display = 'none';
+    if (progressBox) progressBox.style.display = 'block';
+
+    try {
+        const res = await GitHubService.publishBatch(settings, {
+            dirtyDomains,
+            workingData,
+            pendingImages,
+            commitMessage: commitMsg,
+            progressCallback: (step, title, detail) => {
+                if (stepTitle) stepTitle.textContent = title;
+                if (stepDetail) stepDetail.textContent = detail;
+            }
+        });
+
+        // Publish succeeded!
+        if (progressBox) progressBox.style.display = 'none';
+        if (successBox) successBox.style.display = 'block';
+        if (successBranch) successBranch.textContent = res.branch;
+        if (successCommitLink) {
+            successCommitLink.href = res.commitUrl;
+            successCommitLink.textContent = `🔗 View Commit (${res.commitSha.slice(0, 7)}) on GitHub`;
+        }
+
+        // Clean up staged state
+        dirtyDomains.clear();
+        pendingImages.clear();
+        updateStagingBar();
+        baselineData = JSON.parse(JSON.stringify(workingData));
+        saveWorkingDataState();
+        renderActiveTab();
+    } catch (err) {
+        console.error('[GitHub Publish Error]', err);
+        if (progressBox) progressBox.style.display = 'none';
+        if (actionButtons) actionButtons.style.display = 'flex';
+        alert(`Failed to publish batch commit to GitHub:\n\n${err.message}`);
+    }
+}
+
+window.openGitHubSettingsModal = openGitHubSettingsModal;
+window.closeGitHubSettingsModal = closeGitHubSettingsModal;
+window.toggleGitHubTokenVisibility = toggleGitHubTokenVisibility;
+window.testGitHubConnection = testGitHubConnection;
+window.saveGitHubSettingsForm = saveGitHubSettingsForm;
+window.clearGitHubSettingsForm = clearGitHubSettingsForm;
+window.updateGitHubStatusPill = updateGitHubStatusPill;
+window.openGitHubPublishModal = openGitHubPublishModal;
+window.closeGitHubPublishModal = closeGitHubPublishModal;
+window.executeGitHubPublish = executeGitHubPublish;
+window.discardStagedChanges = discardStagedChanges;
+
 

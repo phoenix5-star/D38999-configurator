@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="admin.css?v=2.1.4">
     <script src="data/fallbackData.js?v=2.1.4"></script>
     <script src="js/services/dataService.js?v=2.1.4"></script>
+    <script src="js/services/githubService.js?v=2.1.4"></script>
     <script src="js/admin.js?v=2.1.4" defer></script>
 </head>
 <body>
@@ -40,6 +41,11 @@
     </div>
     
     <div class="admin-toolbar-actions">
+        <button class="github-status-pill unconfigured" id="githubStatusPill" onclick="openGitHubSettingsModal()" title="GitHub Sync Settings (Click to configure)" type="button">
+            <span class="status-indicator" id="ghStatusIndicator"></span>
+            <span class="status-text" id="githubStatusText">GitHub Setup</span>
+        </button>
+
         <a href="index.html" onclick="logoutAndReturn(event)" class="admin-quick-nav" title="Return to Configurator">
             <svg style="width: 14px; height: 14px; fill: currentColor;" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
             Configurator Tool
@@ -56,6 +62,24 @@
             <svg class="moon-icon" viewBox="0 0 24 24">
                 <path d="M12.3 2a10 10 0 0 0-1.9 20 10 10 0 0 0 9.6-7 1 1 0 0 0-1.2-1.2 8.01 8.01 0 1 1-6.5-11.8 1 1 0 0 0-.01-2z"/>
             </svg>
+        </button>
+    </div>
+</div>
+
+<!-- Admin Staging / Batch Publish Dock -->
+<div id="adminStagingBar" class="admin-staging-bar" style="display: none;">
+    <div class="staging-info">
+        <span class="staging-pulse-icon">●</span>
+        <span class="staging-count-badge" id="stagingCountBadge">0 Staged Changes</span>
+        <span class="staging-summary-text" id="stagingSummaryText">Ready to publish to GitHub</span>
+    </div>
+    <div class="staging-actions">
+        <button type="button" class="btn-primary admin-btn-publish" onclick="openGitHubPublishModal()">
+            <svg style="width: 14px; height: 14px; fill: currentColor; margin-right: 6px;" viewBox="0 0 24 24"><path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2v9.67z"/></svg>
+            Review &amp; Publish to GitHub
+        </button>
+        <button type="button" class="btn-outline admin-btn-discard" onclick="discardStagedChanges()" title="Discard all unstaged working changes">
+            Discard Draft
         </button>
     </div>
 </div>
@@ -306,6 +330,143 @@
             <button type="button" class="admin-modal-close" onclick="closeAdminImageModal()" aria-label="Close">&times;</button>
         </div>
         <img id="adminImageModalSrc" src="" alt="Diagram" style="max-width: 100%; max-height: 420px; object-fit: contain; border-radius: 6px; border: 1px solid var(--card-border); background: #ffffff;">
+    </div>
+</div>
+
+<!-- Modal: GitHub Settings -->
+<div id="githubSettingsModal" class="admin-modal-overlay">
+    <div class="admin-modal-card" style="max-width: 540px;">
+        <div class="admin-modal-header">
+            <h3 style="margin: 0; display: flex; align-items: center; gap: 8px;">
+                <svg style="width: 20px; height: 20px; fill: currentColor;" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                GitHub Sync &amp; Publishing Settings
+            </h3>
+            <button type="button" class="admin-modal-close" onclick="closeGitHubSettingsModal()" aria-label="Close">&times;</button>
+        </div>
+        <p style="font-size: 0.85rem; opacity: 0.85; margin: 0 0 16px 0; line-height: 1.45;">
+            Connect the admin console directly to your GitHub repository. This enables administering layouts, tooling, and diagram images from any web browser without local Git installs.
+        </p>
+
+        <form id="githubSettingsForm" onsubmit="event.preventDefault(); saveGitHubSettingsForm();">
+            <div class="admin-form-group">
+                <label for="ghSettingsRepo">Repository (Owner/Repository)</label>
+                <input type="text" id="ghSettingsRepo" required placeholder="phoenix5-star/D38999-configurator" style="font-family: monospace;">
+            </div>
+
+            <div class="admin-form-group">
+                <label for="ghSettingsBranch">Target Branch</label>
+                <input type="text" id="ghSettingsBranch" required placeholder="main" style="font-family: monospace;">
+                <small style="opacity: 0.8; font-size: 0.75rem;">Default branch where GitHub Pages publishes from (typically <code>main</code>).</small>
+            </div>
+
+            <div class="admin-form-group">
+                <label for="ghSettingsToken">GitHub Personal Access Token (PAT)</label>
+                <div style="position: relative;">
+                    <input type="password" id="ghSettingsToken" placeholder="github_pat_... or ghp_..." style="font-family: monospace; padding-right: 40px; width: 100%; box-sizing: border-box;">
+                    <button type="button" id="ghTokenToggleBtn" onclick="toggleGitHubTokenVisibility()" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; opacity: 0.7;" title="Show/Hide Token">
+                        👁️
+                    </button>
+                </div>
+                <small style="opacity: 0.85; font-size: 0.75rem; line-height: 1.4; display: block; margin-top: 5px;">
+                    Use a Fine-Grained PAT scoped to this repo with <strong>Contents: Read and write</strong> permissions. Your token is never shared or transmitted anywhere except direct to <code>api.github.com</code>.
+                </small>
+            </div>
+
+            <div class="admin-form-group" style="margin-bottom: 14px;">
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal; cursor: pointer;">
+                    <input type="checkbox" id="ghSettingsRemember" style="margin: 0;">
+                    <span style="font-size: 0.85rem;">Remember token in this browser (stored in browser local storage)</span>
+                </label>
+            </div>
+
+            <div id="ghSettingsAlert" style="display: none; padding: 10px 12px; border-radius: 6px; font-size: 0.85rem; margin-bottom: 16px; line-height: 1.4;"></div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div style="display: flex; gap: 8px;">
+                    <button type="button" class="btn-outline admin-btn-sm" onclick="testGitHubConnection()" id="ghTestBtn" style="padding: 8px 14px; font-weight: 600;">
+                        🔌 Test Connection
+                    </button>
+                    <button type="button" class="btn-outline admin-btn-sm admin-btn-danger" onclick="clearGitHubSettingsForm()" style="padding: 8px 14px;">
+                        Clear Token
+                    </button>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button type="button" class="btn-outline admin-btn-sm" onclick="closeGitHubSettingsModal()" style="padding: 8px 16px;">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn-primary admin-btn-sm" style="padding: 8px 20px; font-weight: 600;">
+                        Save Settings
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal: Review & Publish Staged Changes -->
+<div id="githubPublishModal" class="admin-modal-overlay">
+    <div class="admin-modal-card" style="max-width: 680px;">
+        <div class="admin-modal-header">
+            <h3 style="margin: 0; display: flex; align-items: center; gap: 8px;">
+                <svg style="width: 20px; height: 20px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2v9.67z"/></svg>
+                Review &amp; Publish Staged Changes
+            </h3>
+            <button type="button" class="admin-modal-close" onclick="closeGitHubPublishModal()" aria-label="Close">&times;</button>
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--card-border);">
+            <div style="font-size: 0.85rem; opacity: 0.85;">
+                Target: <strong id="ghPublishTargetRepo" style="font-family: monospace;">phoenix5-star/D38999-configurator</strong> (<span id="ghPublishTargetBranch" style="font-family: monospace;">main</span>)
+            </div>
+            <span class="admin-header-badge unlocked" id="ghPublishChangeSummaryBadge">0 files to commit</span>
+        </div>
+
+        <!-- Staged items list -->
+        <div id="ghPublishDiffContainer" style="max-height: 280px; overflow-y: auto; margin-bottom: 16px; border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; background: var(--filter-bg);">
+            <!-- Dynamic diff items rendered by admin.js -->
+        </div>
+
+        <!-- Commit message input -->
+        <div class="admin-form-group" style="margin-bottom: 16px;">
+            <label for="ghCommitMessage" style="font-weight: 600; font-size: 0.85rem; margin-bottom: 6px; display: block;">
+                Git Commit Message
+            </label>
+            <input type="text" id="ghCommitMessage" required placeholder="feat(catalog): add AS 16-08 arrangement and diagram image" style="width: 100%; box-sizing: border-box; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-size: 0.9rem;">
+        </div>
+
+        <!-- Progress Box -->
+        <div id="ghPublishProgressBox" style="display: none; margin-bottom: 16px; padding: 14px; border-radius: 8px; background: var(--card-bg); border: 1px solid var(--card-border);">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                <div class="publish-spinner" style="width: 18px; height: 18px; border: 2px solid var(--input-border); border-top-color: var(--primary, #2563eb); border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+                <strong id="ghPublishStepTitle" style="font-size: 0.9rem;">Publishing changes...</strong>
+            </div>
+            <div id="ghPublishStepDetail" style="font-size: 0.8rem; opacity: 0.8; font-family: monospace;">Connecting to GitHub API...</div>
+        </div>
+
+        <!-- Success Box -->
+        <div id="ghPublishSuccessBox" style="display: none; margin-bottom: 16px; padding: 14px; border-radius: 8px; background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3);">
+            <div style="display: flex; align-items: center; gap: 8px; font-weight: 600; color: #15803d; margin-bottom: 6px;">
+                <span style="font-size: 1.2rem;">✅</span>
+                <span>Batch Successfully Published to GitHub!</span>
+            </div>
+            <p style="margin: 0 0 10px 0; font-size: 0.85rem; opacity: 0.9; line-height: 1.4;">
+                Your changes have been committed atomically to <code id="ghSuccessBranch">main</code>. GitHub Pages will build and deploy this update across all devices in ~45 seconds.
+            </p>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <a id="ghSuccessCommitLink" href="#" target="_blank" rel="noopener noreferrer" class="btn-outline admin-btn-sm" style="text-decoration: none; padding: 6px 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+                    🔗 View Commit on GitHub
+                </a>
+            </div>
+        </div>
+
+        <div class="admin-form-actions" id="ghPublishActionButtons">
+            <button type="button" class="btn-outline btn-modal-cancel" onclick="closeGitHubPublishModal()" style="width: auto; padding: 8px 18px;">
+                Cancel
+            </button>
+            <button type="button" class="btn-primary" id="ghPublishSubmitBtn" onclick="executeGitHubPublish()" style="width: auto; padding: 8px 24px; font-weight: 600;">
+                Publish to GitHub
+            </button>
+        </div>
     </div>
 </div>
 
