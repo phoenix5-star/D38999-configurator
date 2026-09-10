@@ -487,3 +487,226 @@
     border-radius: 4px;
     white-space: nowrap;
 }
+
+/* ==========================================================================
+   GitHub Sync, Staging Dock & Batch Publishing Styles
+   ========================================================================== */
+
+/* GitHub Status Pill */
+.github-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 12px;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--card-border);
+    background: var(--filter-bg);
+    color: var(--text-color);
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.github-status-pill:hover {
+    background: var(--input-border);
+}
+
+.github-status-pill .status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.github-status-pill.connected {
+    background: #DCFCE7;
+    color: #166534;
+    border-color: #86EFAC;
+}
+
+.github-status-pill.connected .status-indicator {
+    background: #16A34A;
+    box-shadow: 0 0 6px #22C55E;
+}
+
+[data-theme="dark"] .github-status-pill.connected {
+    background: #064E3B;
+    color: #A7F3D0;
+    border-color: #059669;
+}
+
+.github-status-pill.unconfigured {
+    opacity: 0.85;
+}
+
+.github-status-pill.unconfigured .status-indicator {
+    background: #94A3B8;
+}
+
+/* Staging Bar / Batch Publish Dock */
+.admin-staging-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px 18px;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(234, 88, 12, 0.04));
+    border: 1px solid #F59E0B;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.08);
+    animation: fadeIn 0.2s ease-out;
+}
+
+[data-theme="dark"] .admin-staging-bar {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(234, 88, 12, 0.08));
+    border-color: #B45309;
+}
+
+.staging-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.staging-pulse-icon {
+    color: #F59E0B;
+    font-size: 14px;
+    animation: pulse 1.5s infinite;
+}
+
+.staging-count-badge {
+    background: #F59E0B;
+    color: #FFFFFF;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 9999px;
+    letter-spacing: 0.3px;
+}
+
+.staging-summary-text {
+    font-size: 0.85rem;
+    color: var(--heading-color);
+    font-weight: 500;
+}
+
+.staging-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-btn-publish {
+    width: auto;
+    padding: 7px 18px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    background: #16A34A;
+    border-color: #16A34A;
+}
+
+.admin-btn-publish:hover {
+    background: #15803D;
+    border-color: #15803D;
+}
+
+.admin-btn-discard {
+    width: auto;
+    padding: 7px 14px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    color: #DC2626;
+    border-color: #FCA5A5;
+}
+
+.admin-btn-discard:hover {
+    background: rgba(220, 38, 38, 0.08);
+}
+
+/* Diff Line Items in Publish Modal */
+.gh-diff-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    border-radius: 6px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+}
+
+.gh-diff-item:last-child {
+    margin-bottom: 0;
+}
+
+.gh-diff-item-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.gh-diff-thumb {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    border-radius: 4px;
+    border: 1px solid var(--card-border);
+    background: #FFFFFF;
+    padding: 2px;
+}
+
+.gh-diff-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.gh-diff-badge.badge-file {
+    background: #DBEAFE;
+    color: #1D4ED8;
+    border: 1px solid #93C5FD;
+}
+
+.gh-diff-badge.badge-image {
+    background: #F3E8FF;
+    color: #7E22CE;
+    border: 1px solid #D8B4FE;
+}
+
+[data-theme="dark"] .gh-diff-badge.badge-file {
+    background: #1E3A8A;
+    color: #BFDBFE;
+    border-color: #2563EB;
+}
+
+[data-theme="dark"] .gh-diff-badge.badge-image {
+    background: #581C87;
+    color: #E9D5FF;
+    border-color: #7E22CE;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.9); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
