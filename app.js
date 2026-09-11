@@ -1,5 +1,5 @@
 // Configurator Metadata
-const CONFIG_VERSION = "V002.2.0";
+const CONFIG_VERSION = "V002.2.1";
 
 // Shop Tooling Inventory & Contact Ratings loaded via DataService
 const SHOP_TOOLING = (typeof DataService !== 'undefined') ? DataService.getShopInventory() : { frames: ["AFM8", "AF8"], positioners: ["K40", "K42", "K13-1", "TH163"] };
@@ -1301,9 +1301,6 @@ function renderSolutionPairHTML(pair, index) {
                     <a href="https://www.newark.com/search?st=${encodeURIComponent(pri.activePN)}" target="_blank">Newark ↗</a>
                 </div>
 
-                <div style="margin-top: 10px;">
-                    <button type="button" class="btn-outline" style="width: 100%;" onclick="exportSolutionToSkyCAD(${index}, true)">⚡ Export to SkyCAD (.SkyCadPackage)</button>
-                </div>
             </div>
 
             <div class="solution-card mating-card">
@@ -1387,10 +1384,6 @@ function renderSolutionPairHTML(pair, index) {
                     <a href="https://www.newark.com/search?st=${encodeURIComponent(mat.activePN)}" target="_blank">Newark ↗</a>` : ''}
                 </div>
 
-                ${mat ? `
-                <div style="margin-top: 10px;">
-                    <button type="button" class="btn-outline" style="width: 100%;" onclick="exportSolutionToSkyCAD(${index}, false)">⚡ Export to SkyCAD (.SkyCadPackage)</button>
-                </div>` : ''}
             </div>
         </div>
 
@@ -1761,72 +1754,15 @@ function exportToCSV() {
 }
 
 async function exportSolutionToSkyCAD(solutionIndex, isPrimary) {
-    const pair = currentCalculatedSolutions[solutionIndex];
-    if (!pair) return alert('Solution not found!');
-
-    const connObj = isPrimary ? pair.primary : pair.mating;
-    if (!connObj) return alert('Connector not found!');
-
-    if (typeof SkyCadExporter === 'undefined') {
-        return alert('SkyCAD exporter module is not loaded.');
-    }
-
-    const formattedData = SkyCadExporter.formatConnectorData(connObj, pair, isPrimary);
-    if (!formattedData) return alert('Unable to format connector data for SkyCAD export.');
-
-    await SkyCadExporter.downloadConnectorPackage(formattedData);
+    alert('SkyCAD package export is temporarily disabled while catalog GUID optimization is underway.');
+    return;
 }
 
 async function exportToSkyCAD() {
-    let activeListName = document.getElementById('projectListSelect').value;
-    let items = projectLists[activeListName] || [];
-    if (items.length === 0) return alert('Active project list is empty!');
-
-    if (typeof SkyCadExporter === 'undefined') {
-        return alert('SkyCAD exporter module is not loaded.');
-    }
-
-    // Identify connector items in active list
-    let connectorItems = items.filter(i => {
-        if (i.isConnector) return true;
-        if (i.desc && (i.desc.includes('Primary') || i.desc.includes('Mating') || i.desc.includes('Connector'))) return true;
-        if (i.pn && (i.pn.startsWith('D38999/') || i.pn.startsWith('TV') || i.pn.startsWith('AS0') || i.pn.startsWith('AS1') || i.pn.startsWith('AS6') || i.pn.startsWith('ACT'))) return true;
-        return false;
-    });
-
-    if (connectorItems.length === 0) {
-        return alert('No circular connectors found in the active project list to export.');
-    }
-
-    if (connectorItems.length > 1) {
-        const proceed = confirm(`Export ${connectorItems.length} connectors as individual SkyCAD packages (.SkyCadPackage)?\nYour browser may prompt you to allow multiple file downloads.`);
-        if (!proceed) return;
-    }
-
-    for (let idx = 0; idx < connectorItems.length; idx++) {
-        const cItem = connectorItems[idx];
-        let connData = cItem.skyCadData;
-        if (!connData) {
-            const safePN = SkyCadExporter.toSafePN(cItem.pn);
-            const isAutoSport = cItem.pn.startsWith('AS') || (cItem.desc && cItem.desc.includes('AutoSport'));
-            connData = {
-                partNumber: cItem.pn,
-                safePN: safePN,
-                description: cItem.desc || `${cItem.pn} Connector`,
-                manufacturer: isAutoSport ? 'TE Connectivity / DEUTSCH' : 'Amphenol Aerospace',
-                pinCount: 1,
-                pins: [],
-                pinNumberingLOV: '',
-                accessories: []
-            };
-        }
-
-        await SkyCadExporter.downloadConnectorPackage(connData);
-        if (idx < connectorItems.length - 1) {
-            await new Promise(r => setTimeout(r, 600));
-        }
-    }
+    alert('SkyCAD package export is temporarily disabled while catalog GUID optimization is underway.');
+    return;
 }
+
 
 function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });

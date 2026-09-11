@@ -119,22 +119,22 @@ def main():
         print(f"Header Version Tag: {version_tag}")
         print(f"CONFIG_VERSION constant: {config_version}")
 
-        assert "V002.2.0" in title, f"Title does not contain V002.2.0: {title}"
-        assert version_tag == "V002.2.0", f"Version tag is not V002.2.0: {version_tag}"
-        assert config_version == "V002.2.0", f"CONFIG_VERSION is not V002.2.0: {config_version}"
+        assert "V002.2.1" in title, f"Title does not contain V002.2.1: {title}"
+        assert version_tag == "V002.2.1", f"Version tag is not V002.2.1: {version_tag}"
+        assert config_version == "V002.2.1", f"CONFIG_VERSION is not V002.2.1: {config_version}"
         print("[PASS] Version synchronization verified across DOM and JS.")
 
-        print("\n--- Check 2: SkyCadExporter Module Presence ---")
-        exporter_type = cdp_eval(ws, "typeof window.SkyCadExporter")
-        assert exporter_type == "object", f"window.SkyCadExporter is {exporter_type}"
-        has_format = cdp_eval(ws, "typeof window.SkyCadExporter.formatConnectorData")
-        has_blob = cdp_eval(ws, "typeof window.SkyCadExporter.generatePackageBlob")
-        has_download = cdp_eval(ws, "typeof window.SkyCadExporter.downloadConnectorPackage")
-        print(f"formatConnectorData: {has_format}")
-        print(f"generatePackageBlob: {has_blob}")
-        print(f"downloadConnectorPackage: {has_download}")
-        assert has_format == "function" and has_blob == "function" and has_download == "function"
-        print("[PASS] SkyCadExporter module properly loaded and exposed.")
+        print("\n--- Check 2: SkyCAD Feature Disabled in UI ---")
+        pri_btn = cdp_eval(ws, "document.querySelector('.primary-card button[onclick*=\"exportSolutionToSkyCAD\"]')?.textContent")
+        mat_btn = cdp_eval(ws, "document.querySelector('.mating-card button[onclick*=\"exportSolutionToSkyCAD\"]')?.textContent")
+        bom_btn = cdp_eval(ws, "document.querySelector('button[onclick*=\"exportToSkyCAD()\"]')?.textContent")
+        print(f"Primary Card Export Button: {pri_btn}")
+        print(f"Mating Card Export Button: {mat_btn}")
+        print(f"BOM Export Button: {bom_btn}")
+        assert pri_btn is None, f"Primary card SkyCAD button unexpectedly present: {pri_btn}"
+        assert mat_btn is None, f"Mating card SkyCAD button unexpectedly present: {mat_btn}"
+        assert bom_btn is None, f"BOM SkyCAD button unexpectedly present: {bom_btn}"
+        print("[PASS] SkyCAD export buttons verified absent across solution cards and BOM view.")
 
         print("\n--- Check 3: Calculation & Solution Card DOM Verification ---")
         cdp_eval(ws, "document.querySelector('#groups .val').value = '20';")
@@ -146,13 +146,11 @@ def main():
         print(f"Calculated Solution Cards rendered: {card_count}")
         assert card_count > 0, "No solution cards rendered!"
 
-        pri_btn = cdp_eval(ws, "document.querySelector('.primary-card button[onclick*=\"exportSolutionToSkyCAD\"]')?.textContent")
-        mat_btn = cdp_eval(ws, "document.querySelector('.mating-card button[onclick*=\"exportSolutionToSkyCAD\"]')?.textContent")
-        print(f"Primary Card Export Button: {pri_btn}")
-        print(f"Mating Card Export Button: {mat_btn}")
-        assert pri_btn and "Export to SkyCAD" in pri_btn, f"Primary card export button missing: {pri_btn}"
-        assert mat_btn and "Export to SkyCAD" in mat_btn, f"Mating card export button missing: {mat_btn}"
-        print("[PASS] SkyCAD export buttons physically rendered in Primary & Mating cards.")
+        pri_btn_after = cdp_eval(ws, "document.querySelector('.primary-card button[onclick*=\"exportSolutionToSkyCAD\"]')?.textContent")
+        mat_btn_after = cdp_eval(ws, "document.querySelector('.mating-card button[onclick*=\"exportSolutionToSkyCAD\"]')?.textContent")
+        assert pri_btn_after is None, f"Primary card SkyCAD button present after calculate: {pri_btn_after}"
+        assert mat_btn_after is None, f"Mating card SkyCAD button present after calculate: {mat_btn_after}"
+        print("[PASS] Solution cards physically rendered with clean layout and SkyCAD export suppressed.")
 
         print("\n--- Check 4: Add to Active Project List & BOM UI Verification ---")
         add_res = cdp_eval(ws, """
@@ -173,9 +171,10 @@ def main():
         assert bom_rows > 0, f"BOM table has 0 rows after adding solution pair! Details: {add_res}"
 
         bom_export_btn = cdp_eval(ws, "document.querySelector('button[onclick*=\"exportToSkyCAD()\"]')?.textContent")
-        print(f"BOM SkyCAD Export Button Text: {bom_export_btn}")
-        assert bom_export_btn and ".SkyCadPackage" in bom_export_btn, f"BOM button text mismatch: {bom_export_btn}"
-        print("[PASS] Active list BOM updated and BOM export button verified.")
+        assert bom_export_btn is None, f"BOM SkyCAD button unexpectedly present: {bom_export_btn}"
+        csv_btn = cdp_eval(ws, "document.querySelector('button[onclick*=\"exportToCSV()\"]')?.textContent")
+        assert csv_btn and "Export List to Excel" in csv_btn, f"CSV export button missing: {csv_btn}"
+        print("[PASS] Active list BOM updated and Excel (CSV) button verified intact.")
 
         print("\n--- Check 5: Live Package Blob Generation & ZIP Structure Test ---")
         b64_zip = cdp_eval(ws, """
