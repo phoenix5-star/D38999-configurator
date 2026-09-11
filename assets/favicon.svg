@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Outer Shell Rim -->
+  <circle cx="32" cy="32" r="28" fill="#0f172a" stroke="#38bdf8" stroke-width="4"/>
+  <!-- Master Keyway (Top 12 o'clock) -->
+  <rect x="29" y="1" width="6" height="7" rx="1.5" fill="#38bdf8"/>
+  <!-- Secondary Alignment Keyways -->
+  <rect x="55" y="40" width="5" height="5" rx="1" fill="#38bdf8" transform="rotate(35 55 40)"/>
+  <rect x="4" y="40" width="5" height="5" rx="1" fill="#38bdf8" transform="rotate(-35 4 40)"/>
+  <!-- Insulator Insert Body -->
+  <circle cx="32" cy="32" r="20" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+  <!-- Center Gold Contact (Size 16 Pin) -->
+  <circle cx="32" cy="32" r="4.5" fill="#f59e0b" stroke="#d97706" stroke-width="1"/>
+  <circle cx="32" cy="32" r="1.8" fill="#fef3c7"/>
+  <!-- 5 Outer Gold Contacts (Size 20 Pins) -->
+  <circle cx="32" cy="19" r="3.5" fill="#f59e0b" stroke="#d97706" stroke-width="0.8"/>
+  <circle cx="44.4" cy="28" r="3.5" fill="#f59e0b" stroke="#d97706" stroke-width="0.8"/>
+  <circle cx="39.6" cy="42.7" r="3.5" fill="#f59e0b" stroke="#d97706" stroke-width="0.8"/>
+  <circle cx="24.4" cy="42.7" r="3.5" fill="#f59e0b" stroke="#d97706" stroke-width="0.8"/>
+  <circle cx="19.6" cy="28" r="3.5" fill="#f59e0b" stroke="#d97706" stroke-width="0.8"/>
+</svg>
+

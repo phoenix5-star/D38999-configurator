@@ -1,5 +1,5 @@
 // Configurator Metadata
-const CONFIG_VERSION = "V002.1";
+const CONFIG_VERSION = "V002.1.1";
 
 // Shop Tooling Inventory & Contact Ratings loaded via DataService
 const SHOP_TOOLING = (typeof DataService !== 'undefined') ? DataService.getShopInventory() : { frames: ["AFM8", "AF8"], positioners: ["K40", "K42", "K13-1", "TH163"] };
