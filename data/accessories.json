@@ -48,7 +48,18 @@
     }
   },
   "flanges": {
-    "accTemplate": "M85049/95-{numShell}A (3/4 Perimeter Flange)",
+    "accTemplate": "M85049/95-{dashNo} (3/4 Perimeter Flange)",
+    "dashTable": {
+      "9": "10A",
+      "11": "12A",
+      "13": "14A",
+      "15": "16A",
+      "17": "18A",
+      "19": "20A",
+      "21": "22A",
+      "23": "24A",
+      "25": "25A"
+    },
     "basePrice": 9.00,
     "sizeStep": 0.50
   },
