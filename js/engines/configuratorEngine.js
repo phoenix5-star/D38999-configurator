@@ -80,7 +80,7 @@ const ConfiguratorEngine = (function () {
         let match = null;
         if (db._cacheMap) {
             const targetSeries = isAutoSport ? 'deutsch_autosport' : (primary.seriesId || 'd38999');
-            const key = `${targetSeries}:${primary.shellSize}:${primary.arrangement}:${targetShellType}:${targetContactType}:${primary.keying}`;
+            const key = `${targetSeries}:${primary.shellSize}:${primary.finish || ''}:${primary.arrangement}:${targetShellType}:${targetContactType}:${primary.keying}`;
             match = db._cacheMap.get(key);
         } else {
             // Lazily build Map cache on database array
@@ -88,12 +88,12 @@ const ConfiguratorEngine = (function () {
                 const cache = new Map();
                 for (let i = 0; i < db.length; i++) {
                     const d = db[i];
-                    const k = `${d.seriesId || 'd38999'}:${d.shellSize}:${d.arrangement}:${d.shellType}:${d.contactType}:${d.keying}`;
+                    const k = `${d.seriesId || 'd38999'}:${d.shellSize}:${d.finish || ''}:${d.arrangement}:${d.shellType}:${d.contactType}:${d.keying}`;
                     cache.set(k, d);
                 }
                 db._cacheMap = cache;
                 const targetSeries = isAutoSport ? 'deutsch_autosport' : (primary.seriesId || 'd38999');
-                const key = `${targetSeries}:${primary.shellSize}:${primary.arrangement}:${targetShellType}:${targetContactType}:${primary.keying}`;
+                const key = `${targetSeries}:${primary.shellSize}:${primary.finish || ''}:${primary.arrangement}:${targetShellType}:${targetContactType}:${primary.keying}`;
                 match = cache.get(key);
             }
         }
@@ -101,6 +101,7 @@ const ConfiguratorEngine = (function () {
         if (!match) {
             match = db.find(d => 
                 d.shellSize === primary.shellSize &&
+                (!primary.finish || d.finish === primary.finish) &&
                 d.arrangement === primary.arrangement &&
                 d.shellType === targetShellType &&
                 d.contactType === targetContactType &&

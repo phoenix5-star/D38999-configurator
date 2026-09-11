@@ -169,6 +169,10 @@ const DataService = (function () {
             return list;
         },
         getLayoutByArrangement: (arrangement) => (_data.layouts || []).find(l => l.arrangement === arrangement),
+        getLayout: (seriesId, shellSize, arrangement) => {
+            const arr = arrangement || shellSize || seriesId;
+            return (_data.layouts || []).find(l => l.arrangement === arr);
+        },
 
         // Contacts
         getContactRatings: () => (_data.contacts && _data.contacts.ratings) ? _data.contacts.ratings : [],
