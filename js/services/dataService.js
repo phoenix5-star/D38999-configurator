@@ -177,6 +177,7 @@ const DataService = (function () {
         // Contacts
         getContactRatings: () => (_data.contacts && _data.contacts.ratings) ? _data.contacts.ratings : [],
         getM39029DB: () => (_data.contacts && _data.contacts.m39029DB) ? _data.contacts.m39029DB : {},
+        getAutoSportDB: () => (_data.contacts && _data.contacts.autoSportDB) ? _data.contacts.autoSportDB : {},
 
         // Tooling
         getShopInventory: () => (_data.tooling && _data.tooling.shopInventory) ? _data.tooling.shopInventory : { frames: [], positioners: [] },

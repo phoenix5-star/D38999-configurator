@@ -15,15 +15,22 @@ const ConfiguratorEngine = (function () {
      * @param {Object} m39029DB - Contact database
      * @returns {Array} Array of resolved contact items with qty and pricing
      */
-    function resolveGroupContacts(groupSpecs, gender, m39029DB) {
+    function resolveGroupContacts(groupSpecs, gender, m39029DB, isAutoSport = false) {
         if (!groupSpecs || !Array.isArray(groupSpecs)) return [];
-        const db = m39029DB || (typeof DataService !== 'undefined' ? DataService.getM39029DB() : {});
+        const milDb = m39029DB || (typeof DataService !== 'undefined' ? DataService.getM39029DB() : {});
+        const asDb = (typeof DataService !== 'undefined' && DataService.getAutoSportDB) ? DataService.getAutoSportDB() : null;
 
         let totals = {};
 
         groupSpecs.forEach(g => {
-            let typeMap = db[g.matType] || db["STD"] || {};
-            let sizeEntry = typeMap[g.size] || (db["STD"] && db["STD"][g.size]) || (db["STD"] && db["STD"]["22D"]);
+            let sizeEntry = null;
+
+            if (isAutoSport && asDb && asDb["STD"] && asDb["STD"][g.size]) {
+                sizeEntry = asDb["STD"][g.size];
+            } else {
+                let typeMap = milDb[g.matType] || milDb["STD"] || {};
+                sizeEntry = typeMap[g.size] || (milDb["STD"] && milDb["STD"][g.size]) || (milDb["STD"] && milDb["STD"]["22D"]);
+            }
             if (!sizeEntry) return;
 
             let list = gender === 'P' ? sizeEntry.P : sizeEntry.S;
@@ -165,8 +172,9 @@ const ConfiguratorEngine = (function () {
             let defaultMatingShell = match.shellType === 'Plug' ? (standard === 'as' ? '2-Hole Flange Receptacle' : 'Wall Mount') : 'Plug';
             let mating = getMatingConnector(match, standard, defaultMatingShell, database);
 
-            let priContacts = resolveGroupContacts(groupSpecs, match.contactType, m39029DB);
-            let matContacts = mating ? resolveGroupContacts(groupSpecs, mating.contactType, m39029DB) : [];
+            const isAutoSport = standard === 'as' || match.seriesId === 'deutsch_autosport';
+            let priContacts = resolveGroupContacts(groupSpecs, match.contactType, m39029DB, isAutoSport);
+            let matContacts = mating ? resolveGroupContacts(groupSpecs, mating.contactType, m39029DB, isAutoSport) : [];
 
             return {
                 primary: {

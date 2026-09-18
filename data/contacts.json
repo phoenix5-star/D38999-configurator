@@ -1,38 +1,48 @@
 {
   "ratings": [
-    { "size": "24", "maxAmps": 3.0, "label": "Size 24 (Max 3A - Micro/ASL)" },
-    { "size": "22", "maxAmps": 5.0, "label": "Size 22 (Max 5A - ASL/Standard)" },
+    { "size": "24", "maxAmps": 3.0, "label": "Size 24 (Max 3A - Deutsch AutoSport / Micro)" },
+    { "size": "23", "maxAmps": 3.0, "label": "Size 23 (Max 3A - Deutsch AutoSport)" },
+    { "size": "22", "maxAmps": 5.0, "label": "Size 22 (Max 5A - Deutsch AutoSport / Standard)" },
     { "size": "22D", "maxAmps": 5.0, "label": "Size 22D (Max 5A - D38999 High Density)" },
     { "size": "20", "maxAmps": 7.5, "label": "Size 20 (Max 7.5A)" },
     { "size": "16", "maxAmps": 13.0, "label": "Size 16 (Max 13A)" },
     { "size": "12", "maxAmps": 23.0, "label": "Size 12 (Max 23A)" },
+    { "size": "10", "maxAmps": 33.0, "label": "Size 10 (Max 33A - Power)" },
     { "size": "8", "maxAmps": 46.0, "label": "Size 8 (Max 46A - Coax/Twinax/Power)" }
   ],
   "m39029DB": {
     "STD": {
       "24": {
-        "P": [{ "pn": "605079", "price": 3.85, "desc": "Size 24 Micro Pin Contact (Deutsch AutoSport)", "size": "24", "isStd": true }],
-        "S": [{ "pn": "605080", "price": 4.15, "desc": "Size 24 Micro Socket Contact (Deutsch AutoSport)", "size": "24", "isStd": true }]
+        "P": [{ "pn": "605719-31", "price": 3.85, "desc": "Size 24 Pin Contact (Deutsch AutoSport)", "size": "24", "isStd": true }],
+        "S": [{ "pn": "605721", "price": 4.15, "desc": "Size 24 Socket Contact (Deutsch AutoSport)", "size": "24", "isStd": true }]
+      },
+      "23": {
+        "P": [{ "pn": "604927-31", "price": 3.85, "desc": "Size 23 Pin Contact (Deutsch AutoSport)", "size": "23", "isStd": true }],
+        "S": [{ "pn": "604935", "price": 4.15, "desc": "Size 23 Socket Contact (Deutsch AutoSport)", "size": "23", "isStd": true }]
       },
       "22": {
-        "P": [{ "pn": "605011", "price": 2.95, "desc": "Size 22 Pin Contact (Deutsch AutoSport)", "size": "22", "isStd": true }],
-        "S": [{ "pn": "605012", "price": 3.25, "desc": "Size 22 Socket Contact (Deutsch AutoSport)", "size": "22", "isStd": true }]
+        "P": [{ "pn": "38941-22", "price": 2.95, "desc": "Size 22 Pin Contact (Deutsch AutoSport)", "size": "22", "isStd": true }],
+        "S": [{ "pn": "38943-22", "price": 3.25, "desc": "Size 22 Socket Contact (Deutsch AutoSport)", "size": "22", "isStd": true }]
       },
       "22D": {
         "P": [{ "pn": "M39029/58-360", "price": 1.85, "desc": "Size 22D Pin Contact", "size": "22D", "isStd": true }],
         "S": [{ "pn": "M39029/56-348", "price": 2.10, "desc": "Size 22D Socket Contact", "size": "22D", "isStd": true }]
       },
       "20": {
-        "P": [{ "pn": "M39029/58-364", "price": 2.15, "desc": "Size 20 Pin Contact", "size": "20", "isStd": true }],
-        "S": [{ "pn": "M39029/57-358", "price": 2.40, "desc": "Size 20 Socket Contact", "size": "20", "isStd": true }]
+        "P": [{ "pn": "M39029/58-363", "price": 2.15, "desc": "Size 20 Pin Contact", "size": "20", "isStd": true }],
+        "S": [{ "pn": "M39029/56-351", "price": 2.40, "desc": "Size 20 Socket Contact", "size": "20", "isStd": true }]
       },
       "16": {
-        "P": [{ "pn": "M39029/58-365", "price": 3.10, "desc": "Size 16 Pin Contact", "size": "16", "isStd": true }],
-        "S": [{ "pn": "M39029/57-359", "price": 3.50, "desc": "Size 16 Socket Contact", "size": "16", "isStd": true }]
+        "P": [{ "pn": "M39029/58-364", "price": 3.10, "desc": "Size 16 Pin Contact", "size": "16", "isStd": true }],
+        "S": [{ "pn": "M39029/56-352", "price": 3.50, "desc": "Size 16 Socket Contact", "size": "16", "isStd": true }]
       },
       "12": {
-        "P": [{ "pn": "M39029/58-366", "price": 4.50, "desc": "Size 12 Pin Contact", "size": "12", "isStd": true }],
-        "S": [{ "pn": "M39029/57-360", "price": 5.20, "desc": "Size 12 Socket Contact", "size": "12", "isStd": true }]
+        "P": [{ "pn": "M39029/58-365", "price": 4.50, "desc": "Size 12 Pin Contact", "size": "12", "isStd": true }],
+        "S": [{ "pn": "M39029/56-353", "price": 5.20, "desc": "Size 12 Socket Contact", "size": "12", "isStd": true }]
+      },
+      "10": {
+        "P": [{ "pn": "M39029/58-528", "price": 12.00, "desc": "Size 10 Pin Power Contact", "size": "10", "isStd": true }],
+        "S": [{ "pn": "M39029/56-527", "price": 14.00, "desc": "Size 10 Socket Power Contact", "size": "10", "isStd": true }]
       },
       "8": {
         "P": [{ "pn": "M39029/60-367", "price": 18.50, "desc": "Size 8 Pin Power Contact", "size": "8", "isStd": true }],
@@ -117,8 +127,32 @@
         "S": [{ "pn": "M39029/75-416", "price": 38.00, "desc": "Size 12 Coax Socket Contact", "size": "12", "isStd": false }]
       },
       "8": {
-        "P": [{ "pn": "M39029/90-529", "price": 65.00, "desc": "Size 8 Twinax Pin Contact", "size": "8", "isStd": false }],
+        "P": [{ "pn": "M39029/60-367", "price": 65.00, "desc": "Size 8 Twinax Pin Contact", "size": "8", "isStd": false }],
         "S": [{ "pn": "M39029/91-530", "price": 72.00, "desc": "Size 8 Twinax Socket Contact", "size": "8", "isStd": false }]
+      }
+    }
+  },
+  "autoSportDB": {
+    "STD": {
+      "24": {
+        "P": [{ "pn": "605719-31", "price": 3.85, "desc": "Size 24 Pin Contact (Deutsch AutoSport)", "size": "24", "wireRange": "24-30", "crimpTool": "M22520/2-01", "positioner": "610286", "insertionRemovalTool": "605837 Orange/White", "isStd": true }],
+        "S": [{ "pn": "605721", "price": 4.15, "desc": "Size 24 Socket Contact (Deutsch AutoSport)", "size": "24", "wireRange": "24-30", "crimpTool": "M22520/2-01", "positioner": "610287", "insertionRemovalTool": "605837 Orange/White", "isStd": true }]
+      },
+      "23": {
+        "P": [{ "pn": "604927-31", "price": 3.85, "desc": "Size 23 Pin Contact (Deutsch AutoSport)", "size": "23", "wireRange": "22-28", "crimpTool": "M22520/2-01", "positioner": "604972", "insertionRemovalTool": "M81969/14-01 Green/White", "isStd": true }],
+        "S": [{ "pn": "604935", "price": 4.15, "desc": "Size 23 Socket Contact (Deutsch AutoSport)", "size": "23", "wireRange": "22-28", "crimpTool": "M22520/2-01", "positioner": "604973", "insertionRemovalTool": "M81969/14-01 Green/White", "isStd": true }]
+      },
+      "22": {
+        "P": [{ "pn": "38941-22", "price": 2.95, "desc": "Size 22 Pin Contact (Deutsch AutoSport)", "size": "22", "wireRange": "22-26", "crimpTool": "M22520/2-01", "positioner": "M22520/2-09", "insertionRemovalTool": "M81969/14-01 Green/White", "isStd": true }],
+        "S": [{ "pn": "38943-22", "price": 3.25, "desc": "Size 22 Socket Contact (Deutsch AutoSport)", "size": "22", "wireRange": "22-26", "crimpTool": "M22520/2-01", "positioner": "M22520/2-07", "insertionRemovalTool": "M81969/14-01 Green/White", "isStd": true }]
+      },
+      "20": {
+        "P": [{ "pn": "38941-20", "price": 2.95, "desc": "Size 20 Pin Contact (Deutsch AutoSport)", "size": "20", "wireRange": "20-24", "crimpTool": "M22520/2-01", "positioner": "M22520/2-10", "insertionRemovalTool": "M81969/14-10 Red/Orange", "isStd": true }],
+        "S": [{ "pn": "38943-20", "price": 3.25, "desc": "Size 20 Socket Contact (Deutsch AutoSport)", "size": "20", "wireRange": "20-24", "crimpTool": "M22520/2-01", "positioner": "M22520/2-10", "insertionRemovalTool": "M81969/14-10 Red/Orange", "isStd": true }]
+      },
+      "16": {
+        "P": [{ "pn": "38941-16", "price": 3.50, "desc": "Size 16 Pin Contact (Deutsch AutoSport)", "size": "16", "wireRange": "16-20", "crimpTool": "M22520/1-01", "positioner": "M22520/1-04", "insertionRemovalTool": "M81969/14-03 Blue/White", "isStd": true }],
+        "S": [{ "pn": "38943-16", "price": 3.85, "desc": "Size 16 Socket Contact (Deutsch AutoSport)", "size": "16", "wireRange": "16-20", "crimpTool": "M22520/1-01", "positioner": "M22520/1-04", "insertionRemovalTool": "M81969/14-03 Blue/White", "isStd": true }]
       }
     }
   }

@@ -119,22 +119,16 @@ def main():
         print(f"Header Version Tag: {version_tag}")
         print(f"CONFIG_VERSION constant: {config_version}")
 
-        assert "V002.2.1" in title, f"Title does not contain V002.2.1: {title}"
-        assert version_tag == "V002.2.1", f"Version tag is not V002.2.1: {version_tag}"
-        assert config_version == "V002.2.1", f"CONFIG_VERSION is not V002.2.1: {config_version}"
+        assert "V002.4.3" in title, f"Title does not contain V002.4.3: {title}"
+        assert version_tag == "V002.4.3", f"Version tag is not V002.4.3: {version_tag}"
+        assert config_version == "V002.4.3", f"CONFIG_VERSION is not V002.4.3: {config_version}"
         print("[PASS] Version synchronization verified across DOM and JS.")
 
-        print("\n--- Check 2: SkyCAD Feature Disabled in UI ---")
-        pri_btn = cdp_eval(ws, "document.querySelector('.primary-card button[onclick*=\"exportSolutionToSkyCAD\"]')?.textContent")
-        mat_btn = cdp_eval(ws, "document.querySelector('.mating-card button[onclick*=\"exportSolutionToSkyCAD\"]')?.textContent")
+        print("\n--- Check 2: SkyCAD Feature Enabled in UI ---")
         bom_btn = cdp_eval(ws, "document.querySelector('button[onclick*=\"exportToSkyCAD()\"]')?.textContent")
-        print(f"Primary Card Export Button: {pri_btn}")
-        print(f"Mating Card Export Button: {mat_btn}")
         print(f"BOM Export Button: {bom_btn}")
-        assert pri_btn is None, f"Primary card SkyCAD button unexpectedly present: {pri_btn}"
-        assert mat_btn is None, f"Mating card SkyCAD button unexpectedly present: {mat_btn}"
-        assert bom_btn is None, f"BOM SkyCAD button unexpectedly present: {bom_btn}"
-        print("[PASS] SkyCAD export buttons verified absent across solution cards and BOM view.")
+        assert bom_btn and "Export Connectors to SkyCAD" in bom_btn, f"BOM SkyCAD button missing: {bom_btn}"
+        print("[PASS] SkyCAD BOM export button verified present.")
 
         print("\n--- Check 3: Calculation & Solution Card DOM Verification ---")
         cdp_eval(ws, "document.querySelector('#groups .val').value = '20';")
@@ -148,9 +142,11 @@ def main():
 
         pri_btn_after = cdp_eval(ws, "document.querySelector('.primary-card button[onclick*=\"exportSolutionToSkyCAD\"]')?.textContent")
         mat_btn_after = cdp_eval(ws, "document.querySelector('.mating-card button[onclick*=\"exportSolutionToSkyCAD\"]')?.textContent")
-        assert pri_btn_after is None, f"Primary card SkyCAD button present after calculate: {pri_btn_after}"
-        assert mat_btn_after is None, f"Mating card SkyCAD button present after calculate: {mat_btn_after}"
-        print("[PASS] Solution cards physically rendered with clean layout and SkyCAD export suppressed.")
+        print(f"Primary Card Export Button: {pri_btn_after}")
+        print(f"Mating Card Export Button: {mat_btn_after}")
+        assert pri_btn_after and "Export to SkyCAD" in pri_btn_after, f"Primary card SkyCAD button missing: {pri_btn_after}"
+        assert mat_btn_after and "Export to SkyCAD" in mat_btn_after, f"Mating card SkyCAD button missing: {mat_btn_after}"
+        print("[PASS] Solution cards physically rendered with clean layout and SkyCAD export buttons active.")
 
         print("\n--- Check 4: Add to Active Project List & BOM UI Verification ---")
         add_res = cdp_eval(ws, """
@@ -171,10 +167,10 @@ def main():
         assert bom_rows > 0, f"BOM table has 0 rows after adding solution pair! Details: {add_res}"
 
         bom_export_btn = cdp_eval(ws, "document.querySelector('button[onclick*=\"exportToSkyCAD()\"]')?.textContent")
-        assert bom_export_btn is None, f"BOM SkyCAD button unexpectedly present: {bom_export_btn}"
+        assert bom_export_btn and "Export Connectors to SkyCAD" in bom_export_btn, f"BOM SkyCAD button missing: {bom_export_btn}"
         csv_btn = cdp_eval(ws, "document.querySelector('button[onclick*=\"exportToCSV()\"]')?.textContent")
         assert csv_btn and "Export List to Excel" in csv_btn, f"CSV export button missing: {csv_btn}"
-        print("[PASS] Active list BOM updated and Excel (CSV) button verified intact.")
+        print("[PASS] Active list BOM updated and Excel (CSV) + SkyCAD buttons verified intact.")
 
         print("\n--- Check 5: Live Package Blob Generation & ZIP Structure Test ---")
         b64_zip = cdp_eval(ws, """
@@ -251,7 +247,7 @@ def main():
                 assert fc['priFinish'] == fc['matFinish'], f"Finish mismatch! Pri: {fc['priFinish']}, Mat: {fc['matFinish']}"
         print(f"[PASS] All {len(fin_checks)} solutions verified: 100% finish matching between primary and mating.")
 
-        print("\n--- Check 6: Deutsch AutoSport Package Generation & Lettering Rule ---")
+        print("\n--- Check 6: Deutsch AutoSport Contact Resolution & Disabled SkyCAD Button ---")
         cdp_eval(ws, "switchStandardTab('as');")
         time.sleep(0.5)
         cdp_eval(ws, "document.querySelector('#groups .val').value = '22';")
@@ -263,28 +259,65 @@ def main():
         print(f"AutoSport Solution Cards rendered: {as_card_count}")
         assert as_card_count > 0, "No AutoSport solution cards rendered!"
 
-        as_b64_zip = cdp_eval(ws, """
-            (async () => {
-                const pair = currentCalculatedSolutions[0];
-                const formatted = SkyCadExporter.formatConnectorData(pair.primary, pair, true);
-                const blob = await SkyCadExporter.generatePackageBlob(formatted);
-                return new Promise((resolve) => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => {
-                        const b64 = reader.result.split(',')[1];
-                        resolve(b64);
-                    };
-                    reader.readAsDataURL(blob);
-                });
-            })()
-        """)
-        as_zip_bytes = base64.b64decode(as_b64_zip)
-        with zipfile.ZipFile(io.BytesIO(as_zip_bytes), 'r') as zf:
-            as_pin_file = [f for f in zf.namelist() if f.endswith("Pin_Schedule.txt")][0]
-            as_pin_text = zf.read(as_pin_file).decode('utf-8')
-            print("AutoSport Pin Schedule:\n" + as_pin_text.strip())
+        # Verify SkyCAD button is DISABLED on AutoSport card
+        as_pri_disabled = cdp_eval(ws, "document.querySelector('.primary-card button[disabled]') !== null")
+        print(f"AutoSport Primary Card SkyCAD button disabled: {as_pri_disabled}")
+        assert as_pri_disabled, "SkyCAD export button on AutoSport primary card must be disabled!"
 
-        print("[PASS] AutoSport package generation verified!")
+        as_mat_disabled = cdp_eval(ws, "document.querySelector('.mating-card button[disabled]') !== null")
+        print(f"AutoSport Mating Card SkyCAD button disabled: {as_mat_disabled}")
+        assert as_mat_disabled, "SkyCAD export button on AutoSport mating card must be disabled!"
+
+        # Verify Size 22 contact resolution on AutoSport card
+        as_contact_text = cdp_eval(ws, "document.querySelector('.primary-card .contact-list').textContent")
+        print(f"AutoSport Size 22 Contact Text: {as_contact_text}")
+        assert "38941-22" in as_contact_text or "38943-22" in as_contact_text, f"Expected genuine TE 38941-22/38943-22, got: {as_contact_text}"
+        assert "605011" not in as_contact_text and "605012" not in as_contact_text, "Hallucinated 605011/605012 found!"
+        assert "M39029" not in as_contact_text, "D38999 M39029 contact assigned to AutoSport!"
+        print("[PASS] AutoSport Size 22 resolved to genuine TE 38941-22 / 38943-22.")
+
+        # Verify Size 20 contact resolution in AutoSport
+        cdp_eval(ws, "document.querySelector('#groups .val').value = '20';")
+        cdp_eval(ws, "document.querySelector('#groups .qty').value = '3';")
+        cdp_eval(ws, "calculate();")
+        time.sleep(0.5)
+        as_20_text = cdp_eval(ws, "document.querySelector('.primary-card .contact-list').textContent")
+        print(f"AutoSport Size 20 Contact Text: {as_20_text}")
+        assert "38941-20" in as_20_text or "38943-20" in as_20_text, f"Expected TE 38941-20/38943-20, got: {as_20_text}"
+        assert "M39029" not in as_20_text, "D38999 M39029 contact assigned to AutoSport Size 20!"
+        print("[PASS] AutoSport Size 20 resolved to genuine TE 38941-20 / 38943-20.")
+
+        # Verify Size 16 contact resolution in AutoSport
+        cdp_eval(ws, "document.querySelector('#groups .val').value = '16';")
+        cdp_eval(ws, "document.querySelector('#groups .qty').value = '2';")
+        cdp_eval(ws, "calculate();")
+        time.sleep(0.5)
+        as_16_text = cdp_eval(ws, "document.querySelector('.primary-card .contact-list').textContent")
+        print(f"AutoSport Size 16 Contact Text: {as_16_text}")
+        assert "38941-16" in as_16_text or "38943-16" in as_16_text, f"Expected TE 38941-16/38943-16, got: {as_16_text}"
+        assert "M39029" not in as_16_text, "D38999 M39029 contact assigned to AutoSport Size 16!"
+        print("[PASS] AutoSport Size 16 resolved to genuine TE 38941-16 / 38943-16.")
+
+        # Verify Commercial Tri-Start also disables SkyCAD export button
+        print("\n--- Check 7: Commercial Tri-Start Disabled SkyCAD Button ---")
+        cdp_eval(ws, "switchStandardTab('comm');")
+        time.sleep(0.5)
+        cdp_eval(ws, "document.querySelector('#groups .val').value = '20';")
+        cdp_eval(ws, "document.querySelector('#groups .qty').value = '3';")
+        cdp_eval(ws, "calculate();")
+        time.sleep(0.5)
+        comm_pri_disabled = cdp_eval(ws, "document.querySelector('.primary-card button[disabled]') !== null")
+        assert comm_pri_disabled, "SkyCAD export button on Commercial Tri-Start must be disabled!"
+        print("[PASS] Commercial Tri-Start SkyCAD button is correctly disabled.")
+
+        # Switch back to MIL tab and verify button is ENABLED
+        cdp_eval(ws, "switchStandardTab('mil');")
+        time.sleep(0.5)
+        cdp_eval(ws, "calculate();")
+        time.sleep(0.5)
+        mil_pri_enabled = cdp_eval(ws, "document.querySelector('.primary-card button[disabled]') === null")
+        assert mil_pri_enabled, "SkyCAD export button on MIL-DTL-38999 must be active/enabled!"
+        print("[PASS] MIL-DTL-38999 SkyCAD export button is active and enabled.")
 
         check_messages()
         print("\n--- Console Error Check ---")
