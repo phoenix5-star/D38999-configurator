@@ -1,0 +1,11 @@
+﻿Add-Type -Path "C:\Program Files\SkyCAD Electrical\SkyCadKernel.dll"
+[SkyCadKernel.SkyCadIO]::RootPath = "C:\SkyCAD Environments\Standard Environment"
+$path = "C:\SkyCAD Environments\Standard Environment\Catalogue\root class\work field classes\Component\Connector\D38999_26WE35PN-icreated.SkyCadFile"
+$obj = [SkyCadKernel.SkyCadIO]::LoadObjectStructure($path)
+Write-Host "Type: $($obj.GetType().FullName)"
+Write-Host "Id: $($obj.Id)"
+Write-Host "Pins count: $($obj.Pins.Count)"
+Write-Host "Accessories count: $($obj.Accessories.Count)"
+Write-Host "Part Number: $($obj.GetProperty('Part number').Value)"
+Write-Host "Description: $($obj.GetProperty('Description').Value)"
+Write-Host "Manufacturer: $($obj.GetProperty('Manufacturer').Value)"

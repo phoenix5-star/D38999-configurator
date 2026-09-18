@@ -1,5 +1,6 @@
 // Configurator Metadata
-const CONFIG_VERSION = "V002.2.1";
+const CONFIG_VERSION = "V002.4.3";
+
 
 // Shop Tooling Inventory & Contact Ratings loaded via DataService
 const SHOP_TOOLING = (typeof DataService !== 'undefined') ? DataService.getShopInventory() : { frames: ["AFM8", "AF8"], positioners: ["K40", "K42", "K13-1", "TH163"] };
@@ -8,8 +9,9 @@ const M81969_TOOLS = (typeof DataService !== 'undefined') ? DataService.getInser
 const contactRatings = (typeof DataService !== 'undefined' && DataService.getContactRatings().length > 0) 
     ? DataService.getContactRatings() 
     : [
-        { "size": "24", "maxAmps": 3.0, "label": "Size 24 (Max 3A - Micro/ASL)" },
-        { "size": "22", "maxAmps": 5.0, "label": "Size 22 (Max 5A - ASL/Standard)" },
+        { "size": "24", "maxAmps": 3.0, "label": "Size 24 (Max 3A - Deutsch AutoSport / Micro)" },
+        { "size": "23", "maxAmps": 3.0, "label": "Size 23 (Max 3A - Deutsch AutoSport)" },
+        { "size": "22", "maxAmps": 5.0, "label": "Size 22 (Max 5A - Deutsch AutoSport / Standard)" },
         { "size": "22D", "maxAmps": 5.0, "label": "Size 22D (Max 5A - D38999 High Density)" },
         { "size": "20", "maxAmps": 7.5, "label": "Size 20 (Max 7.5A)" },
         { "size": "16", "maxAmps": 13.0, "label": "Size 16 (Max 13A)" },
@@ -908,9 +910,9 @@ function addGroup() {
     container.appendChild(row);
 }
 
-function resolveGroupContacts(groupSpecs, gender) {
+function resolveGroupContacts(groupSpecs, gender, isAutoSport = false) {
     if (typeof ConfiguratorEngine !== 'undefined') {
-        return ConfiguratorEngine.resolveGroupContacts(groupSpecs, gender, m39029DB);
+        return ConfiguratorEngine.resolveGroupContacts(groupSpecs, gender, m39029DB, isAutoSport);
     }
     return [];
 }
@@ -1012,8 +1014,8 @@ function calculate(isSilent = false) {
             let defaultMatingShell = match.shellType === 'Plug' ? (isAutoSport ? '2-Hole Flange Receptacle' : 'Wall Mount') : 'Plug';
             let mating = getMatingConnector(match, pnType, defaultMatingShell);
 
-            let priContacts = resolveGroupContacts(groupSpecs, match.contactType);
-            let matContacts = mating ? resolveGroupContacts(groupSpecs, mating.contactType) : [];
+            let priContacts = resolveGroupContacts(groupSpecs, match.contactType, isAutoSport);
+            let matContacts = mating ? resolveGroupContacts(groupSpecs, mating.contactType, isAutoSport) : [];
 
             let defaultBackshell = isAutoSport ? 'BOOT_STRAIGHT' : (match.shellType === 'Box Mount' ? 'NONE' : 'M85049/38');
             let defaultMatBackshell = mating ? (isAutoSport ? 'BOOT_STRAIGHT' : (mating.shellType === 'Box Mount' ? 'NONE' : 'M85049/38')) : 'NONE';
@@ -1301,6 +1303,13 @@ function renderSolutionPairHTML(pair, index) {
                     <a href="https://www.newark.com/search?st=${encodeURIComponent(pri.activePN)}" target="_blank">Newark ↗</a>
                 </div>
 
+                <div style="margin-top: 10px;">
+                    ${pnType === 'mil' ? `
+                        <button type="button" class="btn-outline" style="width: 100%;" onclick="exportSolutionToSkyCAD(${index}, true)">⚡ Export to SkyCAD (.SkyCadPackage)</button>
+                    ` : `
+                        <button type="button" class="btn-outline" style="width: 100%; opacity: 0.5; cursor: not-allowed;" disabled title="SkyCAD package export is currently available for MIL-DTL-38999 Series III only">⚡ Export to SkyCAD (MIL-DTL-38999 Only)</button>
+                    `}
+                </div>
             </div>
 
             <div class="solution-card mating-card">
@@ -1384,6 +1393,14 @@ function renderSolutionPairHTML(pair, index) {
                     <a href="https://www.newark.com/search?st=${encodeURIComponent(mat.activePN)}" target="_blank">Newark ↗</a>` : ''}
                 </div>
 
+                ${mat ? `
+                <div style="margin-top: 10px;">
+                    ${pnType === 'mil' ? `
+                        <button type="button" class="btn-outline" style="width: 100%;" onclick="exportSolutionToSkyCAD(${index}, false)">⚡ Export to SkyCAD (.SkyCadPackage)</button>
+                    ` : `
+                        <button type="button" class="btn-outline" style="width: 100%; opacity: 0.5; cursor: not-allowed;" disabled title="SkyCAD package export is currently available for MIL-DTL-38999 Series III only">⚡ Export to SkyCAD (MIL-DTL-38999 Only)</button>
+                    `}
+                </div>` : ''}
             </div>
         </div>
 
@@ -1476,7 +1493,7 @@ function addSolutionPairToActiveList(solutionIndex) {
     const seriesTitle = isAutoSport ? 'Deutsch AutoSport' : (pair.pnType === 'comm' ? 'Commercial Tri-Start' : '38999 Series III');
 
     // Primary connector
-    const priConnData = (typeof SkyCadExporter !== 'undefined') ? SkyCadExporter.formatConnectorData(pri, pair, true) : null;
+    const priConnData = (typeof SkyCadExporter !== 'undefined' && pair.pnType === 'mil') ? SkyCadExporter.formatConnectorData(pri, pair, true) : null;
     itemsToAdd.push({ 
         pn: pri.activePN, 
         qty: 1, 
@@ -1526,7 +1543,7 @@ function addSolutionPairToActiveList(solutionIndex) {
 
     // Mating connector
     if (mat) {
-        const matConnData = (typeof SkyCadExporter !== 'undefined') ? SkyCadExporter.formatConnectorData(mat, pair, false) : null;
+        const matConnData = (typeof SkyCadExporter !== 'undefined' && pair.pnType === 'mil') ? SkyCadExporter.formatConnectorData(mat, pair, false) : null;
         itemsToAdd.push({ 
             pn: mat.activePN, 
             qty: 1, 
@@ -1754,13 +1771,85 @@ function exportToCSV() {
 }
 
 async function exportSolutionToSkyCAD(solutionIndex, isPrimary) {
-    alert('SkyCAD package export is temporarily disabled while catalog GUID optimization is underway.');
-    return;
+    const pair = currentCalculatedSolutions[solutionIndex];
+    if (!pair) return alert('Solution not found!');
+
+    if (pair.pnType !== 'mil') {
+        return alert('SkyCAD package export is currently available for MIL-DTL-38999 Series III connectors only.');
+    }
+
+    const connObj = isPrimary ? pair.primary : pair.mating;
+    if (!connObj) return alert('Connector not found!');
+
+    if (typeof SkyCadExporter === 'undefined') {
+        return alert('SkyCAD exporter module is not loaded.');
+    }
+
+    const formattedData = SkyCadExporter.formatConnectorData(connObj, pair, isPrimary);
+    if (!formattedData) return alert('Unable to format connector data for SkyCAD export.');
+
+    await SkyCadExporter.downloadConnectorPackage(formattedData);
 }
 
 async function exportToSkyCAD() {
-    alert('SkyCAD package export is temporarily disabled while catalog GUID optimization is underway.');
-    return;
+    let activeListName = document.getElementById('projectListSelect').value;
+    let items = projectLists[activeListName] || [];
+    if (items.length === 0) return alert('Active project list is empty!');
+
+    if (typeof SkyCadExporter === 'undefined') {
+        return alert('SkyCAD exporter module is not loaded.');
+    }
+
+    // Identify all connector items in active list
+    let allConnectors = items.filter(i => {
+        if (i.isConnector) return true;
+        if (i.desc && (i.desc.includes('Primary') || i.desc.includes('Mating') || i.desc.includes('Connector'))) return true;
+        if (i.pn && (i.pn.startsWith('D38999/') || i.pn.startsWith('TV') || i.pn.startsWith('AS0') || i.pn.startsWith('AS1') || i.pn.startsWith('AS6') || i.pn.startsWith('ACT'))) return true;
+        return false;
+    });
+
+    if (allConnectors.length === 0) {
+        return alert('No circular connectors found in the active project list to export.');
+    }
+
+    // Filter strictly to MIL-DTL-38999 Series III
+    let connectorItems = allConnectors.filter(i => i.pn && i.pn.startsWith('D38999/'));
+    if (connectorItems.length === 0) {
+        return alert('SkyCAD package export is currently available for MIL-DTL-38999 Series III connectors only. No MIL-DTL-38999 connectors found in the active project list.');
+    }
+
+    if (connectorItems.length < allConnectors.length) {
+        alert(`Note: SkyCAD package export is currently limited to MIL-DTL-38999 Series III. ${allConnectors.length - connectorItems.length} non-MIL connector(s) will be skipped.`);
+    }
+
+    if (connectorItems.length > 1) {
+        const proceed = confirm(`Export ${connectorItems.length} MIL-DTL-38999 connectors as individual SkyCAD packages (.SkyCadPackage)?\nYour browser may prompt you to allow multiple file downloads.`);
+        if (!proceed) return;
+    }
+
+    for (let idx = 0; idx < connectorItems.length; idx++) {
+        const cItem = connectorItems[idx];
+        let connData = cItem.skyCadData;
+        if (!connData) {
+            const safePN = SkyCadExporter.toSafePN(cItem.pn);
+            const isAutoSport = cItem.pn.startsWith('AS') || (cItem.desc && cItem.desc.includes('AutoSport'));
+            connData = {
+                partNumber: cItem.pn,
+                safePN: safePN,
+                description: cItem.desc || `${cItem.pn} Connector`,
+                manufacturer: isAutoSport ? 'TE Connectivity / DEUTSCH' : 'Amphenol Aerospace',
+                pinCount: 1,
+                pins: [],
+                pinNumberingLOV: '',
+                accessories: []
+            };
+        }
+
+        await SkyCadExporter.downloadConnectorPackage(connData);
+        if (idx < connectorItems.length - 1) {
+            await new Promise(r => setTimeout(r, 600));
+        }
+    }
 }
 
 

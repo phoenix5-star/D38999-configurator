@@ -141,13 +141,25 @@
     "22": {
       "P": {
         "frame": "AFM8",
-        "positioner": "K1585",
-        "setting": "SEL: 4-6 (AWG 22-24)"
+        "positioner": "K42",
+        "setting": "M22520/2-09 (AWG 22-26)"
       },
       "S": {
         "frame": "AFM8",
-        "positioner": "K1585",
-        "setting": "SEL: 4-6 (AWG 22-24)"
+        "positioner": "K40",
+        "setting": "M22520/2-07 (AWG 22-26)"
+      }
+    },
+    "23": {
+      "P": {
+        "frame": "AFM8",
+        "positioner": "604972",
+        "setting": "SEL: 4-6 (AWG 22-28)"
+      },
+      "S": {
+        "frame": "AFM8",
+        "positioner": "604973",
+        "setting": "SEL: 4-6 (AWG 22-28)"
       }
     },
     "24": {
@@ -205,16 +217,23 @@
       "status": "In Shop"
     },
     "22": {
-      "toolPN": "605837",
-      "colors": "Black / White",
-      "badgeClass": "badge-blue",
-      "desc": "Insertion/Extraction Tool (Size 22 AutoSport)",
+      "toolPN": "M81969/14-01",
+      "colors": "Green / White",
+      "badgeClass": "badge-green",
+      "desc": "Plastic Insertion/Extraction (Size 22)",
+      "status": "In Shop"
+    },
+    "23": {
+      "toolPN": "M81969/14-01",
+      "colors": "Green / White",
+      "badgeClass": "badge-green",
+      "desc": "Plastic Insertion/Extraction (Size 23)",
       "status": "In Shop"
     },
     "24": {
       "toolPN": "605837",
-      "colors": "Black / White",
-      "badgeClass": "badge-blue",
+      "colors": "Orange / White",
+      "badgeClass": "badge-orange",
       "desc": "Insertion/Extraction Tool (Size 24 AutoSport)",
       "status": "In Shop"
     },
