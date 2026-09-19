@@ -505,23 +505,41 @@
         connData = replaceAllSubarray(connData, webMarker, genderMarker);
         connData = replaceProperty(connData, genderMarker, encoder.encode(connectorGender || 'Plug'));
 
-        // If contact part number differs from default M39029/58-360, update contact safe name references
-        if (contactPN && contactPN !== "M39029/58-360") {
-            const oldContactSafe = encoder.encode("M39029_58-360");
-            const newContactSafe = encoder.encode(contactPN.replace(/[/\\\s:]+/g, '_').trim());
-            if (oldContactSafe.length === newContactSafe.length) {
-                connData = replaceAllSubarray(connData, oldContactSafe, newContactSafe);
-            }
-        }
-
-        // Update pin labels
+        // Update pin contact references and pin labels
+        const defaultContactSafe = encoder.encode("M39029_58-360");
         const marker = encoder.encode("0b1f1e12-ea07-46f9-b6df-55d547649bed/");
         let pos = 0;
         const chunks = [];
         for (let i = 0; i < N; i++) {
             const idx = findSubarray(connData, marker, pos);
             if (idx === -1) throw new Error(`Could not find marker for pin ${i}`);
-            chunks.push(connData.subarray(pos, idx + marker.length));
+
+            let targetSafe = "M39029_58-360";
+            if (Array.isArray(contactPN) && contactPN[i]) {
+                targetSafe = contactPN[i].safePN || contactPN[i].pn || targetSafe;
+            } else if (typeof contactPN === 'string' && contactPN) {
+                targetSafe = contactPN.replace(/[/\\\s:]+/g, '_').trim();
+            }
+
+            const targetSafeBytes = encoder.encode(targetSafe);
+
+            // Find contact reference in this pin's block (between pos and idx)
+            const cIdx = findSubarray(connData, defaultContactSafe, pos);
+            if (cIdx !== -1 && cIdx < idx) {
+                const preChunk = new Uint8Array(connData.subarray(pos, cIdx));
+                if (targetSafeBytes.length !== defaultContactSafe.length) {
+                    const lenByteOffset = (cIdx - 25) - pos;
+                    if (lenByteOffset >= 0 && lenByteOffset < preChunk.length) {
+                        preChunk[lenByteOffset] = 36 + targetSafeBytes.length;
+                    }
+                }
+                chunks.push(preChunk);
+                chunks.push(targetSafeBytes);
+                chunks.push(connData.subarray(cIdx + defaultContactSafe.length, idx + marker.length));
+            } else {
+                chunks.push(connData.subarray(pos, idx + marker.length));
+            }
+
             const oldLen = connData[idx + marker.length];
             pos = idx + marker.length + 1 + oldLen;
             const newLbl = encoder.encode(pinLabels[i]);
@@ -575,6 +593,167 @@
         data = replaceProperty(data, descMarker, encoder.encode(finalDesc));
 
         return data;
+    }
+
+    const MIL_STD_CONTACTS = {
+        '22D': {
+            P: { pn: "M39029/58-360", desc: "Size 22D Pin Contact", safePN: "M39029_58-360", size: "22D" },
+            S: { pn: "M39029/56-348", desc: "Size 22D Socket Contact", safePN: "M39029_56-348", size: "22D" }
+        },
+        '20': {
+            P: { pn: "M39029/58-363", desc: "Size 20 Pin Contact", safePN: "M39029_58-363", size: "20" },
+            S: { pn: "M39029/56-351", desc: "Size 20 Socket Contact", safePN: "M39029_56-351", size: "20" }
+        },
+        '16': {
+            P: { pn: "M39029/58-364", desc: "Size 16 Pin Contact", safePN: "M39029_58-364", size: "16" },
+            S: { pn: "M39029/56-352", desc: "Size 16 Socket Contact", safePN: "M39029_56-352", size: "16" }
+        },
+        '12': {
+            P: { pn: "M39029/58-365", desc: "Size 12 Pin Contact", safePN: "M39029_58-365", size: "12" },
+            S: { pn: "M39029/56-353", desc: "Size 12 Socket Contact", safePN: "M39029_56-353", size: "12" }
+        },
+        '10': {
+            P: { pn: "M39029/58-528", desc: "Size 10 Pin Power Contact", safePN: "M39029_58-528", size: "10" },
+            S: { pn: "M39029/56-527", desc: "Size 10 Socket Power Contact", safePN: "M39029_56-527", size: "10" }
+        },
+        '8': {
+            P: { pn: "M39029/60-367", desc: "Size 8 Pin Power Contact", safePN: "M39029_60-367", size: "8" },
+            S: { pn: "M39029/59-366", desc: "Size 8 Socket Power Contact", safePN: "M39029_59-366", size: "8" }
+        }
+    };
+
+    const AS_STD_CONTACTS = {
+        '24': {
+            P: { pn: "605719-31", desc: "Size 24 Pin Contact (Deutsch AutoSport)", safePN: "605719-31", size: "24" },
+            S: { pn: "605721", desc: "Size 24 Socket Contact (Deutsch AutoSport)", safePN: "605721", size: "24" }
+        },
+        '23': {
+            P: { pn: "604927-31", desc: "Size 23 Pin Contact (Deutsch AutoSport)", safePN: "604927-31", size: "23" },
+            S: { pn: "604935", desc: "Size 23 Socket Contact (Deutsch AutoSport)", safePN: "604935", size: "23" }
+        },
+        '22': {
+            P: { pn: "38941-22", desc: "Size 22 Pin Contact (Deutsch AutoSport)", safePN: "38941-22", size: "22" },
+            S: { pn: "38943-22", desc: "Size 22 Socket Contact (Deutsch AutoSport)", safePN: "38943-22", size: "22" }
+        },
+        '20': {
+            P: { pn: "38941-20", desc: "Size 20 Pin Contact (Deutsch AutoSport)", safePN: "38941-20", size: "20" },
+            S: { pn: "38943-20", desc: "Size 20 Socket Contact (Deutsch AutoSport)", safePN: "38943-20", size: "20" }
+        },
+        '16': {
+            P: { pn: "38941-16", desc: "Size 16 Pin Contact (Deutsch AutoSport)", safePN: "38941-16", size: "16" },
+            S: { pn: "38943-16", desc: "Size 16 Socket Contact (Deutsch AutoSport)", safePN: "38943-16", size: "16" }
+        }
+    };
+
+    /**
+     * Maps each pin label to its exact contact size and authentic part number.
+     * Supports layouts with contactMap (e.g. J-4 / 25-4) as well as multi-size counts partitions.
+     */
+    function resolvePinContactAssignments(pins, layout, gender, isAutoSport, customContacts) {
+        const db = isAutoSport ? AS_STD_CONTACTS : MIL_STD_CONTACTS;
+        const defaultSize = isAutoSport ? '22' : '22D';
+        const contactMap = (layout && layout.contactMap) || null;
+        const counts = (layout && layout.counts) || {};
+
+        // Find fallback/remaining size if contactMap exists
+        let nonMappedSize = defaultSize;
+        if (counts && Object.keys(counts).length > 0) {
+            const mappedSizes = contactMap ? Object.keys(contactMap) : [];
+            const remaining = Object.keys(counts).filter(sz => !mappedSizes.includes(sz));
+            nonMappedSize = remaining.length > 0 ? remaining[0] : Object.keys(counts)[0];
+        }
+
+        // Strict safeguard: if counts has multiple sizes but no contactMap, warn loudly
+        if (!contactMap && counts && Object.keys(counts).length > 1) {
+            console.warn(`[SkyCAD Exporter] Layout ${layout && layout.arrangement} has multiple contact sizes (${JSON.stringify(counts)}) but lacks an explicit contactMap. Contact assignments require verified drawing mapping.`);
+        }
+
+        // Map custom contacts by size if provided
+        const customBySize = {};
+        if (customContacts && Array.isArray(customContacts)) {
+            customContacts.forEach(c => {
+                if (c.size) customBySize[c.size] = c;
+            });
+        }
+
+        const assignments = [];
+        const uniqueContacts = {};
+
+        for (let i = 0; i < pins.length; i++) {
+            const p = pins[i];
+            let sz = null;
+
+            if (contactMap) {
+                for (const [mapSize, pinList] of Object.entries(contactMap)) {
+                    if (Array.isArray(pinList) && pinList.includes(p)) {
+                        sz = mapSize;
+                        break;
+                    }
+                }
+                if (!sz) sz = nonMappedSize;
+            } else if (counts && Object.keys(counts).length > 0) {
+                sz = Object.keys(counts)[0];
+            } else {
+                sz = defaultSize;
+            }
+
+            // Resolve contact PN, description, and safe filename for this size
+            let resolvedContact = null;
+            if (customBySize[sz]) {
+                const cc = customBySize[sz];
+                resolvedContact = {
+                    pn: cc.pn,
+                    desc: cc.desc || `Size ${sz} ${gender === 'S' ? 'Socket' : 'Pin'} Contact`,
+                    safePN: (cc.pn || '').replace(/[/\\\s:]+/g, '_').trim(),
+                    size: sz
+                };
+            } else if (db[sz] && db[sz][gender]) {
+                resolvedContact = { ...db[sz][gender], size: sz };
+            } else if (db[defaultSize] && db[defaultSize][gender]) {
+                resolvedContact = { ...db[defaultSize][gender], size: defaultSize };
+            } else {
+                resolvedContact = {
+                    pn: gender === 'S' ? "M39029/56-348" : "M39029/58-360",
+                    desc: `Size ${sz} ${gender === 'S' ? 'Socket' : 'Pin'} Contact`,
+                    safePN: gender === 'S' ? "M39029_56-348" : "M39029_58-360",
+                    size: sz
+                };
+            }
+
+            assignments.push({
+                index: i,
+                pin: p,
+                size: sz,
+                pn: resolvedContact.pn,
+                desc: resolvedContact.desc,
+                safePN: resolvedContact.safePN
+            });
+
+            if (!uniqueContacts[resolvedContact.pn]) {
+                uniqueContacts[resolvedContact.pn] = {
+                    pn: resolvedContact.pn,
+                    desc: resolvedContact.desc,
+                    safePN: resolvedContact.safePN,
+                    size: sz,
+                    count: 1
+                };
+            } else {
+                uniqueContacts[resolvedContact.pn].count++;
+            }
+        }
+
+        const dominantContact = assignments.length > 0 ? assignments[0] : {
+            pn: gender === 'S' ? "M39029/56-348" : "M39029/58-360",
+            desc: "Size 22D Pin Contact",
+            safePN: gender === 'S' ? "M39029_56-348" : "M39029_58-360",
+            size: defaultSize
+        };
+
+        return {
+            assignments,
+            uniqueContacts,
+            dominantContact
+        };
     }
 
     const SkyCadExporter = {
@@ -639,55 +818,14 @@
             const isPlug = stLower.includes('plug') || pnUpper.includes('/26') || pnUpper.includes('AS6') || pnUpper.includes('TV06') || pnUpper.includes('TVS06');
             const connectorGender = isPlug ? 'Plug' : 'Jack';
 
-            // Contact Part Number & Gender resolution
+            // Contact Part Number & Gender resolution (with authentic per-pin mixed contact support)
             const gender = connObj.contactType || (activePN && activePN.includes('S') ? 'S' : 'P');
-            let contactPN = gender === 'S' ? "M39029/56-348" : "M39029/58-360";
-            let contactDesc = gender === 'S' ? "Size 22D Socket Contact" : "Size 22D Pin Contact";
+            const customContactsList = connObj.resolvedContacts || connObj.contacts;
+            const contactResolution = resolvePinContactAssignments(pins, layout, gender, isAutoSport, customContactsList);
 
-            if (isAutoSport) {
-                contactPN = gender === 'S' ? "38943-22" : "38941-22";
-                contactDesc = gender === 'S' ? "Size 22 Socket Contact (Deutsch AutoSport)" : "Size 22 Pin Contact (Deutsch AutoSport)";
-            }
-
-            const contactsList = connObj.resolvedContacts || connObj.contacts;
-            if (contactsList && contactsList.length > 0) {
-                contactPN = contactsList[0].pn || contactPN;
-                contactDesc = contactsList[0].desc || contactDesc;
-            } else if (layout && layout.counts) {
-                const dominantSize = Object.keys(layout.counts)[0] || (isAutoSport ? '22' : '22D');
-                if (isAutoSport) {
-                    if (dominantSize === '24') {
-                        contactPN = gender === 'S' ? "605721" : "605719-31";
-                        contactDesc = gender === 'S' ? "Size 24 Socket Contact (Deutsch AutoSport)" : "Size 24 Pin Contact (Deutsch AutoSport)";
-                    } else if (dominantSize === '23') {
-                        contactPN = gender === 'S' ? "604935" : "604927-31";
-                        contactDesc = gender === 'S' ? "Size 23 Socket Contact (Deutsch AutoSport)" : "Size 23 Pin Contact (Deutsch AutoSport)";
-                    } else if (dominantSize === '20') {
-                        contactPN = gender === 'S' ? "38943-20" : "38941-20";
-                        contactDesc = gender === 'S' ? "Size 20 Socket Contact (Deutsch AutoSport)" : "Size 20 Pin Contact (Deutsch AutoSport)";
-                    } else if (dominantSize === '16') {
-                        contactPN = gender === 'S' ? "38943-16" : "38941-16";
-                        contactDesc = gender === 'S' ? "Size 16 Socket Contact (Deutsch AutoSport)" : "Size 16 Pin Contact (Deutsch AutoSport)";
-                    } else {
-                        contactPN = gender === 'S' ? "38943-22" : "38941-22";
-                        contactDesc = gender === 'S' ? "Size 22 Socket Contact (Deutsch AutoSport)" : "Size 22 Pin Contact (Deutsch AutoSport)";
-                    }
-                } else {
-                    if (dominantSize === '20') {
-                        contactPN = gender === 'S' ? "M39029/56-351" : "M39029/58-363";
-                        contactDesc = gender === 'S' ? "Size 20 Socket Contact" : "Size 20 Pin Contact";
-                    } else if (dominantSize === '16') {
-                        contactPN = gender === 'S' ? "M39029/56-352" : "M39029/58-364";
-                        contactDesc = gender === 'S' ? "Size 16 Socket Contact" : "Size 16 Pin Contact";
-                    } else if (dominantSize === '12') {
-                        contactPN = gender === 'S' ? "M39029/56-353" : "M39029/58-365";
-                        contactDesc = gender === 'S' ? "Size 12 Socket Contact" : "Size 12 Pin Contact";
-                    } else if (dominantSize === '8') {
-                        contactPN = gender === 'S' ? "M39029/59-366" : "M39029/60-367";
-                        contactDesc = gender === 'S' ? "Size 8 Socket Power Contact" : "Size 8 Pin Power Contact";
-                    }
-                }
-            }
+            const dominantContact = contactResolution.dominantContact;
+            const contactPN = dominantContact.pn;
+            const contactDesc = dominantContact.desc;
 
             // Child Accessories:
             const accessories = [];
@@ -734,7 +872,17 @@
             }
 
             // Contacts BOM
-            if (connObj.contacts && connObj.contacts.length > 0) {
+            if (contactResolution.uniqueContacts && Object.keys(contactResolution.uniqueContacts).length > 0) {
+                Object.values(contactResolution.uniqueContacts).forEach(c => {
+                    accessories.push({
+                        type: 'Contact',
+                        pn: c.pn,
+                        desc: c.desc,
+                        manufacturer: isAutoSport ? 'TE Connectivity / DEUTSCH' : 'Mil-Spec (M39029)',
+                        qty: c.count
+                    });
+                });
+            } else if (connObj.contacts && connObj.contacts.length > 0) {
                 connObj.contacts.forEach(c => {
                     accessories.push({
                         type: 'Contact',
@@ -747,7 +895,10 @@
             }
 
             const genderWord = gender === 'S' ? 'Socket' : 'Pin';
-            let detailedDesc = `${seriesTitle} ${connObj.shellType || 'Connector'}, Shell ${connObj.shellSize || ''} (${connObj.arrangement || ''}), ${pinCount} ${genderWord} Contacts`;
+            const contactMixSummary = Object.values(contactResolution.uniqueContacts)
+                .map(c => `${c.count}x #${c.size}`)
+                .join(', ');
+            let detailedDesc = `${seriesTitle} ${connObj.shellType || 'Connector'}, Shell ${connObj.shellSize || ''} (${connObj.arrangement || ''}), ${pinCount} ${genderWord} Contacts (${contactMixSummary})`;
 
             return {
                 partNumber: activePN,
@@ -763,6 +914,8 @@
                 diagramImg: layout ? layout.diagramImg : null,
                 pinCount: pinCount,
                 pins: pins,
+                pinAssignments: contactResolution.assignments,
+                uniqueContacts: Object.values(contactResolution.uniqueContacts),
                 contactPN: contactPN,
                 contactDesc: contactDesc,
                 contactMap: layout ? layout.contactMap : null,
@@ -843,26 +996,41 @@
                 }
             }
 
-            // 3. Serialize connector with dynamic pin slicing, assigned labels, 2D layout block, blank properties, dynamic gender
+            // 3. Serialize connector with dynamic pin slicing, assigned labels, 2D layout block, blank properties, dynamic gender, per-pin contacts
             const customSkyCadFile = createAssignedConnectorBytes(
                 connTemplateBytes,
                 connectorData.pins || [],
                 connectorData.partNumber,
                 safePN,
-                contactPN,
+                connectorData.pinAssignments || connectorData.contactPN,
                 connectorData.description,
                 imgFilename,
                 layoutImgBytes,
                 connectorGender
             );
 
-            // 4. Serialize contact file matching assigned part number
-            const customContactFile = createCustomContactFile(
-                pinTemplateBytes,
-                contactPN,
-                safeContactPN,
-                connectorData.contactDesc || "Connector Contact"
-            );
+            // 4. Serialize contact files for all unique contacts
+            const contactFiles = [];
+            const uniqueContacts = (connectorData.uniqueContacts && connectorData.uniqueContacts.length > 0)
+                ? connectorData.uniqueContacts
+                : [{
+                    pn: contactPN,
+                    safePN: safeContactPN,
+                    desc: connectorData.contactDesc || "Connector Contact"
+                }];
+
+            uniqueContacts.forEach(uc => {
+                const cFile = createCustomContactFile(
+                    pinTemplateBytes,
+                    uc.pn,
+                    uc.safePN,
+                    uc.desc || "Connector Contact"
+                );
+                contactFiles.push({
+                    name: `${pkgFolder}/Catalogue/Connector pin/${uc.safePN}.SkyCadFile`,
+                    data: cFile
+                });
+            });
 
             // 5. PackageInfo.txt
             const packageInfoText = `\\Catalogue\\Root Class\\Work field classes\\Component\\Connector\\${safePN}.SkyCadFile\r\n1.3.65.17278\r\n`;
@@ -884,7 +1052,12 @@
             pinSummary += `Pin Schedule:\r\n`;
             if (connectorData.pins && connectorData.pins.length > 0) {
                 connectorData.pins.forEach((p, idx) => {
-                    pinSummary += `  Pin ${idx + 1}: ${p} (Assigned ${contactPN})\r\n`;
+                    const assign = (connectorData.pinAssignments && connectorData.pinAssignments[idx])
+                        ? connectorData.pinAssignments[idx]
+                        : null;
+                    const assignedPN = assign ? assign.pn : contactPN;
+                    const assignedSize = assign ? ` (Size #${assign.size})` : '';
+                    pinSummary += `  Pin ${idx + 1}: ${p}${assignedSize} (Assigned ${assignedPN})\r\n`;
                 });
             }
 
@@ -910,10 +1083,7 @@
                     name: `${pkgFolder}/Catalogue/Library/Package library.SkyCadFile`,
                     data: customPkgLib
                 },
-                {
-                    name: `${pkgFolder}/Catalogue/Connector pin/${safeContactPN}.SkyCadFile`,
-                    data: customContactFile
-                },
+                ...contactFiles,
                 {
                     name: `${pkgFolder}/Catalogue/Harness accessory/M85049_38-17W.SkyCadFile`,
                     data: accTemplateBytes

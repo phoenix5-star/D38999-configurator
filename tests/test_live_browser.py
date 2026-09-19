@@ -119,9 +119,9 @@ def main():
         print(f"Header Version Tag: {version_tag}")
         print(f"CONFIG_VERSION constant: {config_version}")
 
-        assert "V002.4.4" in title, f"Title does not contain V002.4.4: {title}"
-        assert version_tag == "V002.4.4", f"Version tag is not V002.4.4: {version_tag}"
-        assert config_version == "V002.4.4", f"CONFIG_VERSION is not V002.4.4: {config_version}"
+        assert "V002.5.0" in title, f"Title does not contain V002.5.0: {title}"
+        assert version_tag == "V002.5.0", f"Version tag is not V002.5.0: {version_tag}"
+        assert config_version == "V002.5.0", f"CONFIG_VERSION is not V002.5.0: {config_version}"
         print("[PASS] Version synchronization verified across DOM and JS.")
 
         print("\n--- Check 2: SkyCAD Feature Enabled in UI ---")

@@ -437,6 +437,29 @@ def main():
         with open(out_56_pkg, "wb") as f:
             f.write(zip_bytes_56)
 
+        with zipfile.ZipFile(io.BytesIO(zip_bytes_56), 'r') as zf:
+            f56_list = zf.namelist()
+            print("56-pin package contact files:", [f for f in f56_list if "Catalogue/Connector pin" in f])
+            assert any("M39029_56-352.SkyCadFile" in f for f in f56_list), "Size 16 socket M39029_56-352 missing from package!"
+            assert any("M39029_56-351.SkyCadFile" in f for f in f56_list), "Size 20 socket M39029_56-351 missing from package!"
+
+            # Verify Pin Schedule
+            pin_sched_file = next(f for f in f56_list if "Pin_Schedule.txt" in f)
+            pin_sched_text = zf.read(pin_sched_file).decode('utf-8')
+            assert "Total Contacts: 56" in pin_sched_text
+            assert "Pin 1: A (Size #20) (Assigned M39029/56-351)" in pin_sched_text
+            # Pins y, z, AA, DD, EE, FF, JJ, LL must be Size #16 (M39029/56-352)
+            for p16 in ['y', 'z', 'AA', 'DD', 'EE', 'FF', 'JJ', 'LL']:
+                assert f"{p16} (Size #16) (Assigned M39029/56-352)" in pin_sched_text, f"Pin {p16} not assigned size 16 contact in Pin_Schedule!"
+            assert pin_sched_text.count("M39029/56-352") == 8, f"Expected 8x M39029/56-352 in Pin_Schedule, got {pin_sched_text.count('M39029/56-352')}"
+            assert pin_sched_text.count("M39029/56-351") == 48, f"Expected 48x M39029/56-351 in Pin_Schedule, got {pin_sched_text.count('M39029/56-351')}"
+
+            # Verify Accessories BOM
+            bom_file = next(f for f in f56_list if "Accessories_BOM.csv" in f)
+            bom_text = zf.read(bom_file).decode('utf-8')
+            assert "M39029/56-352" in bom_text and ",8" in bom_text, "Size 16 contact qty 8 missing from Accessories_BOM.csv!"
+            assert "M39029/56-351" in bom_text and ",48" in bom_text, "Size 20 contact qty 48 missing from Accessories_BOM.csv!"
+
         load_56_cmd = ["powershell", "-ExecutionPolicy", "Bypass", "-File", "tools/test_package_load.ps1", "-PackagePath", out_56_pkg]
         load_56_proc = subprocess.run(load_56_cmd, capture_output=True, text=True)
         print("SkyCAD Kernel Output (56-pin 20FJ4SN):")
@@ -446,6 +469,152 @@ def main():
         assert "PartNumber: 'D38999/20FJ4SN'" in load_56_proc.stdout, f"PartNumber mismatch: {load_56_proc.stdout}"
         assert "Gender: 'Jack'" in load_56_proc.stdout, f"Gender mismatch: {load_56_proc.stdout}"
         print("[PASS] SkyCAD Kernel verified STREAM_SUCCESS and LOAD_SUCCESS for 56-pin 20FJ4SN!")
+
+        print("\n--- Check 5b-2: Live 56-Pin Plug Package Generation via Browser Engine (26WJ4PN) ---")
+        cdp_eval(ws, """
+            document.getElementById('pnDecodeInput').value = '26WJ4PN';
+            liveDecodePN('26WJ4PN');
+            applyDecodedPN();
+        """)
+        time.sleep(1)
+
+        b64_zip_56p = cdp_eval(ws, """
+            (async () => {
+                const pair = currentCalculatedSolutions[0];
+                const formatted = SkyCadExporter.formatConnectorData(pair.primary, pair, true);
+                const blob = await SkyCadExporter.generatePackageBlob(formatted);
+                return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        const b64 = reader.result.split(',')[1];
+                        resolve(b64);
+                    };
+                    reader.readAsDataURL(blob);
+                });
+            })()
+        """)
+        assert b64_zip_56p, "generatePackageBlob returned null for 26WJ4PN!"
+        zip_bytes_56p = base64.b64decode(b64_zip_56p)
+        with zipfile.ZipFile(io.BytesIO(zip_bytes_56p), 'r') as zf:
+            f56p_list = zf.namelist()
+            assert any("M39029_58-364.SkyCadFile" in f for f in f56p_list), "Size 16 pin M39029_58-364 missing from package!"
+            assert any("M39029_58-363.SkyCadFile" in f for f in f56p_list), "Size 20 pin M39029_58-363 missing from package!"
+            p_sched = zf.read(next(f for f in f56p_list if "Pin_Schedule.txt" in f)).decode('utf-8')
+            assert p_sched.count("M39029/58-364") == 8
+            assert p_sched.count("M39029/58-363") == 48
+
+        out_56p_pkg = os.path.join(PROJECT_DIR, "scratch", "browser_exported_26wj4pn_56pin.SkyCadPackage")
+        with open(out_56p_pkg, "wb") as f:
+            f.write(zip_bytes_56p)
+
+        load_56p_cmd = ["powershell", "-ExecutionPolicy", "Bypass", "-File", "tools/test_package_load.ps1", "-PackagePath", out_56p_pkg]
+        load_56p_proc = subprocess.run(load_56p_cmd, capture_output=True, text=True)
+        assert "STREAM_SUCCESS" in load_56p_proc.stdout, f"Kernel stream failure: {load_56p_proc.stdout}"
+        assert "LOAD_SUCCESS" in load_56p_proc.stdout, f"Kernel load failure: {load_56p_proc.stdout}"
+        assert "PartNumber: 'D38999/26WJ4PN'" in load_56p_proc.stdout, f"PartNumber mismatch: {load_56p_proc.stdout}"
+        assert "Gender: 'Plug'" in load_56p_proc.stdout, f"Gender mismatch: {load_56p_proc.stdout}"
+        print("[PASS] SkyCAD Kernel verified STREAM_SUCCESS and LOAD_SUCCESS for 56-pin Plug 26WJ4PN!")
+
+        print("\n--- Check 5b-3: Live Mixed Contact Verification for 20FD97SN (15-97) ---")
+        cdp_eval(ws, """
+            document.getElementById('pnDecodeInput').value = '20FD97SN';
+            liveDecodePN('20FD97SN');
+            applyDecodedPN();
+        """)
+        time.sleep(1)
+
+        b64_zip_97 = cdp_eval(ws, """
+            (async () => {
+                const pair = currentCalculatedSolutions[0];
+                const formatted = SkyCadExporter.formatConnectorData(pair.primary, pair, true);
+                const blob = await SkyCadExporter.generatePackageBlob(formatted);
+                return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        const b64 = reader.result.split(',')[1];
+                        resolve(b64);
+                    };
+                    reader.readAsDataURL(blob);
+                });
+            })()
+        """)
+        assert b64_zip_97, "generatePackageBlob returned null for 20FD97SN!"
+        zip_bytes_97 = base64.b64decode(b64_zip_97)
+        with zipfile.ZipFile(io.BytesIO(zip_bytes_97), 'r') as zf:
+            f97_list = zf.namelist()
+            pin_sched_text = zf.read(next(f for f in f97_list if "Pin_Schedule.txt" in f)).decode('utf-8')
+            # Verify MIL-STD-1560 cavity mapping for 15-97:
+            # Size 16 (4 contacts): C, G, L, M
+            for p16 in ['C', 'G', 'L', 'M']:
+                assert f"{p16} (Size #16) (Assigned M39029/56-352)" in pin_sched_text, f"Pin {p16} not assigned size 16 in 15-97!"
+            # Size 20 (8 contacts): A, B, D, E, F, H, J, K
+            for p20 in ['A', 'B', 'D', 'E', 'F', 'H', 'J', 'K']:
+                assert f"{p20} (Size #20) (Assigned M39029/56-351)" in pin_sched_text, f"Pin {p20} not assigned size 20 in 15-97!"
+            assert pin_sched_text.count("M39029/56-352") == 4
+            assert pin_sched_text.count("M39029/56-351") == 8
+        print("[PASS] 20FD97SN verified: C, G, L, M assigned Size 16; A, B, D, E, F, H, J, K assigned Size 20!")
+
+        print("\n--- Check 5b-4: Live Mixed Contact Verification for 20FD15SN (15-15) & 20FE99SN (17-99) ---")
+        cdp_eval(ws, """
+            document.getElementById('pnDecodeInput').value = '20FD15SN';
+            liveDecodePN('20FD15SN');
+            applyDecodedPN();
+        """)
+        time.sleep(1)
+        b64_zip_15 = cdp_eval(ws, """
+            (async () => {
+                const pair = currentCalculatedSolutions[0];
+                const formatted = SkyCadExporter.formatConnectorData(pair.primary, pair, true);
+                const blob = await SkyCadExporter.generatePackageBlob(formatted);
+                return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        const b64 = reader.result.split(',')[1];
+                        resolve(b64);
+                    };
+                    reader.readAsDataURL(blob);
+                });
+            })()
+        """)
+        zip_bytes_15 = base64.b64decode(b64_zip_15)
+        with zipfile.ZipFile(io.BytesIO(zip_bytes_15), 'r') as zf:
+            f15_list = zf.namelist()
+            sched_15 = zf.read(next(f for f in f15_list if "Pin_Schedule.txt" in f)).decode('utf-8')
+            assert "P (Size #16) (Assigned M39029/56-352)" in sched_15, "Pin P not assigned size 16 in 15-15!"
+            assert sched_15.count("M39029/56-352") == 1
+            assert sched_15.count("M39029/56-351") == 14
+        print("[PASS] 20FD15SN verified: Pin P assigned Size 16, remaining 14 assigned Size 20!")
+
+        cdp_eval(ws, """
+            document.getElementById('pnDecodeInput').value = '20FE99SN';
+            liveDecodePN('20FE99SN');
+            applyDecodedPN();
+        """)
+        time.sleep(1)
+        b64_zip_99 = cdp_eval(ws, """
+            (async () => {
+                const pair = currentCalculatedSolutions[0];
+                const formatted = SkyCadExporter.formatConnectorData(pair.primary, pair, true);
+                const blob = await SkyCadExporter.generatePackageBlob(formatted);
+                return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        const b64 = reader.result.split(',')[1];
+                        resolve(b64);
+                    };
+                    reader.readAsDataURL(blob);
+                });
+            })()
+        """)
+        zip_bytes_99 = base64.b64decode(b64_zip_99)
+        with zipfile.ZipFile(io.BytesIO(zip_bytes_99), 'r') as zf:
+            f99_list = zf.namelist()
+            sched_99 = zf.read(next(f for f in f99_list if "Pin_Schedule.txt" in f)).decode('utf-8')
+            for p16 in ['W', 'Z']:
+                assert f"{p16} (Size #16) (Assigned M39029/56-352)" in sched_99, f"Pin {p16} not assigned size 16 in 17-99!"
+            assert sched_99.count("M39029/56-352") == 2
+            assert sched_99.count("M39029/56-351") == 21
+        print("[PASS] 20FE99SN verified: Pins W, Z assigned Size 16, remaining 21 assigned Size 20!")
 
         print("\n--- Check 5c: Live 128-Pin Package Generation via Browser Engine (20FJ35SN) ---")
         cdp_eval(ws, """
