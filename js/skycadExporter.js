@@ -291,7 +291,7 @@
     /**
      * Slices pins and assigns pin labels, 2D layout block, contact references, and properties
      */
-    function createAssignedConnectorBytes(baseBytes, pinLabels, partNumber, safePN, contactPN, description, imageFilename, layoutImgBytes, connectorGender) {
+    function createAssignedConnectorBytes(baseBytes, pinLabels, partNumber, safePN, contactPN, description, imageFilename, layoutImgBytes, connectorGender, accessoryData) {
         const N = pinLabels.length;
         const oldConnGuidStr = "295662a3-09a7-4c9e-805f-e9f56d2fbf68";
         const newConnGuidStr = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -505,6 +505,19 @@
         connData = replaceAllSubarray(connData, webMarker, genderMarker);
         connData = replaceProperty(connData, genderMarker, encoder.encode(connectorGender || 'Plug'));
 
+        // Update child Harness accessory link if accessoryData is provided
+        if (accessoryData && accessoryData.pn && accessoryData.pn !== 'N/A') {
+            const oldAccGuid = encoder.encode("1524ce1f-e1aa-4409-a500-c2d82a6f0767");
+            const newAccGuid = encoder.encode(accessoryData.guid);
+            connData = replaceAllSubarray(connData, oldAccGuid, newAccGuid);
+
+            const oldAccPath = encoder.encode("\\Catalogue\\Harness accessory\\M85049_38-17W.SkyCadFile");
+            const newAccPath = encoder.encode(`\\Catalogue\\Harness accessory\\${accessoryData.safePN}.SkyCadFile`);
+            const oldPathMarker = concatUint8([encodeLeb128(oldAccPath.length), oldAccPath]);
+            const newPathMarker = concatUint8([encodeLeb128(newAccPath.length), newAccPath]);
+            connData = replaceAllSubarray(connData, oldPathMarker, newPathMarker);
+        }
+
         // Update pin contact references and pin labels
         const defaultContactSafe = encoder.encode("M39029_58-360");
         const marker = encoder.encode("0b1f1e12-ea07-46f9-b6df-55d547649bed/");
@@ -591,6 +604,34 @@
         }
         const descMarker = encoder.encode("%4ffe94b7-c9ae-43be-9d3e-1d82323866d8/");
         data = replaceProperty(data, descMarker, encoder.encode(finalDesc));
+
+        return data;
+    }
+
+    /**
+     * Generates a custom Harness accessory .SkyCadFile by updating Part Number, safe name, Description, and GUID
+     */
+    function createCustomAccessoryFile(accTemplateBytes, accessoryPN, safeAccPN, description, accGuid) {
+        const encoder = new TextEncoder();
+        let data = new Uint8Array(accTemplateBytes);
+
+        const oldAccGuid = encoder.encode("1524ce1f-e1aa-4409-a500-c2d82a6f0767");
+        const newAccGuid = encoder.encode(accGuid);
+        data = replaceAllSubarray(data, oldAccGuid, newAccGuid);
+
+        const oldAccPath = encoder.encode("\\Catalogue\\Harness accessory\\M85049_38-17W.SkyCadFile");
+        const newAccPath = encoder.encode(`\\Catalogue\\Harness accessory\\${safeAccPN}.SkyCadFile`);
+        const oldPathMarker = concatUint8([encodeLeb128(oldAccPath.length), oldAccPath]);
+        const newPathMarker = concatUint8([encodeLeb128(newAccPath.length), newAccPath]);
+        data = replaceAllSubarray(data, oldPathMarker, newPathMarker);
+
+        const pnMarker = encoder.encode("%9f7a0040-11da-4fba-af9f-9f42070959ac/");
+        const descMarker = encoder.encode("%4ffe94b7-c9ae-43be-9d3e-1d82323866d8/");
+        const mfrMarker = encoder.encode("%81e499f0-5c0e-4794-932a-f44d156189ee/");
+
+        data = replaceProperty(data, pnMarker, encoder.encode(accessoryPN));
+        data = replaceProperty(data, descMarker, encoder.encode(description || `${accessoryPN} Harness Accessory`));
+        data = replaceProperty(data, mfrMarker, new Uint8Array(0)); // Blank per user specification
 
         return data;
     }
@@ -831,15 +872,27 @@
             const accessories = [];
 
             // Backshell / Strain relief
+            let activeBackshell = null;
             if (connObj.shellType !== 'Box Mount' && connObj.selectedBackshell && connObj.selectedBackshell !== 'NONE') {
                 const bsOpts = (typeof getBackshellOptions === 'function') ? getBackshellOptions(connObj.shellSize, connObj.finish) : null;
                 const bs = bsOpts ? bsOpts[connObj.selectedBackshell] : null;
-                if (bs) {
+                if (bs && bs.pn && bs.pn !== 'N/A') {
+                    const bsSafePN = this.toSafePN(bs.pn);
+                    const bsGuid = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                        const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+                        return v.toString(16);
+                    });
+                    activeBackshell = {
+                        pn: bs.pn,
+                        safePN: bsSafePN,
+                        desc: bs.desc,
+                        guid: bsGuid
+                    };
                     accessories.push({
                         type: 'Backshell',
                         pn: bs.pn,
                         desc: bs.desc,
-                        manufacturer: isAutoSport ? 'TE Connectivity / Raychem' : 'Amphenol Aerospace',
+                        manufacturer: '', // Blank per user specification
                         qty: 1
                     });
                 }
@@ -919,6 +972,7 @@
                 contactPN: contactPN,
                 contactDesc: contactDesc,
                 contactMap: layout ? layout.contactMap : null,
+                backshell: activeBackshell,
                 accessories: accessories
             };
         },
@@ -996,7 +1050,7 @@
                 }
             }
 
-            // 3. Serialize connector with dynamic pin slicing, assigned labels, 2D layout block, blank properties, dynamic gender, per-pin contacts
+            // 3. Serialize connector with dynamic pin slicing, assigned labels, 2D layout block, blank properties, dynamic gender, per-pin contacts, and dynamic accessory
             const customSkyCadFile = createAssignedConnectorBytes(
                 connTemplateBytes,
                 connectorData.pins || [],
@@ -1006,7 +1060,8 @@
                 connectorData.description,
                 imgFilename,
                 layoutImgBytes,
-                connectorGender
+                connectorGender,
+                connectorData.backshell
             );
 
             // 4. Serialize contact files for all unique contacts
@@ -1031,6 +1086,23 @@
                     data: cFile
                 });
             });
+
+            // 4b. Serialize dynamic harness accessory file if backshell is configured
+            const accessoryFiles = [];
+            if (connectorData.backshell && connectorData.backshell.pn && connectorData.backshell.pn !== 'N/A') {
+                const bs = connectorData.backshell;
+                const accFileBytes = createCustomAccessoryFile(
+                    accTemplateBytes,
+                    bs.pn,
+                    bs.safePN,
+                    bs.desc,
+                    bs.guid
+                );
+                accessoryFiles.push({
+                    name: `${pkgFolder}/Catalogue/Harness accessory/${bs.safePN}.SkyCadFile`,
+                    data: accFileBytes
+                });
+            }
 
             // 5. PackageInfo.txt
             const packageInfoText = `\\Catalogue\\Root Class\\Work field classes\\Component\\Connector\\${safePN}.SkyCadFile\r\n1.3.65.17278\r\n`;
@@ -1084,10 +1156,7 @@
                     data: customPkgLib
                 },
                 ...contactFiles,
-                {
-                    name: `${pkgFolder}/Catalogue/Harness accessory/M85049_38-17W.SkyCadFile`,
-                    data: accTemplateBytes
-                },
+                ...accessoryFiles,
                 {
                     name: `${pkgFolder}/Catalogue/Root Class/Work field classes/Component/Connector/${safePN}.SkyCadFile`,
                     data: customSkyCadFile
