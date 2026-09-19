@@ -1,3968 +1,4903 @@
 window.CONNECTOR_DATA_FALLBACK = {
-  series: [
-  {
-    "id": "d38999_mil",
-    "name": "MIL-DTL-38999 Series III",
-    "shortName": "Military D38999",
-    "standard": "mil",
-    "prefix": "D38999/",
-    "description": "Military specification circular connectors with triple-start threaded coupling.",
-    "defaultFinish": "W",
-    "supportedShellTypes": ["Plug", "Wall Mount", "Box Mount", "Jam Nut"]
-  },
-  {
-    "id": "d38999_comm",
-    "name": "Amphenol Tri-Start (Commercial)",
-    "shortName": "Commercial Tri-Start",
-    "standard": "comm",
-    "prefix": "TVS/CTVP",
-    "description": "Amphenol commercial equivalent to MIL-DTL-38999 Series III with metal and composite shells.",
-    "defaultFinish": "W",
-    "supportedShellTypes": ["Plug", "Wall Mount", "Box Mount", "Jam Nut"]
-  },
-  {
-    "id": "deutsch_autosport",
-    "name": "Deutsch AutoSport",
-    "shortName": "Deutsch AutoSport",
-    "standard": "as",
-    "prefix": "ASL / ASM / AS",
-    "description": "Ultra-compact, lightweight circular connectors engineered for motorsport and aerospace avionics (ASL Micro, ASM Mini, and AS Standard).",
-    "defaultFinish": "N",
-    "supportedShellTypes": ["Plug", "2-Hole Flange Receptacle", "Jam Nut Receptacle", "In-Line Receptacle", "2-Hole Flange PCB Receptacle"]
-  }
-],
-  shells: [
-  {
-    "seriesId": "d38999",
-    "type": "Plug",
-    "name": "Straight Plug",
-    "milCode": "26",
-    "commPrefix": "TVS06",
-    "compPrefix": "CTV06",
-    "description": "Cable-connecting straight plug with anti-decoupling ratchet coupling ring."
-  },
-  {
-    "seriesId": "d38999",
-    "type": "Wall Mount",
-    "name": "Wall Mount Receptacle",
-    "milCode": "20",
-    "commPrefix": "TVPS00",
-    "compPrefix": "CTVP00",
-    "description": "Square flange 4-hole receptacle with rear accessory threads."
-  },
-  {
-    "seriesId": "d38999",
-    "type": "Box Mount",
-    "name": "Box Mount Receptacle",
-    "milCode": "22",
-    "commPrefix": "TVPS02",
-    "compPrefix": "CTVP02",
-    "description": "Square flange 4-hole receptacle without rear accessory threads (low profile)."
-  },
-  {
-    "seriesId": "d38999",
-    "type": "Jam Nut",
-    "name": "Jam Nut Receptacle",
-    "milCode": "24",
-    "commPrefix": "TVS07",
-    "compPrefix": "CTV07",
-    "description": "Single-hole mounting receptacle with O-ring seal and rear hex jam nut."
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "type": "Plug",
-    "name": "Free Plug",
-    "asCode": "6",
-    "aslPrefix": "ASL6",
-    "asmPrefix": "ASM6",
-    "asPrefix": "AS6",
-    "description": "Free plug with bayonet coupling ring."
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "type": "2-Hole Flange Receptacle",
-    "name": "2-Hole Flange Receptacle",
-    "asCode": "0",
-    "aslPrefix": "ASL0",
-    "asmPrefix": "ASM0",
-    "asPrefix": "AS0",
-    "description": "Front/rear panel 2-hole mounting flange receptacle."
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "type": "In-Line Receptacle",
-    "name": "In-Line Receptacle",
-    "asCode": "1",
-    "aslPrefix": "ASL1",
-    "asmPrefix": "ASM1",
-    "asPrefix": "AS1",
-    "description": "Free-hanging in-line receptacle for cable-to-cable connections."
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "type": "2-Hole Flange PCB Receptacle",
-    "name": "2-Hole Flange PCB Receptacle",
-    "asCode": "2",
-    "aslPrefix": "ASL2",
-    "asmPrefix": "ASM2",
-    "asPrefix": "AS2",
-    "description": "Low profile 2-hole flange receptacle with PCB/solder contacts."
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "type": "Jam Nut Receptacle",
-    "name": "Jam Nut Receptacle",
-    "asCode": "7",
-    "aslPrefix": "ASL7",
-    "asmPrefix": "ASM7",
-    "asPrefix": "AS7",
-    "description": "Single-hole jam nut receptacle."
-  }
-],
-  finishes: [
-  {
-    "code": "W",
-    "name": "Olive Drab Cadmium",
-    "commCode": "RW",
-    "material": "Aluminum",
-    "isComp": false,
-    "costMult": 1.0,
-    "backshellFinish": "W",
-    "description": "Standard military conductive olive drab cadmium over electroless nickel (500 hr salt spray)."
-  },
-  {
-    "code": "F",
-    "name": "Electroless Nickel",
-    "commCode": "RF",
-    "material": "Aluminum",
-    "isComp": false,
-    "costMult": 0.95,
-    "backshellFinish": "N",
-    "description": "Conductive electroless nickel plating (48 hr salt spray, high EMI shielding)."
-  },
-  {
-    "code": "Z",
-    "name": "Black Zinc Nickel",
-    "commCode": "RBZ",
-    "material": "Aluminum",
-    "isComp": false,
-    "costMult": 1.15,
-    "backshellFinish": "Z",
-    "description": "RoHS-compliant non-reflective conductive black zinc nickel (500 hr salt spray)."
-  },
-  {
-    "code": "T",
-    "name": "Nickel PTFE / Durmalon",
-    "commCode": "RNF",
-    "material": "Aluminum",
-    "isComp": false,
-    "costMult": 1.30,
-    "backshellFinish": "T",
-    "description": "RoHS-compliant conductive nickel fluorocarbon polymer / Durmalon (500 hr salt spray)."
-  },
-  {
-    "code": "K",
-    "name": "Passivated Stainless Steel",
-    "commCode": "RK",
-    "material": "Stainless Steel",
-    "isComp": false,
-    "costMult": 1.85,
-    "backshellFinish": "S",
-    "description": "Corrosion-resistant passivated stainless steel firewall construction."
-  },
-  {
-    "code": "J",
-    "name": "Composite Olive Drab Cadmium",
-    "commCode": "RW",
-    "material": "Composite",
-    "isComp": true,
-    "costMult": 1.25,
-    "backshellFinish": "W",
-    "description": "Lightweight composite shell with olive drab cadmium plating (2000 hr salt spray)."
-  },
-  {
-    "code": "M",
-    "name": "Composite Electroless Nickel",
-    "commCode": "RF",
-    "material": "Composite",
-    "isComp": true,
-    "costMult": 1.20,
-    "backshellFinish": "N",
-    "description": "Lightweight composite shell with electroless nickel plating (2000 hr salt spray)."
-  },
-  {
-    "code": "N",
-    "name": "Black Conductive / Electroless Nickel",
-    "commCode": "N",
-    "material": "Aluminum",
-    "isComp": false,
-    "costMult": 1.0,
-    "backshellFinish": "N",
-    "description": "Standard Deutsch AutoSport black conductive non-reflective finish (or Electroless Nickel)."
-  }
-],
-  layouts: [
-  {
-    "seriesId": "d38999",
-    "shellSize": "9",
-    "letterCode": "A",
-    "arrangement": "9-35",
-    "counts": {
-      "22D": 6
+  "series": [
+    {
+      "id": "d38999_mil",
+      "name": "MIL-DTL-38999 Series III",
+      "shortName": "Military D38999",
+      "standard": "mil",
+      "prefix": "D38999/",
+      "description": "Military specification circular connectors with triple-start threaded coupling.",
+      "defaultFinish": "W",
+      "supportedShellTypes": [
+        "Plug",
+        "Wall Mount",
+        "Box Mount",
+        "Jam Nut"
+      ]
     },
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "9",
-    "letterCode": "A",
-    "arrangement": "9-5",
-    "counts": {
-      "8": 1
+    {
+      "id": "d38999_comm",
+      "name": "Amphenol Tri-Start (Commercial)",
+      "shortName": "Commercial Tri-Start",
+      "standard": "comm",
+      "prefix": "TVS/CTVP",
+      "description": "Amphenol commercial equivalent to MIL-DTL-38999 Series III with metal and composite shells.",
+      "defaultFinish": "W",
+      "supportedShellTypes": [
+        "Plug",
+        "Wall Mount",
+        "Box Mount",
+        "Jam Nut"
+      ]
     },
-    "pins": [
-      "1"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "9",
-    "letterCode": "A",
-    "arrangement": "9-98",
-    "counts": {
-      "20": 3
+    {
+      "id": "deutsch_autosport",
+      "name": "Deutsch AutoSport",
+      "shortName": "Deutsch AutoSport",
+      "standard": "as",
+      "prefix": "ASL / ASM / AS",
+      "description": "Ultra-compact, lightweight circular connectors engineered for motorsport and aerospace avionics (ASL Micro, ASM Mini, and AS Standard).",
+      "defaultFinish": "N",
+      "supportedShellTypes": [
+        "Plug",
+        "2-Hole Flange Receptacle",
+        "Jam Nut Receptacle",
+        "In-Line Receptacle",
+        "2-Hole Flange PCB Receptacle"
+      ]
+    }
+  ],
+  "shells": [
+    {
+      "seriesId": "d38999",
+      "type": "Plug",
+      "name": "Straight Plug",
+      "milCode": "26",
+      "commPrefix": "TVS06",
+      "compPrefix": "CTV06",
+      "description": "Cable-connecting straight plug with anti-decoupling ratchet coupling ring."
     },
-    "pins": [
-      "A",
-      "B",
-      "C"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "11",
-    "letterCode": "B",
-    "arrangement": "11-2",
-    "counts": {
-      "16": 2
+    {
+      "seriesId": "d38999",
+      "type": "Wall Mount",
+      "name": "Wall Mount Receptacle",
+      "milCode": "20",
+      "commPrefix": "TVPS00",
+      "compPrefix": "CTVP00",
+      "description": "Square flange 4-hole receptacle with rear accessory threads."
     },
-    "pins": [
-      "A",
-      "B"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "11",
-    "letterCode": "B",
-    "arrangement": "11-35",
-    "counts": {
-      "22D": 13
+    {
+      "seriesId": "d38999",
+      "type": "Box Mount",
+      "name": "Box Mount Receptacle",
+      "milCode": "22",
+      "commPrefix": "TVPS02",
+      "compPrefix": "CTVP02",
+      "description": "Square flange 4-hole receptacle without rear accessory threads (low profile)."
     },
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "11",
-    "letterCode": "B",
-    "arrangement": "11-4",
-    "counts": {
-      "20": 4
+    {
+      "seriesId": "d38999",
+      "type": "Jam Nut",
+      "name": "Jam Nut Receptacle",
+      "milCode": "24",
+      "commPrefix": "TVS07",
+      "compPrefix": "CTV07",
+      "description": "Single-hole mounting receptacle with O-ring seal and rear hex jam nut."
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "11",
-    "letterCode": "B",
-    "arrangement": "11-5",
-    "counts": {
-      "20": 5
+    {
+      "seriesId": "deutsch_autosport",
+      "type": "Plug",
+      "name": "Free Plug",
+      "asCode": "6",
+      "aslPrefix": "ASL6",
+      "asmPrefix": "ASM6",
+      "asPrefix": "AS6",
+      "description": "Free plug with bayonet coupling ring."
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "11",
-    "letterCode": "B",
-    "arrangement": "11-98",
-    "counts": {
-      "20": 6
+    {
+      "seriesId": "deutsch_autosport",
+      "type": "2-Hole Flange Receptacle",
+      "name": "2-Hole Flange Receptacle",
+      "asCode": "0",
+      "aslPrefix": "ASL0",
+      "asmPrefix": "ASM0",
+      "asPrefix": "AS0",
+      "description": "Front/rear panel 2-hole mounting flange receptacle."
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "11",
-    "letterCode": "B",
-    "arrangement": "11-99",
-    "counts": {
-      "20": 7
+    {
+      "seriesId": "deutsch_autosport",
+      "type": "In-Line Receptacle",
+      "name": "In-Line Receptacle",
+      "asCode": "1",
+      "aslPrefix": "ASL1",
+      "asmPrefix": "ASM1",
+      "asPrefix": "AS1",
+      "description": "Free-hanging in-line receptacle for cable-to-cable connections."
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "13",
-    "letterCode": "C",
-    "arrangement": "13-26",
-    "counts": {
-      "22D": 6,
-      "12": 2
+    {
+      "seriesId": "deutsch_autosport",
+      "type": "2-Hole Flange PCB Receptacle",
+      "name": "2-Hole Flange PCB Receptacle",
+      "asCode": "2",
+      "aslPrefix": "ASL2",
+      "asmPrefix": "ASM2",
+      "asPrefix": "AS2",
+      "description": "Low profile 2-hole flange receptacle with PCB/solder contacts."
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "13",
-    "letterCode": "C",
-    "arrangement": "13-35",
-    "counts": {
-      "22D": 22
+    {
+      "seriesId": "deutsch_autosport",
+      "type": "Jam Nut Receptacle",
+      "name": "Jam Nut Receptacle",
+      "asCode": "7",
+      "aslPrefix": "ASL7",
+      "asmPrefix": "ASM7",
+      "asPrefix": "AS7",
+      "description": "Single-hole jam nut receptacle."
+    }
+  ],
+  "finishes": [
+    {
+      "code": "W",
+      "name": "Olive Drab Cadmium",
+      "commCode": "RW",
+      "material": "Aluminum",
+      "isComp": false,
+      "costMult": 1.0,
+      "backshellFinish": "W",
+      "description": "Standard military conductive olive drab cadmium over electroless nickel (500 hr salt spray)."
     },
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19",
-      "20",
-      "21",
-      "22"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "13",
-    "letterCode": "C",
-    "arrangement": "13-4",
-    "counts": {
-      "16": 4
+    {
+      "code": "F",
+      "name": "Electroless Nickel",
+      "commCode": "RF",
+      "material": "Aluminum",
+      "isComp": false,
+      "costMult": 0.95,
+      "backshellFinish": "N",
+      "description": "Conductive electroless nickel plating (48 hr salt spray, high EMI shielding)."
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "13",
-    "letterCode": "C",
-    "arrangement": "13-8",
-    "counts": {
-      "20": 8
+    {
+      "code": "Z",
+      "name": "Black Zinc Nickel",
+      "commCode": "RBZ",
+      "material": "Aluminum",
+      "isComp": false,
+      "costMult": 1.15,
+      "backshellFinish": "Z",
+      "description": "RoHS-compliant non-reflective conductive black zinc nickel (500 hr salt spray)."
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "13",
-    "letterCode": "C",
-    "arrangement": "13-98",
-    "counts": {
-      "20": 10
+    {
+      "code": "T",
+      "name": "Nickel PTFE / Durmalon",
+      "commCode": "RNF",
+      "material": "Aluminum",
+      "isComp": false,
+      "costMult": 1.3,
+      "backshellFinish": "T",
+      "description": "RoHS-compliant conductive nickel fluorocarbon polymer / Durmalon (500 hr salt spray)."
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "15",
-    "letterCode": "D",
-    "arrangement": "15-15",
-    "counts": {
-      "16": 1,
-      "20": 14
+    {
+      "code": "K",
+      "name": "Passivated Stainless Steel",
+      "commCode": "RK",
+      "material": "Stainless Steel",
+      "isComp": false,
+      "costMult": 1.85,
+      "backshellFinish": "S",
+      "description": "Corrosion-resistant passivated stainless steel firewall construction."
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K",
-      "L",
-      "M",
-      "N",
-      "P",
-      "R"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "15",
-    "letterCode": "D",
-    "arrangement": "15-18",
-    "counts": {
-      "20": 18
+    {
+      "code": "J",
+      "name": "Composite Olive Drab Cadmium",
+      "commCode": "RW",
+      "material": "Composite",
+      "isComp": true,
+      "costMult": 1.25,
+      "backshellFinish": "W",
+      "description": "Lightweight composite shell with olive drab cadmium plating (2000 hr salt spray)."
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K",
-      "L",
-      "M",
-      "N",
-      "P",
-      "R",
-      "S",
-      "T",
-      "U"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "15",
-    "letterCode": "D",
-    "arrangement": "15-19",
-    "counts": {
-      "20": 19
+    {
+      "code": "M",
+      "name": "Composite Electroless Nickel",
+      "commCode": "RF",
+      "material": "Composite",
+      "isComp": true,
+      "costMult": 1.2,
+      "backshellFinish": "N",
+      "description": "Lightweight composite shell with electroless nickel plating (2000 hr salt spray)."
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K",
-      "L",
-      "M",
-      "N",
-      "P",
-      "R",
-      "S",
-      "T",
-      "U",
-      "V"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "15",
-    "letterCode": "D",
-    "arrangement": "15-35",
-    "counts": {
-      "22D": 37
+    {
+      "code": "N",
+      "name": "Black Conductive / Electroless Nickel",
+      "commCode": "N",
+      "material": "Aluminum",
+      "isComp": false,
+      "costMult": 1.0,
+      "backshellFinish": "N",
+      "description": "Standard Deutsch AutoSport black conductive non-reflective finish (or Electroless Nickel)."
+    }
+  ],
+  "layouts": [
+    {
+      "seriesId": "d38999",
+      "shellSize": "9",
+      "letterCode": "A",
+      "arrangement": "9-35",
+      "counts": {
+        "22D": 6
+      },
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ]
     },
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19",
-      "20",
-      "21",
-      "22",
-      "23",
-      "24",
-      "25",
-      "26",
-      "27",
-      "28",
-      "29",
-      "30",
-      "31",
-      "32",
-      "33",
-      "34",
-      "35",
-      "36",
-      "37"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "15",
-    "letterCode": "D",
-    "arrangement": "15-5",
-    "counts": {
-      "16": 5
+    {
+      "seriesId": "d38999",
+      "shellSize": "9",
+      "letterCode": "A",
+      "arrangement": "9-5",
+      "counts": {
+        "8": 1
+      },
+      "pins": [
+        "1"
+      ]
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "15",
-    "letterCode": "D",
-    "arrangement": "15-97",
-    "counts": {
-      "16": 4,
-      "20": 8
+    {
+      "seriesId": "d38999",
+      "shellSize": "9",
+      "letterCode": "A",
+      "arrangement": "9-98",
+      "counts": {
+        "20": 3
+      },
+      "pins": [
+        "A",
+        "B",
+        "C"
+      ]
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K",
-      "L",
-      "M"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "17",
-    "letterCode": "E",
-    "arrangement": "17-2",
-    "counts": {
-      "8": 1,
-      "22D": 38
+    {
+      "seriesId": "d38999",
+      "shellSize": "11",
+      "letterCode": "B",
+      "arrangement": "11-2",
+      "counts": {
+        "16": 2
+      },
+      "pins": [
+        "A",
+        "B"
+      ]
     },
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19",
-      "20",
-      "21",
-      "22",
-      "23",
-      "24",
-      "25",
-      "26",
-      "27",
-      "28",
-      "29",
-      "30",
-      "31",
-      "32",
-      "33",
-      "34",
-      "35",
-      "36",
-      "37",
-      "38",
-      "39"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "17",
-    "letterCode": "E",
-    "arrangement": "17-26",
-    "counts": {
-      "20": 26
+    {
+      "seriesId": "d38999",
+      "shellSize": "11",
+      "letterCode": "B",
+      "arrangement": "11-35",
+      "counts": {
+        "22D": 13
+      },
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13"
+      ]
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K",
-      "L",
-      "M",
-      "N",
-      "P",
-      "R",
-      "S",
-      "T",
-      "U",
-      "V",
-      "W",
-      "X",
-      "Y",
-      "Z",
-      "a",
-      "b",
-      "c"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "17",
-    "letterCode": "E",
-    "arrangement": "17-35",
-    "counts": {
-      "22D": 55
+    {
+      "seriesId": "d38999",
+      "shellSize": "11",
+      "letterCode": "B",
+      "arrangement": "11-4",
+      "counts": {
+        "20": 4
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ]
     },
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19",
-      "20",
-      "21",
-      "22",
-      "23",
-      "24",
-      "25",
-      "26",
-      "27",
-      "28",
-      "29",
-      "30",
-      "31",
-      "32",
-      "33",
-      "34",
-      "35",
-      "36",
-      "37",
-      "38",
-      "39",
-      "40",
-      "41",
-      "42",
-      "43",
-      "44",
-      "45",
-      "46",
-      "47",
-      "48",
-      "49",
-      "50",
-      "51",
-      "52",
-      "53",
-      "54",
-      "55"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "17",
-    "letterCode": "E",
-    "arrangement": "17-6",
-    "counts": {
-      "12": 6
+    {
+      "seriesId": "d38999",
+      "shellSize": "11",
+      "letterCode": "B",
+      "arrangement": "11-5",
+      "counts": {
+        "20": 5
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E"
+      ]
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "17",
-    "letterCode": "E",
-    "arrangement": "17-8",
-    "counts": {
-      "16": 8
+    {
+      "seriesId": "d38999",
+      "shellSize": "11",
+      "letterCode": "B",
+      "arrangement": "11-98",
+      "counts": {
+        "20": 6
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F"
+      ]
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "17",
-    "letterCode": "E",
-    "arrangement": "17-99",
-    "counts": {
-      "16": 2,
-      "20": 21
+    {
+      "seriesId": "d38999",
+      "shellSize": "11",
+      "letterCode": "B",
+      "arrangement": "11-99",
+      "counts": {
+        "20": 7
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G"
+      ]
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K",
-      "L",
-      "M",
-      "N",
-      "P",
-      "R",
-      "S",
-      "T",
-      "U",
-      "V",
-      "W",
-      "X",
-      "Y",
-      "Z"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "19",
-    "letterCode": "F",
-    "arrangement": "19-11",
-    "counts": {
-      "16": 11
+    {
+      "seriesId": "d38999",
+      "shellSize": "13",
+      "letterCode": "C",
+      "arrangement": "13-35",
+      "counts": {
+        "22D": 22
+      },
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22"
+      ]
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K",
-      "L"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "19",
-    "letterCode": "F",
-    "arrangement": "19-18",
-    "counts": {
-      "8": 4,
-      "22D": 14
+    {
+      "seriesId": "d38999",
+      "shellSize": "13",
+      "letterCode": "C",
+      "arrangement": "13-4",
+      "counts": {
+        "16": 4
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ]
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K",
-      "L",
-      "M",
-      "N",
-      "P",
-      "R",
-      "S",
-      "T",
-      "U"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "19",
-    "letterCode": "F",
-    "arrangement": "19-28",
-    "counts": {
-      "16": 2,
-      "20": 26
+    {
+      "seriesId": "d38999",
+      "shellSize": "13",
+      "letterCode": "C",
+      "arrangement": "13-8",
+      "counts": {
+        "20": 8
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H"
+      ]
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K",
-      "L",
-      "M",
-      "N",
-      "P",
-      "R",
-      "S",
-      "T",
-      "U",
-      "V",
-      "W",
-      "X",
-      "Y",
-      "Z",
-      "a",
-      "b",
-      "c",
-      "d",
-      "e"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "19",
-    "letterCode": "F",
-    "arrangement": "19-30",
-    "counts": {
-      "16": 1,
-      "20": 29
+    {
+      "seriesId": "d38999",
+      "shellSize": "13",
+      "letterCode": "C",
+      "arrangement": "13-98",
+      "counts": {
+        "20": 10
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K"
+      ]
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K",
-      "L",
-      "M",
-      "N",
-      "P",
-      "R",
-      "S",
-      "T",
-      "U",
-      "V",
-      "W",
-      "X",
-      "Y",
-      "Z",
-      "a",
-      "b",
-      "c",
-      "d",
-      "e",
-      "f",
-      "g"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "19",
-    "letterCode": "F",
-    "arrangement": "19-32",
-    "counts": {
-      "20": 32
+    {
+      "seriesId": "d38999",
+      "shellSize": "15",
+      "letterCode": "D",
+      "arrangement": "15-15",
+      "counts": {
+        "16": 1,
+        "20": 14
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "P",
+        "R"
+      ],
+      "contactMap": {
+        "16": [
+          "P"
+        ]
+      }
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K",
-      "L",
-      "M",
-      "N",
-      "P",
-      "R",
-      "S",
-      "T",
-      "U",
-      "V",
-      "W",
-      "X",
-      "Y",
-      "Z",
-      "a",
-      "b",
-      "c",
-      "d",
-      "e",
-      "f",
-      "g",
-      "h",
-      "j"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "19",
-    "letterCode": "F",
-    "arrangement": "19-35",
-    "counts": {
-      "22D": 66
+    {
+      "seriesId": "d38999",
+      "shellSize": "15",
+      "letterCode": "D",
+      "arrangement": "15-18",
+      "counts": {
+        "20": 18
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "P",
+        "R",
+        "S",
+        "T",
+        "U"
+      ]
     },
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19",
-      "20",
-      "21",
-      "22",
-      "23",
-      "24",
-      "25",
-      "26",
-      "27",
-      "28",
-      "29",
-      "30",
-      "31",
-      "32",
-      "33",
-      "34",
-      "35",
-      "36",
-      "37",
-      "38",
-      "39",
-      "40",
-      "41",
-      "42",
-      "43",
-      "44",
-      "45",
-      "46",
-      "47",
-      "48",
-      "49",
-      "50",
-      "51",
-      "52",
-      "53",
-      "54",
-      "55",
-      "56",
-      "57",
-      "58",
-      "59",
-      "60",
-      "61",
-      "62",
-      "63",
-      "64",
-      "65",
-      "66"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "21",
-    "letterCode": "G",
-    "arrangement": "21-11",
-    "counts": {
-      "12": 11
+    {
+      "seriesId": "d38999",
+      "shellSize": "15",
+      "letterCode": "D",
+      "arrangement": "15-19",
+      "counts": {
+        "20": 19
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "P",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V"
+      ]
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K",
-      "L"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "21",
-    "letterCode": "G",
-    "arrangement": "21-16",
-    "counts": {
-      "16": 16
+    {
+      "seriesId": "d38999",
+      "shellSize": "15",
+      "letterCode": "D",
+      "arrangement": "15-35",
+      "counts": {
+        "22D": 37
+      },
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "32",
+        "33",
+        "34",
+        "35",
+        "36",
+        "37"
+      ]
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K",
-      "L",
-      "M",
-      "N",
-      "P",
-      "R",
-      "S"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "21",
-    "letterCode": "G",
-    "arrangement": "21-25",
-    "counts": {
-      "20": 25
+    {
+      "seriesId": "d38999",
+      "shellSize": "15",
+      "letterCode": "D",
+      "arrangement": "15-5",
+      "counts": {
+        "16": 5
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E"
+      ]
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K",
-      "L",
-      "M",
-      "N",
-      "P",
-      "R",
-      "S",
-      "T",
-      "U",
-      "V",
-      "W",
-      "X",
-      "Y",
-      "Z",
-      "a",
-      "b"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "21",
-    "letterCode": "G",
-    "arrangement": "21-29",
-    "counts": {
-      "12": 4,
-      "16": 4,
-      "20": 19
+    {
+      "seriesId": "d38999",
+      "shellSize": "15",
+      "letterCode": "D",
+      "arrangement": "15-97",
+      "counts": {
+        "16": 4,
+        "20": 8
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L",
+        "M"
+      ],
+      "contactMap": {
+        "16": [
+          "C",
+          "G",
+          "L",
+          "M"
+        ]
+      }
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K",
-      "L",
-      "M",
-      "N",
-      "P",
-      "R",
-      "S",
-      "T",
-      "U",
-      "V",
-      "W",
-      "X",
-      "Y",
-      "Z",
-      "a",
-      "b",
-      "c",
-      "d"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "21",
-    "letterCode": "G",
-    "arrangement": "21-35",
-    "counts": {
-      "22D": 79
+    {
+      "seriesId": "d38999",
+      "shellSize": "17",
+      "letterCode": "E",
+      "arrangement": "17-2",
+      "counts": {
+        "8": 1,
+        "22D": 38
+      },
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "32",
+        "33",
+        "34",
+        "35",
+        "36",
+        "37",
+        "38",
+        "39"
+      ],
+      "contactMap": {
+        "8": [
+          "39"
+        ]
+      }
     },
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19",
-      "20",
-      "21",
-      "22",
-      "23",
-      "24",
-      "25",
-      "26",
-      "27",
-      "28",
-      "29",
-      "30",
-      "31",
-      "32",
-      "33",
-      "34",
-      "35",
-      "36",
-      "37",
-      "38",
-      "39",
-      "40",
-      "41",
-      "42",
-      "43",
-      "44",
-      "45",
-      "46",
-      "47",
-      "48",
-      "49",
-      "50",
-      "51",
-      "52",
-      "53",
-      "54",
-      "55",
-      "56",
-      "57",
-      "58",
-      "59",
-      "60",
-      "61",
-      "62",
-      "63",
-      "64",
-      "65",
-      "66",
-      "67",
-      "68",
-      "69",
-      "70",
-      "71",
-      "72",
-      "73",
-      "74",
-      "75",
-      "76",
-      "77",
-      "78",
-      "79"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "21",
-    "letterCode": "G",
-    "arrangement": "21-39",
-    "counts": {
-      "16": 2,
-      "20": 37
+    {
+      "seriesId": "d38999",
+      "shellSize": "17",
+      "letterCode": "E",
+      "arrangement": "17-26",
+      "counts": {
+        "20": 26
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "P",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "a",
+        "b",
+        "c"
+      ]
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K",
-      "L",
-      "M",
-      "N",
-      "P",
-      "R",
-      "S",
-      "T",
-      "U",
-      "V",
-      "W",
-      "X",
-      "Y",
-      "Z",
-      "a",
-      "b",
-      "c",
-      "d",
-      "e",
-      "f",
-      "g",
-      "h",
-      "i",
-      "j",
-      "k",
-      "m",
-      "n",
-      "p",
-      "q",
-      "r"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "21",
-    "letterCode": "G",
-    "arrangement": "21-41",
-    "counts": {
-      "20": 41
+    {
+      "seriesId": "d38999",
+      "shellSize": "17",
+      "letterCode": "E",
+      "arrangement": "17-35",
+      "counts": {
+        "22D": 55
+      },
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "32",
+        "33",
+        "34",
+        "35",
+        "36",
+        "37",
+        "38",
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44",
+        "45",
+        "46",
+        "47",
+        "48",
+        "49",
+        "50",
+        "51",
+        "52",
+        "53",
+        "54",
+        "55"
+      ]
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K",
-      "L",
-      "M",
-      "N",
-      "P",
-      "R",
-      "S",
-      "T",
-      "U",
-      "V",
-      "W",
-      "X",
-      "Y",
-      "Z",
-      "a",
-      "b",
-      "c",
-      "d",
-      "e",
-      "f",
-      "g",
-      "h",
-      "i",
-      "j",
-      "k",
-      "m",
-      "n",
-      "p",
-      "q",
-      "r",
-      "s",
-      "t"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "21",
-    "letterCode": "G",
-    "arrangement": "21-75",
-    "counts": {
-      "8": 4
+    {
+      "seriesId": "d38999",
+      "shellSize": "17",
+      "letterCode": "E",
+      "arrangement": "17-6",
+      "counts": {
+        "12": 6
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F"
+      ]
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "23",
-    "letterCode": "H",
-    "arrangement": "23-21",
-    "counts": {
-      "16": 21
+    {
+      "seriesId": "d38999",
+      "shellSize": "17",
+      "letterCode": "E",
+      "arrangement": "17-8",
+      "counts": {
+        "16": 8
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H"
+      ]
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K",
-      "L",
-      "M",
-      "N",
-      "P",
-      "R",
-      "S",
-      "T",
-      "U",
-      "V",
-      "W",
-      "X"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "23",
-    "letterCode": "H",
-    "arrangement": "23-35",
-    "counts": {
-      "22D": 100
+    {
+      "seriesId": "d38999",
+      "shellSize": "17",
+      "letterCode": "E",
+      "arrangement": "17-99",
+      "counts": {
+        "16": 2,
+        "20": 21
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "P",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z"
+      ],
+      "contactMap": {
+        "16": [
+          "W",
+          "Z"
+        ]
+      }
     },
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19",
-      "20",
-      "21",
-      "22",
-      "23",
-      "24",
-      "25",
-      "26",
-      "27",
-      "28",
-      "29",
-      "30",
-      "31",
-      "32",
-      "33",
-      "34",
-      "35",
-      "36",
-      "37",
-      "38",
-      "39",
-      "40",
-      "41",
-      "42",
-      "43",
-      "44",
-      "45",
-      "46",
-      "47",
-      "48",
-      "49",
-      "50",
-      "51",
-      "52",
-      "53",
-      "54",
-      "55",
-      "56",
-      "57",
-      "58",
-      "59",
-      "60",
-      "61",
-      "62",
-      "63",
-      "64",
-      "65",
-      "66",
-      "67",
-      "68",
-      "69",
-      "70",
-      "71",
-      "72",
-      "73",
-      "74",
-      "75",
-      "76",
-      "77",
-      "78",
-      "79",
-      "80",
-      "81",
-      "82",
-      "83",
-      "84",
-      "85",
-      "86",
-      "87",
-      "88",
-      "89",
-      "90",
-      "91",
-      "92",
-      "93",
-      "94",
-      "95",
-      "96",
-      "97",
-      "98",
-      "99",
-      "100"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "23",
-    "letterCode": "H",
-    "arrangement": "23-53",
-    "counts": {
-      "20": 53
+    {
+      "seriesId": "d38999",
+      "shellSize": "19",
+      "letterCode": "F",
+      "arrangement": "19-11",
+      "counts": {
+        "16": 11
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L"
+      ]
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K",
-      "L",
-      "M",
-      "N",
-      "P",
-      "R",
-      "S",
-      "T",
-      "U",
-      "V",
-      "W",
-      "X",
-      "Y",
-      "Z",
-      "a",
-      "b",
-      "c",
-      "d",
-      "e",
-      "f",
-      "g",
-      "h",
-      "k",
-      "m",
-      "n",
-      "p",
-      "q",
-      "r",
-      "s",
-      "t",
-      "u",
-      "v",
-      "w",
-      "x",
-      "y",
-      "z",
-      "AA",
-      "BB",
-      "CC",
-      "DD",
-      "EE",
-      "FF",
-      "GG",
-      "HH"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "23",
-    "letterCode": "H",
-    "arrangement": "23-54",
-    "counts": {
-      "12": 4,
-      "16": 9,
-      "22D": 40
+    {
+      "seriesId": "d38999",
+      "shellSize": "19",
+      "letterCode": "F",
+      "arrangement": "19-18",
+      "counts": {
+        "8": 4,
+        "22D": 14
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "P",
+        "R",
+        "S",
+        "T",
+        "U"
+      ],
+      "contactMap": {
+        "8": [
+          "B",
+          "F",
+          "K",
+          "P"
+        ]
+      }
     },
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19",
-      "20",
-      "21",
-      "22",
-      "23",
-      "24",
-      "25",
-      "26",
-      "27",
-      "28",
-      "29",
-      "30",
-      "31",
-      "32",
-      "33",
-      "34",
-      "35",
-      "36",
-      "37",
-      "38",
-      "39",
-      "40",
-      "41",
-      "42",
-      "43",
-      "44",
-      "45",
-      "46",
-      "47",
-      "48",
-      "49",
-      "50",
-      "51",
-      "52",
-      "53"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "23",
-    "letterCode": "H",
-    "arrangement": "23-55",
-    "counts": {
-      "20": 55
+    {
+      "seriesId": "d38999",
+      "shellSize": "19",
+      "letterCode": "F",
+      "arrangement": "19-28",
+      "counts": {
+        "16": 2,
+        "20": 26
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "P",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e"
+      ],
+      "contactMap": {
+        "16": [
+          "Z",
+          "e"
+        ]
+      }
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K",
-      "L",
-      "M",
-      "N",
-      "P",
-      "R",
-      "S",
-      "T",
-      "U",
-      "V",
-      "W",
-      "X",
-      "Y",
-      "Z",
-      "a",
-      "b",
-      "c",
-      "d",
-      "e",
-      "f",
-      "g",
-      "h",
-      "i",
-      "j",
-      "k",
-      "m",
-      "n",
-      "p",
-      "q",
-      "r",
-      "s",
-      "t",
-      "u",
-      "v",
-      "w",
-      "x",
-      "y",
-      "z",
-      "AA",
-      "BB",
-      "CC",
-      "DD",
-      "EE",
-      "FF",
-      "GG",
-      "HH"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "25",
-    "letterCode": "J",
-    "arrangement": "25-19",
-    "counts": {
-      "12": 19
+    {
+      "seriesId": "d38999",
+      "shellSize": "19",
+      "letterCode": "F",
+      "arrangement": "19-30",
+      "counts": {
+        "16": 1,
+        "20": 29
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "P",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g"
+      ],
+      "contactMap": {
+        "16": [
+          "e"
+        ]
+      }
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K",
-      "L",
-      "M",
-      "N",
-      "P",
-      "R",
-      "S",
-      "T",
-      "U",
-      "V"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "25",
-    "letterCode": "J",
-    "arrangement": "25-20",
-    "counts": {
-      "8": 3,
-      "12": 4,
-      "16": 13,
-      "20": 10
+    {
+      "seriesId": "d38999",
+      "shellSize": "19",
+      "letterCode": "F",
+      "arrangement": "19-32",
+      "counts": {
+        "20": 32
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "P",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "j"
+      ]
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K",
-      "L",
-      "M",
-      "N",
-      "P",
-      "R",
-      "S",
-      "T",
-      "U",
-      "V",
-      "W",
-      "X",
-      "Y",
-      "Z",
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "25",
-    "letterCode": "J",
-    "arrangement": "25-24",
-    "counts": {
-      "12": 12,
-      "16": 12
+    {
+      "seriesId": "d38999",
+      "shellSize": "19",
+      "letterCode": "F",
+      "arrangement": "19-35",
+      "counts": {
+        "22D": 66
+      },
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "32",
+        "33",
+        "34",
+        "35",
+        "36",
+        "37",
+        "38",
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44",
+        "45",
+        "46",
+        "47",
+        "48",
+        "49",
+        "50",
+        "51",
+        "52",
+        "53",
+        "54",
+        "55",
+        "56",
+        "57",
+        "58",
+        "59",
+        "60",
+        "61",
+        "62",
+        "63",
+        "64",
+        "65",
+        "66"
+      ]
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K",
-      "L",
-      "M",
-      "N",
-      "P",
-      "R",
-      "S",
-      "T",
-      "U",
-      "V",
-      "W",
-      "X",
-      "Y",
-      "Z",
-      "a"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "25",
-    "letterCode": "J",
-    "arrangement": "25-29",
-    "counts": {
-      "16": 29
+    {
+      "seriesId": "d38999",
+      "shellSize": "21",
+      "letterCode": "G",
+      "arrangement": "21-11",
+      "counts": {
+        "12": 11
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L"
+      ]
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K",
-      "L",
-      "M",
-      "N",
-      "P",
-      "R",
-      "S",
-      "T",
-      "U",
-      "V",
-      "W",
-      "X",
-      "Y",
-      "Z",
-      "a",
-      "b",
-      "c",
-      "d",
-      "e",
-      "f"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "25",
-    "letterCode": "J",
-    "arrangement": "25-35",
-    "counts": {
-      "22D": 128
+    {
+      "seriesId": "d38999",
+      "shellSize": "21",
+      "letterCode": "G",
+      "arrangement": "21-16",
+      "counts": {
+        "16": 16
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "P",
+        "R",
+        "S"
+      ]
     },
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19",
-      "20",
-      "21",
-      "22",
-      "23",
-      "24",
-      "25",
-      "26",
-      "27",
-      "28",
-      "29",
-      "30",
-      "31",
-      "32",
-      "33",
-      "34",
-      "35",
-      "36",
-      "37",
-      "38",
-      "39",
-      "40",
-      "41",
-      "42",
-      "43",
-      "44",
-      "45",
-      "46",
-      "47",
-      "48",
-      "49",
-      "50",
-      "51",
-      "52",
-      "53",
-      "54",
-      "55",
-      "56",
-      "57",
-      "58",
-      "59",
-      "60",
-      "61",
-      "62",
-      "63",
-      "64",
-      "65",
-      "66",
-      "67",
-      "68",
-      "69",
-      "70",
-      "71",
-      "72",
-      "73",
-      "74",
-      "75",
-      "76",
-      "77",
-      "78",
-      "79",
-      "80",
-      "81",
-      "82",
-      "83",
-      "84",
-      "85",
-      "86",
-      "87",
-      "88",
-      "89",
-      "90",
-      "91",
-      "92",
-      "93",
-      "94",
-      "95",
-      "96",
-      "97",
-      "98",
-      "99",
-      "100",
-      "101",
-      "102",
-      "103",
-      "104",
-      "105",
-      "106",
-      "107",
-      "108",
-      "109",
-      "110",
-      "111",
-      "112",
-      "113",
-      "114",
-      "115",
-      "116",
-      "117",
-      "118",
-      "119",
-      "120",
-      "121",
-      "122",
-      "123",
-      "124",
-      "125",
-      "126",
-      "127",
-      "128"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "25",
-    "letterCode": "J",
-    "arrangement": "25-4",
-    "counts": {
-      "16": 8,
-      "20": 48
+    {
+      "seriesId": "d38999",
+      "shellSize": "21",
+      "letterCode": "G",
+      "arrangement": "21-25",
+      "counts": {
+        "20": 25
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "P",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "a",
+        "b"
+      ]
     },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K",
-      "L",
-      "M",
-      "N",
-      "P",
-      "R",
-      "S",
-      "T",
-      "U",
-      "V",
-      "W",
-      "X",
-      "Y",
-      "Z",
-      "a",
-      "b",
-      "c",
-      "d",
-      "e",
-      "f",
-      "g",
-      "h",
-      "k",
-      "m",
-      "n",
-      "p",
-      "q",
-      "r",
-      "s",
-      "t",
-      "u",
-      "v",
-      "w",
-      "x",
-      "y",
-      "z",
-      "AA",
-      "BB",
-      "CC",
-      "DD",
-      "EE",
-      "FF",
-      "GG",
-      "HH",
-      "JJ",
-      "KK",
-      "LL"
-    ],
-    "contactMap": {
-      "16": [
+    {
+      "seriesId": "d38999",
+      "shellSize": "21",
+      "letterCode": "G",
+      "arrangement": "21-29",
+      "counts": {
+        "12": 4,
+        "16": 4,
+        "20": 19
+      },
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27"
+      ],
+      "contactMap": {
+        "12": [
+          "20",
+          "22",
+          "23",
+          "25"
+        ],
+        "16": [
+          "21",
+          "24",
+          "26",
+          "27"
+        ]
+      }
+    },
+    {
+      "seriesId": "d38999",
+      "shellSize": "21",
+      "letterCode": "G",
+      "arrangement": "21-35",
+      "counts": {
+        "22D": 79
+      },
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "32",
+        "33",
+        "34",
+        "35",
+        "36",
+        "37",
+        "38",
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44",
+        "45",
+        "46",
+        "47",
+        "48",
+        "49",
+        "50",
+        "51",
+        "52",
+        "53",
+        "54",
+        "55",
+        "56",
+        "57",
+        "58",
+        "59",
+        "60",
+        "61",
+        "62",
+        "63",
+        "64",
+        "65",
+        "66",
+        "67",
+        "68",
+        "69",
+        "70",
+        "71",
+        "72",
+        "73",
+        "74",
+        "75",
+        "76",
+        "77",
+        "78",
+        "79"
+      ]
+    },
+    {
+      "seriesId": "d38999",
+      "shellSize": "21",
+      "letterCode": "G",
+      "arrangement": "21-39",
+      "counts": {
+        "16": 2,
+        "20": 37
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "P",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "m",
+        "n",
+        "p",
+        "q",
+        "r"
+      ],
+      "contactMap": {
+        "16": [
+          "m",
+          "r"
+        ]
+      }
+    },
+    {
+      "seriesId": "d38999",
+      "shellSize": "21",
+      "letterCode": "G",
+      "arrangement": "21-41",
+      "counts": {
+        "20": 41
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "P",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "m",
+        "n",
+        "p",
+        "q",
+        "r",
+        "s",
+        "t"
+      ]
+    },
+    {
+      "seriesId": "d38999",
+      "shellSize": "21",
+      "letterCode": "G",
+      "arrangement": "21-75",
+      "counts": {
+        "8": 4
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ]
+    },
+    {
+      "seriesId": "d38999",
+      "shellSize": "23",
+      "letterCode": "H",
+      "arrangement": "23-21",
+      "counts": {
+        "16": 21
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "P",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X"
+      ]
+    },
+    {
+      "seriesId": "d38999",
+      "shellSize": "23",
+      "letterCode": "H",
+      "arrangement": "23-35",
+      "counts": {
+        "22D": 100
+      },
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "32",
+        "33",
+        "34",
+        "35",
+        "36",
+        "37",
+        "38",
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44",
+        "45",
+        "46",
+        "47",
+        "48",
+        "49",
+        "50",
+        "51",
+        "52",
+        "53",
+        "54",
+        "55",
+        "56",
+        "57",
+        "58",
+        "59",
+        "60",
+        "61",
+        "62",
+        "63",
+        "64",
+        "65",
+        "66",
+        "67",
+        "68",
+        "69",
+        "70",
+        "71",
+        "72",
+        "73",
+        "74",
+        "75",
+        "76",
+        "77",
+        "78",
+        "79",
+        "80",
+        "81",
+        "82",
+        "83",
+        "84",
+        "85",
+        "86",
+        "87",
+        "88",
+        "89",
+        "90",
+        "91",
+        "92",
+        "93",
+        "94",
+        "95",
+        "96",
+        "97",
+        "98",
+        "99",
+        "100"
+      ]
+    },
+    {
+      "seriesId": "d38999",
+      "shellSize": "23",
+      "letterCode": "H",
+      "arrangement": "23-53",
+      "counts": {
+        "20": 53
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "P",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "k",
+        "m",
+        "n",
+        "p",
+        "q",
+        "r",
+        "s",
+        "t",
+        "u",
+        "v",
+        "w",
+        "x",
         "y",
         "z",
         "AA",
+        "BB",
+        "CC",
         "DD",
         "EE",
         "FF",
+        "GG",
+        "HH"
+      ]
+    },
+    {
+      "seriesId": "d38999",
+      "shellSize": "23",
+      "letterCode": "H",
+      "arrangement": "23-54",
+      "counts": {
+        "12": 4,
+        "16": 9,
+        "22D": 40
+      },
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "32",
+        "33",
+        "34",
+        "35",
+        "36",
+        "37",
+        "38",
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44",
+        "45",
+        "46",
+        "47",
+        "48",
+        "49",
+        "50",
+        "51",
+        "52",
+        "53"
+      ],
+      "contactMap": {
+        "12": [
+          "25",
+          "30",
+          "35",
+          "40"
+        ],
+        "16": [
+          "45",
+          "46",
+          "47",
+          "48",
+          "49",
+          "50",
+          "51",
+          "52",
+          "53"
+        ]
+      }
+    },
+    {
+      "seriesId": "d38999",
+      "shellSize": "23",
+      "letterCode": "H",
+      "arrangement": "23-55",
+      "counts": {
+        "20": 55
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "P",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "m",
+        "n",
+        "p",
+        "q",
+        "r",
+        "s",
+        "t",
+        "u",
+        "v",
+        "w",
+        "x",
+        "y",
+        "z",
+        "AA",
+        "BB",
+        "CC",
+        "DD",
+        "EE",
+        "FF",
+        "GG",
+        "HH"
+      ]
+    },
+    {
+      "seriesId": "d38999",
+      "shellSize": "25",
+      "letterCode": "J",
+      "arrangement": "25-19",
+      "counts": {
+        "12": 19
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "P",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V"
+      ]
+    },
+    {
+      "seriesId": "d38999",
+      "shellSize": "25",
+      "letterCode": "J",
+      "arrangement": "25-20",
+      "counts": {
+        "8": 3,
+        "12": 4,
+        "16": 13,
+        "20": 10
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "P",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "contactMap": {
+        "8": [
+          "A",
+          "H",
+          "K"
+        ],
+        "12": [
+          "2",
+          "3",
+          "5",
+          "W"
+        ],
+        "16": [
+          "C",
+          "D",
+          "E",
+          "F",
+          "J",
+          "M",
+          "N",
+          "P",
+          "R",
+          "T",
+          "U",
+          "Y",
+          "Z"
+        ],
+        "20": [
+          "1",
+          "4",
+          "6",
+          "7",
+          "B",
+          "G",
+          "L",
+          "S",
+          "V",
+          "X"
+        ]
+      }
+    },
+    {
+      "seriesId": "d38999",
+      "shellSize": "25",
+      "letterCode": "J",
+      "arrangement": "25-24",
+      "counts": {
+        "12": 12,
+        "16": 12
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "P",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "a"
+      ],
+      "contactMap": {
+        "12": [
+          "A",
+          "B",
+          "D",
+          "E",
+          "L",
+          "M",
+          "P",
+          "R",
+          "S",
+          "T",
+          "X",
+          "Y"
+        ],
+        "16": [
+          "C",
+          "F",
+          "G",
+          "H",
+          "J",
+          "K",
+          "N",
+          "U",
+          "V",
+          "W",
+          "Z",
+          "a"
+        ]
+      }
+    },
+    {
+      "seriesId": "d38999",
+      "shellSize": "25",
+      "letterCode": "J",
+      "arrangement": "25-29",
+      "counts": {
+        "16": 29
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "P",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f"
+      ]
+    },
+    {
+      "seriesId": "d38999",
+      "shellSize": "25",
+      "letterCode": "J",
+      "arrangement": "25-35",
+      "counts": {
+        "22D": 128
+      },
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "32",
+        "33",
+        "34",
+        "35",
+        "36",
+        "37",
+        "38",
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44",
+        "45",
+        "46",
+        "47",
+        "48",
+        "49",
+        "50",
+        "51",
+        "52",
+        "53",
+        "54",
+        "55",
+        "56",
+        "57",
+        "58",
+        "59",
+        "60",
+        "61",
+        "62",
+        "63",
+        "64",
+        "65",
+        "66",
+        "67",
+        "68",
+        "69",
+        "70",
+        "71",
+        "72",
+        "73",
+        "74",
+        "75",
+        "76",
+        "77",
+        "78",
+        "79",
+        "80",
+        "81",
+        "82",
+        "83",
+        "84",
+        "85",
+        "86",
+        "87",
+        "88",
+        "89",
+        "90",
+        "91",
+        "92",
+        "93",
+        "94",
+        "95",
+        "96",
+        "97",
+        "98",
+        "99",
+        "100",
+        "101",
+        "102",
+        "103",
+        "104",
+        "105",
+        "106",
+        "107",
+        "108",
+        "109",
+        "110",
+        "111",
+        "112",
+        "113",
+        "114",
+        "115",
+        "116",
+        "117",
+        "118",
+        "119",
+        "120",
+        "121",
+        "122",
+        "123",
+        "124",
+        "125",
+        "126",
+        "127",
+        "128"
+      ]
+    },
+    {
+      "seriesId": "d38999",
+      "shellSize": "25",
+      "letterCode": "J",
+      "arrangement": "25-4",
+      "counts": {
+        "16": 8,
+        "20": 48
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "P",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "k",
+        "m",
+        "n",
+        "p",
+        "q",
+        "r",
+        "s",
+        "t",
+        "u",
+        "v",
+        "w",
+        "x",
+        "y",
+        "z",
+        "AA",
+        "BB",
+        "CC",
+        "DD",
+        "EE",
+        "FF",
+        "GG",
+        "HH",
         "JJ",
+        "KK",
         "LL"
+      ],
+      "contactMap": {
+        "16": [
+          "AA",
+          "DD",
+          "EE",
+          "FF",
+          "JJ",
+          "LL",
+          "y",
+          "z"
+        ]
+      }
+    },
+    {
+      "seriesId": "d38999",
+      "shellSize": "25",
+      "letterCode": "J",
+      "arrangement": "25-43",
+      "counts": {
+        "16": 20,
+        "20": 23
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "P",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "k",
+        "m",
+        "n",
+        "p",
+        "q",
+        "r",
+        "s",
+        "t",
+        "u",
+        "v",
+        "w",
+        "x"
+      ],
+      "contactMap": {
+        "16": [
+          "a",
+          "b",
+          "c",
+          "d",
+          "e",
+          "f",
+          "g",
+          "h",
+          "k",
+          "m",
+          "n",
+          "p",
+          "q",
+          "r",
+          "s",
+          "t",
+          "u",
+          "v",
+          "w",
+          "x"
+        ]
+      }
+    },
+    {
+      "seriesId": "d38999",
+      "shellSize": "25",
+      "letterCode": "J",
+      "arrangement": "25-61",
+      "counts": {
+        "20": 61
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "P",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "m",
+        "n",
+        "p",
+        "q",
+        "r",
+        "s",
+        "t",
+        "u",
+        "v",
+        "w",
+        "x",
+        "y",
+        "z",
+        "AA",
+        "BB",
+        "CC",
+        "DD",
+        "EE",
+        "FF",
+        "GG",
+        "HH",
+        "JJ",
+        "KK",
+        "LL",
+        "MM",
+        "NN",
+        "PP"
+      ]
+    },
+    {
+      "seriesId": "d38999",
+      "shellSize": "25",
+      "letterCode": "J",
+      "arrangement": "25-7",
+      "counts": {
+        "8": 2,
+        "22D": 97
+      },
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "32",
+        "33",
+        "34",
+        "35",
+        "36",
+        "37",
+        "38",
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44",
+        "45",
+        "46",
+        "47",
+        "48",
+        "49",
+        "50",
+        "51",
+        "52",
+        "53",
+        "54",
+        "55",
+        "56",
+        "57",
+        "58",
+        "59",
+        "60",
+        "61",
+        "62",
+        "63",
+        "64",
+        "65",
+        "66",
+        "67",
+        "68",
+        "69",
+        "70",
+        "71",
+        "72",
+        "73",
+        "74",
+        "75",
+        "76",
+        "77",
+        "78",
+        "79",
+        "80",
+        "81",
+        "82",
+        "83",
+        "84",
+        "85",
+        "86",
+        "87",
+        "88",
+        "89",
+        "90",
+        "91",
+        "92",
+        "93",
+        "94",
+        "95",
+        "96",
+        "97",
+        "98",
+        "99"
+      ],
+      "contactMap": {
+        "8": [
+          "25",
+          "75"
+        ]
+      }
+    },
+    {
+      "seriesId": "d38999",
+      "shellSize": "25",
+      "letterCode": "J",
+      "arrangement": "25-8",
+      "counts": {
+        "8": 8
+      },
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H"
+      ]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "06",
+      "letterCode": "",
+      "arrangement": "06-05",
+      "counts": {
+        "24": 5
+      },
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "diagramImg": "assets/inserts/06-05.png"
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "07",
+      "arrangement": "07-35",
+      "counts": {
+        "22": 6
+      },
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "diagramImg": "assets/inserts/07-35.png"
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "07",
+      "arrangement": "07-98",
+      "counts": {
+        "20": 3
+      },
+      "pins": [
+        "1",
+        "2",
+        "3"
+      ],
+      "diagramImg": "assets/inserts/07-98.png"
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "08",
+      "letterCode": "",
+      "arrangement": "08-35",
+      "counts": {
+        "22": 6
+      },
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "diagramImg": "assets/inserts/08-35.png"
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "08",
+      "arrangement": "08-98",
+      "counts": {
+        "20": 3
+      },
+      "pins": [
+        "1",
+        "2",
+        "3"
+      ],
+      "diagramImg": "assets/inserts/08-98.png"
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "10",
+      "arrangement": "10-02",
+      "counts": {
+        "16": 2
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "diagramImg": "assets/inserts/10-02.png"
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "10",
+      "arrangement": "10-03",
+      "counts": {
+        "16": 3
+      },
+      "pins": [
+        "1",
+        "2",
+        "3"
+      ],
+      "diagramImg": "assets/inserts/10-03.png"
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "10",
+      "arrangement": "10-35",
+      "counts": {
+        "22": 13
+      },
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13"
+      ],
+      "diagramImg": "assets/inserts/10-35.png"
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "10",
+      "arrangement": "10-98",
+      "counts": {
+        "20": 6
+      },
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "diagramImg": "assets/inserts/10-98.png"
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "12",
+      "arrangement": "12-04",
+      "counts": {
+        "16": 4
+      },
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "diagramImg": "assets/inserts/12-04.png"
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "12",
+      "arrangement": "12-35",
+      "counts": {
+        "22": 22
+      },
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22"
+      ],
+      "diagramImg": "assets/inserts/12-35.png"
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "12",
+      "arrangement": "12-98",
+      "counts": {
+        "20": 10
+      },
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10"
+      ],
+      "diagramImg": "assets/inserts/12-98.png"
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "14",
+      "arrangement": "14-19",
+      "counts": {
+        "20": 19
+      },
+      "diagramImg": "assets/inserts/14-19.png",
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19"
+      ]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "14",
+      "arrangement": "14-35",
+      "counts": {
+        "22": 37
+      },
+      "diagramImg": "assets/inserts/14-35.png",
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "32",
+        "33",
+        "34",
+        "35",
+        "36",
+        "37"
+      ]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "14",
+      "arrangement": "14-97",
+      "counts": {
+        "20": 8,
+        "16": 4
+      },
+      "diagramImg": "assets/inserts/14-97.png",
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L",
+        "M"
+      ],
+      "contactMap": {
+        "16": [
+          "C",
+          "G",
+          "L",
+          "M"
+        ]
+      }
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "16",
+      "arrangement": "16-08",
+      "counts": {
+        "16": 8
+      },
+      "diagramImg": "assets/inserts/16-08.png",
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8"
+      ]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "16",
+      "arrangement": "16-26",
+      "counts": {
+        "20": 26
+      },
+      "diagramImg": "assets/inserts/16-26.png",
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26"
+      ]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "16",
+      "arrangement": "16-35",
+      "counts": {
+        "22": 55
+      },
+      "diagramImg": "assets/inserts/16-35.png",
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "32",
+        "33",
+        "34",
+        "35",
+        "36",
+        "37",
+        "38",
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44",
+        "45",
+        "46",
+        "47",
+        "48",
+        "49",
+        "50",
+        "51",
+        "52",
+        "53",
+        "54",
+        "55"
+      ]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "18",
+      "arrangement": "18-32",
+      "counts": {
+        "20": 32
+      },
+      "diagramImg": "assets/inserts/18-32.png",
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "32"
+      ]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "18",
+      "arrangement": "18-35",
+      "counts": {
+        "22": 66
+      },
+      "diagramImg": "assets/inserts/18-35.png",
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "32",
+        "33",
+        "34",
+        "35",
+        "36",
+        "37",
+        "38",
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44",
+        "45",
+        "46",
+        "47",
+        "48",
+        "49",
+        "50",
+        "51",
+        "52",
+        "53",
+        "54",
+        "55",
+        "56",
+        "57",
+        "58",
+        "59",
+        "60",
+        "61",
+        "62",
+        "63",
+        "64",
+        "65",
+        "66"
+      ]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "20",
+      "arrangement": "20-16",
+      "counts": {
+        "16": 16
+      },
+      "diagramImg": "assets/inserts/20-16.png",
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16"
+      ]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "20",
+      "arrangement": "20-35",
+      "counts": {
+        "22": 79
+      },
+      "diagramImg": "assets/inserts/20-35.png",
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "32",
+        "33",
+        "34",
+        "35",
+        "36",
+        "37",
+        "38",
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44",
+        "45",
+        "46",
+        "47",
+        "48",
+        "49",
+        "50",
+        "51",
+        "52",
+        "53",
+        "54",
+        "55",
+        "56",
+        "57",
+        "58",
+        "59",
+        "60",
+        "61",
+        "62",
+        "63",
+        "64",
+        "65",
+        "66",
+        "67",
+        "68",
+        "69",
+        "70",
+        "71",
+        "72",
+        "73",
+        "74",
+        "75",
+        "76",
+        "77",
+        "78",
+        "79"
+      ]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "20",
+      "arrangement": "20-39",
+      "counts": {
+        "20": 37,
+        "16": 2
+      },
+      "diagramImg": "assets/inserts/20-39.png",
+      "pins": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "P",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "m",
+        "n",
+        "p",
+        "q",
+        "r"
+      ],
+      "contactMap": {
+        "16": [
+          "m",
+          "r"
+        ]
+      }
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "20",
+      "arrangement": "20-41",
+      "counts": {
+        "20": 41
+      },
+      "diagramImg": "assets/inserts/20-41.png",
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "32",
+        "33",
+        "34",
+        "35",
+        "36",
+        "37",
+        "38",
+        "39",
+        "40",
+        "41"
+      ]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "22",
+      "arrangement": "22-21",
+      "counts": {
+        "16": 21
+      },
+      "diagramImg": "assets/inserts/22-21.png",
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21"
+      ]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "22",
+      "arrangement": "22-35",
+      "counts": {
+        "22": 100
+      },
+      "diagramImg": "assets/inserts/22-35.png",
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "32",
+        "33",
+        "34",
+        "35",
+        "36",
+        "37",
+        "38",
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44",
+        "45",
+        "46",
+        "47",
+        "48",
+        "49",
+        "50",
+        "51",
+        "52",
+        "53",
+        "54",
+        "55",
+        "56",
+        "57",
+        "58",
+        "59",
+        "60",
+        "61",
+        "62",
+        "63",
+        "64",
+        "65",
+        "66",
+        "67",
+        "68",
+        "69",
+        "70",
+        "71",
+        "72",
+        "73",
+        "74",
+        "75",
+        "76",
+        "77",
+        "78",
+        "79",
+        "80",
+        "81",
+        "82",
+        "83",
+        "84",
+        "85",
+        "86",
+        "87",
+        "88",
+        "89",
+        "90",
+        "91",
+        "92",
+        "93",
+        "94",
+        "95",
+        "96",
+        "97",
+        "98",
+        "99",
+        "100"
+      ]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "22",
+      "arrangement": "22-55",
+      "counts": {
+        "20": 55
+      },
+      "diagramImg": "assets/inserts/22-55.png",
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "32",
+        "33",
+        "34",
+        "35",
+        "36",
+        "37",
+        "38",
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44",
+        "45",
+        "46",
+        "47",
+        "48",
+        "49",
+        "50",
+        "51",
+        "52",
+        "53",
+        "54",
+        "55"
+      ]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "24",
+      "arrangement": "24-29",
+      "counts": {
+        "16": 29
+      },
+      "diagramImg": "assets/inserts/24-29.png",
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29"
+      ]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "24",
+      "arrangement": "24-35",
+      "counts": {
+        "22": 128
+      },
+      "diagramImg": "assets/inserts/24-35.png",
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "32",
+        "33",
+        "34",
+        "35",
+        "36",
+        "37",
+        "38",
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44",
+        "45",
+        "46",
+        "47",
+        "48",
+        "49",
+        "50",
+        "51",
+        "52",
+        "53",
+        "54",
+        "55",
+        "56",
+        "57",
+        "58",
+        "59",
+        "60",
+        "61",
+        "62",
+        "63",
+        "64",
+        "65",
+        "66",
+        "67",
+        "68",
+        "69",
+        "70",
+        "71",
+        "72",
+        "73",
+        "74",
+        "75",
+        "76",
+        "77",
+        "78",
+        "79",
+        "80",
+        "81",
+        "82",
+        "83",
+        "84",
+        "85",
+        "86",
+        "87",
+        "88",
+        "89",
+        "90",
+        "91",
+        "92",
+        "93",
+        "94",
+        "95",
+        "96",
+        "97",
+        "98",
+        "99",
+        "100",
+        "101",
+        "102",
+        "103",
+        "104",
+        "105",
+        "106",
+        "107",
+        "108",
+        "109",
+        "110",
+        "111",
+        "112",
+        "113",
+        "114",
+        "115",
+        "116",
+        "117",
+        "118",
+        "119",
+        "120",
+        "121",
+        "122",
+        "123",
+        "124",
+        "125",
+        "126",
+        "127",
+        "128"
+      ]
+    },
+    {
+      "seriesId": "deutsch_autosport",
+      "shellSize": "24",
+      "arrangement": "24-61",
+      "counts": {
+        "20": 61
+      },
+      "diagramImg": "assets/inserts/24-61.png",
+      "pins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "32",
+        "33",
+        "34",
+        "35",
+        "36",
+        "37",
+        "38",
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44",
+        "45",
+        "46",
+        "47",
+        "48",
+        "49",
+        "50",
+        "51",
+        "52",
+        "53",
+        "54",
+        "55",
+        "56",
+        "57",
+        "58",
+        "59",
+        "60",
+        "61"
       ]
     }
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "25",
-    "letterCode": "J",
-    "arrangement": "25-43",
-    "counts": {
-      "12": 7,
-      "16": 16,
-      "20": 20
-    },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K",
-      "L",
-      "M",
-      "N",
-      "P",
-      "R",
-      "S",
-      "T",
-      "U",
-      "V",
-      "W",
-      "X",
-      "Y",
-      "Z",
-      "a",
-      "b",
-      "c",
-      "d",
-      "e",
-      "f",
-      "g",
-      "h",
-      "k",
-      "m",
-      "n",
-      "p",
-      "q",
-      "r",
-      "s",
-      "t",
-      "u",
-      "v",
-      "w",
-      "x"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "25",
-    "letterCode": "J",
-    "arrangement": "25-61",
-    "counts": {
-      "20": 61
-    },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H",
-      "J",
-      "K",
-      "L",
-      "M",
-      "N",
-      "P",
-      "R",
-      "S",
-      "T",
-      "U",
-      "V",
-      "W",
-      "X",
-      "Y",
-      "Z",
-      "a",
-      "b",
-      "c",
-      "d",
-      "e",
-      "f",
-      "g",
-      "h",
-      "i",
-      "j",
-      "k",
-      "m",
-      "n",
-      "p",
-      "q",
-      "r",
-      "s",
-      "t",
-      "u",
-      "v",
-      "w",
-      "x",
-      "y",
-      "z",
-      "AA",
-      "BB",
-      "CC",
-      "DD",
-      "EE",
-      "FF",
-      "GG",
-      "HH",
-      "JJ",
-      "KK",
-      "LL",
-      "MM",
-      "NN",
-      "PP"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "25",
-    "letterCode": "J",
-    "arrangement": "25-7",
-    "counts": {
-      "8": 2,
-      "22D": 97
-    },
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19",
-      "20",
-      "21",
-      "22",
-      "23",
-      "24",
-      "25",
-      "26",
-      "27",
-      "28",
-      "29",
-      "30",
-      "31",
-      "32",
-      "33",
-      "34",
-      "35",
-      "36",
-      "37",
-      "38",
-      "39",
-      "40",
-      "41",
-      "42",
-      "43",
-      "44",
-      "45",
-      "46",
-      "47",
-      "48",
-      "49",
-      "50",
-      "51",
-      "52",
-      "53",
-      "54",
-      "55",
-      "56",
-      "57",
-      "58",
-      "59",
-      "60",
-      "61",
-      "62",
-      "63",
-      "64",
-      "65",
-      "66",
-      "67",
-      "68",
-      "69",
-      "70",
-      "71",
-      "72",
-      "73",
-      "74",
-      "75",
-      "76",
-      "77",
-      "78",
-      "79",
-      "80",
-      "81",
-      "82",
-      "83",
-      "84",
-      "85",
-      "86",
-      "87",
-      "88",
-      "89",
-      "90",
-      "91",
-      "92",
-      "93",
-      "94",
-      "95",
-      "96",
-      "97",
-      "98",
-      "99"
-    ]
-  },
-  {
-    "seriesId": "d38999",
-    "shellSize": "25",
-    "letterCode": "J",
-    "arrangement": "25-8",
-    "counts": {
-      "8": 8
-    },
-    "pins": [
-      "A",
-      "B",
-      "C",
-      "D",
-      "E",
-      "F",
-      "G",
-      "H"
-    ]
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "06",
-    "letterCode": "",
-    "arrangement": "06-05",
-    "counts": {
-      "24": 5
-    },
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5"
-    ],
-    "diagramImg": "assets/inserts/06-05.png"
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "07",
-    "arrangement": "07-35",
-    "counts": {
-      "22": 6
-    },
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6"
-    ],
-    "diagramImg": "assets/inserts/07-35.png"
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "07",
-    "arrangement": "07-98",
-    "counts": {
-      "20": 3
-    },
-    "pins": [
-      "1",
-      "2",
-      "3"
-    ],
-    "diagramImg": "assets/inserts/07-98.png"
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "08",
-    "letterCode": "",
-    "arrangement": "08-35",
-    "counts": {
-      "22": 6
-    },
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6"
-    ],
-    "diagramImg": "assets/inserts/08-35.png"
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "08",
-    "arrangement": "08-98",
-    "counts": {
-      "20": 3
-    },
-    "pins": [
-      "1",
-      "2",
-      "3"
-    ],
-    "diagramImg": "assets/inserts/08-98.png"
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "10",
-    "arrangement": "10-02",
-    "counts": {
-      "16": 2
-    },
-    "pins": [
-      "1",
-      "2"
-    ],
-    "diagramImg": "assets/inserts/10-02.png"
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "10",
-    "arrangement": "10-03",
-    "counts": {
-      "16": 3
-    },
-    "pins": [
-      "1",
-      "2",
-      "3"
-    ],
-    "diagramImg": "assets/inserts/10-03.png"
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "10",
-    "arrangement": "10-35",
-    "counts": {
-      "22": 13
-    },
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13"
-    ],
-    "diagramImg": "assets/inserts/10-35.png"
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "10",
-    "arrangement": "10-98",
-    "counts": {
-      "20": 6
-    },
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6"
-    ],
-    "diagramImg": "assets/inserts/10-98.png"
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "12",
-    "arrangement": "12-04",
-    "counts": {
-      "16": 4
-    },
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4"
-    ],
-    "diagramImg": "assets/inserts/12-04.png"
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "12",
-    "arrangement": "12-35",
-    "counts": {
-      "22": 22
-    },
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19",
-      "20",
-      "21",
-      "22"
-    ],
-    "diagramImg": "assets/inserts/12-35.png"
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "12",
-    "arrangement": "12-98",
-    "counts": {
-      "20": 10
-    },
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10"
-    ],
-    "diagramImg": "assets/inserts/12-98.png"
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "14",
-    "arrangement": "14-19",
-    "counts": {
-      "20": 19
-    },
-    "diagramImg": "assets/inserts/14-19.png",
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19"
-    ]
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "14",
-    "arrangement": "14-35",
-    "counts": {
-      "22": 37
-    },
-    "diagramImg": "assets/inserts/14-35.png",
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19",
-      "20",
-      "21",
-      "22",
-      "23",
-      "24",
-      "25",
-      "26",
-      "27",
-      "28",
-      "29",
-      "30",
-      "31",
-      "32",
-      "33",
-      "34",
-      "35",
-      "36",
-      "37"
-    ]
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "14",
-    "arrangement": "14-97",
-    "counts": {
-      "20": 8,
-      "16": 4
-    },
-    "diagramImg": "assets/inserts/14-97.png",
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12"
-    ]
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "16",
-    "arrangement": "16-08",
-    "counts": {
-      "16": 8
-    },
-    "diagramImg": "assets/inserts/16-08.png",
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8"
-    ]
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "16",
-    "arrangement": "16-26",
-    "counts": {
-      "20": 26
-    },
-    "diagramImg": "assets/inserts/16-26.png",
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19",
-      "20",
-      "21",
-      "22",
-      "23",
-      "24",
-      "25",
-      "26"
-    ]
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "16",
-    "arrangement": "16-35",
-    "counts": {
-      "22": 55
-    },
-    "diagramImg": "assets/inserts/16-35.png",
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19",
-      "20",
-      "21",
-      "22",
-      "23",
-      "24",
-      "25",
-      "26",
-      "27",
-      "28",
-      "29",
-      "30",
-      "31",
-      "32",
-      "33",
-      "34",
-      "35",
-      "36",
-      "37",
-      "38",
-      "39",
-      "40",
-      "41",
-      "42",
-      "43",
-      "44",
-      "45",
-      "46",
-      "47",
-      "48",
-      "49",
-      "50",
-      "51",
-      "52",
-      "53",
-      "54",
-      "55"
-    ]
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "18",
-    "arrangement": "18-32",
-    "counts": {
-      "20": 32
-    },
-    "diagramImg": "assets/inserts/18-32.png",
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19",
-      "20",
-      "21",
-      "22",
-      "23",
-      "24",
-      "25",
-      "26",
-      "27",
-      "28",
-      "29",
-      "30",
-      "31",
-      "32"
-    ]
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "18",
-    "arrangement": "18-35",
-    "counts": {
-      "22": 66
-    },
-    "diagramImg": "assets/inserts/18-35.png",
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19",
-      "20",
-      "21",
-      "22",
-      "23",
-      "24",
-      "25",
-      "26",
-      "27",
-      "28",
-      "29",
-      "30",
-      "31",
-      "32",
-      "33",
-      "34",
-      "35",
-      "36",
-      "37",
-      "38",
-      "39",
-      "40",
-      "41",
-      "42",
-      "43",
-      "44",
-      "45",
-      "46",
-      "47",
-      "48",
-      "49",
-      "50",
-      "51",
-      "52",
-      "53",
-      "54",
-      "55",
-      "56",
-      "57",
-      "58",
-      "59",
-      "60",
-      "61",
-      "62",
-      "63",
-      "64",
-      "65",
-      "66"
-    ]
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "20",
-    "arrangement": "20-16",
-    "counts": {
-      "16": 16
-    },
-    "diagramImg": "assets/inserts/20-16.png",
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16"
-    ]
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "20",
-    "arrangement": "20-35",
-    "counts": {
-      "22": 79
-    },
-    "diagramImg": "assets/inserts/20-35.png",
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19",
-      "20",
-      "21",
-      "22",
-      "23",
-      "24",
-      "25",
-      "26",
-      "27",
-      "28",
-      "29",
-      "30",
-      "31",
-      "32",
-      "33",
-      "34",
-      "35",
-      "36",
-      "37",
-      "38",
-      "39",
-      "40",
-      "41",
-      "42",
-      "43",
-      "44",
-      "45",
-      "46",
-      "47",
-      "48",
-      "49",
-      "50",
-      "51",
-      "52",
-      "53",
-      "54",
-      "55",
-      "56",
-      "57",
-      "58",
-      "59",
-      "60",
-      "61",
-      "62",
-      "63",
-      "64",
-      "65",
-      "66",
-      "67",
-      "68",
-      "69",
-      "70",
-      "71",
-      "72",
-      "73",
-      "74",
-      "75",
-      "76",
-      "77",
-      "78",
-      "79"
-    ]
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "20",
-    "arrangement": "20-39",
-    "counts": {
-      "20": 37,
-      "16": 2
-    },
-    "diagramImg": "assets/inserts/20-39.png",
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19",
-      "20",
-      "21",
-      "22",
-      "23",
-      "24",
-      "25",
-      "26",
-      "27",
-      "28",
-      "29",
-      "30",
-      "31",
-      "32",
-      "33",
-      "34",
-      "35",
-      "36",
-      "37",
-      "38",
-      "39"
-    ]
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "20",
-    "arrangement": "20-41",
-    "counts": {
-      "20": 41
-    },
-    "diagramImg": "assets/inserts/20-41.png",
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19",
-      "20",
-      "21",
-      "22",
-      "23",
-      "24",
-      "25",
-      "26",
-      "27",
-      "28",
-      "29",
-      "30",
-      "31",
-      "32",
-      "33",
-      "34",
-      "35",
-      "36",
-      "37",
-      "38",
-      "39",
-      "40",
-      "41"
-    ]
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "22",
-    "arrangement": "22-21",
-    "counts": {
-      "16": 21
-    },
-    "diagramImg": "assets/inserts/22-21.png",
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19",
-      "20",
-      "21"
-    ]
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "22",
-    "arrangement": "22-35",
-    "counts": {
-      "22": 100
-    },
-    "diagramImg": "assets/inserts/22-35.png",
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19",
-      "20",
-      "21",
-      "22",
-      "23",
-      "24",
-      "25",
-      "26",
-      "27",
-      "28",
-      "29",
-      "30",
-      "31",
-      "32",
-      "33",
-      "34",
-      "35",
-      "36",
-      "37",
-      "38",
-      "39",
-      "40",
-      "41",
-      "42",
-      "43",
-      "44",
-      "45",
-      "46",
-      "47",
-      "48",
-      "49",
-      "50",
-      "51",
-      "52",
-      "53",
-      "54",
-      "55",
-      "56",
-      "57",
-      "58",
-      "59",
-      "60",
-      "61",
-      "62",
-      "63",
-      "64",
-      "65",
-      "66",
-      "67",
-      "68",
-      "69",
-      "70",
-      "71",
-      "72",
-      "73",
-      "74",
-      "75",
-      "76",
-      "77",
-      "78",
-      "79",
-      "80",
-      "81",
-      "82",
-      "83",
-      "84",
-      "85",
-      "86",
-      "87",
-      "88",
-      "89",
-      "90",
-      "91",
-      "92",
-      "93",
-      "94",
-      "95",
-      "96",
-      "97",
-      "98",
-      "99",
-      "100"
-    ]
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "22",
-    "arrangement": "22-55",
-    "counts": {
-      "20": 55
-    },
-    "diagramImg": "assets/inserts/22-55.png",
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19",
-      "20",
-      "21",
-      "22",
-      "23",
-      "24",
-      "25",
-      "26",
-      "27",
-      "28",
-      "29",
-      "30",
-      "31",
-      "32",
-      "33",
-      "34",
-      "35",
-      "36",
-      "37",
-      "38",
-      "39",
-      "40",
-      "41",
-      "42",
-      "43",
-      "44",
-      "45",
-      "46",
-      "47",
-      "48",
-      "49",
-      "50",
-      "51",
-      "52",
-      "53",
-      "54",
-      "55"
-    ]
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "24",
-    "arrangement": "24-29",
-    "counts": {
-      "16": 29
-    },
-    "diagramImg": "assets/inserts/24-29.png",
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19",
-      "20",
-      "21",
-      "22",
-      "23",
-      "24",
-      "25",
-      "26",
-      "27",
-      "28",
-      "29"
-    ]
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "24",
-    "arrangement": "24-35",
-    "counts": {
-      "22": 128
-    },
-    "diagramImg": "assets/inserts/24-35.png",
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19",
-      "20",
-      "21",
-      "22",
-      "23",
-      "24",
-      "25",
-      "26",
-      "27",
-      "28",
-      "29",
-      "30",
-      "31",
-      "32",
-      "33",
-      "34",
-      "35",
-      "36",
-      "37",
-      "38",
-      "39",
-      "40",
-      "41",
-      "42",
-      "43",
-      "44",
-      "45",
-      "46",
-      "47",
-      "48",
-      "49",
-      "50",
-      "51",
-      "52",
-      "53",
-      "54",
-      "55",
-      "56",
-      "57",
-      "58",
-      "59",
-      "60",
-      "61",
-      "62",
-      "63",
-      "64",
-      "65",
-      "66",
-      "67",
-      "68",
-      "69",
-      "70",
-      "71",
-      "72",
-      "73",
-      "74",
-      "75",
-      "76",
-      "77",
-      "78",
-      "79",
-      "80",
-      "81",
-      "82",
-      "83",
-      "84",
-      "85",
-      "86",
-      "87",
-      "88",
-      "89",
-      "90",
-      "91",
-      "92",
-      "93",
-      "94",
-      "95",
-      "96",
-      "97",
-      "98",
-      "99",
-      "100",
-      "101",
-      "102",
-      "103",
-      "104",
-      "105",
-      "106",
-      "107",
-      "108",
-      "109",
-      "110",
-      "111",
-      "112",
-      "113",
-      "114",
-      "115",
-      "116",
-      "117",
-      "118",
-      "119",
-      "120",
-      "121",
-      "122",
-      "123",
-      "124",
-      "125",
-      "126",
-      "127",
-      "128"
-    ]
-  },
-  {
-    "seriesId": "deutsch_autosport",
-    "shellSize": "24",
-    "arrangement": "24-61",
-    "counts": {
-      "20": 61
-    },
-    "diagramImg": "assets/inserts/24-61.png",
-    "pins": [
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19",
-      "20",
-      "21",
-      "22",
-      "23",
-      "24",
-      "25",
-      "26",
-      "27",
-      "28",
-      "29",
-      "30",
-      "31",
-      "32",
-      "33",
-      "34",
-      "35",
-      "36",
-      "37",
-      "38",
-      "39",
-      "40",
-      "41",
-      "42",
-      "43",
-      "44",
-      "45",
-      "46",
-      "47",
-      "48",
-      "49",
-      "50",
-      "51",
-      "52",
-      "53",
-      "54",
-      "55",
-      "56",
-      "57",
-      "58",
-      "59",
-      "60",
-      "61"
-    ]
-  }
-],
-  contacts: {
-  "ratings": [
-    { "size": "24", "maxAmps": 3.0, "label": "Size 24 (Max 3A - Deutsch AutoSport / Micro)" },
-    { "size": "23", "maxAmps": 3.0, "label": "Size 23 (Max 3A - Deutsch AutoSport)" },
-    { "size": "22", "maxAmps": 5.0, "label": "Size 22 (Max 5A - Deutsch AutoSport / Standard)" },
-    { "size": "22D", "maxAmps": 5.0, "label": "Size 22D (Max 5A - D38999 High Density)" },
-    { "size": "20", "maxAmps": 7.5, "label": "Size 20 (Max 7.5A)" },
-    { "size": "16", "maxAmps": 13.0, "label": "Size 16 (Max 13A)" },
-    { "size": "12", "maxAmps": 23.0, "label": "Size 12 (Max 23A)" },
-    { "size": "10", "maxAmps": 33.0, "label": "Size 10 (Max 33A - Power)" },
-    { "size": "8", "maxAmps": 46.0, "label": "Size 8 (Max 46A - Coax/Twinax/Power)" }
   ],
-  "m39029DB": {
-    "STD": {
-      "24": {
-        "P": [{ "pn": "605719-31", "price": 3.85, "desc": "Size 24 Pin Contact (Deutsch AutoSport)", "size": "24", "isStd": true }],
-        "S": [{ "pn": "605721", "price": 4.15, "desc": "Size 24 Socket Contact (Deutsch AutoSport)", "size": "24", "isStd": true }]
+  "contacts": {
+    "ratings": [
+      {
+        "size": "24",
+        "maxAmps": 3.0,
+        "label": "Size 24 (Max 3A - Deutsch AutoSport / Micro)"
       },
-      "23": {
-        "P": [{ "pn": "604927-31", "price": 3.85, "desc": "Size 23 Pin Contact (Deutsch AutoSport)", "size": "23", "isStd": true }],
-        "S": [{ "pn": "604935", "price": 4.15, "desc": "Size 23 Socket Contact (Deutsch AutoSport)", "size": "23", "isStd": true }]
+      {
+        "size": "23",
+        "maxAmps": 3.0,
+        "label": "Size 23 (Max 3A - Deutsch AutoSport)"
       },
-      "22": {
-        "P": [{ "pn": "38941-22", "price": 2.95, "desc": "Size 22 Pin Contact (Deutsch AutoSport)", "size": "22", "isStd": true }],
-        "S": [{ "pn": "38943-22", "price": 3.25, "desc": "Size 22 Socket Contact (Deutsch AutoSport)", "size": "22", "isStd": true }]
+      {
+        "size": "22",
+        "maxAmps": 5.0,
+        "label": "Size 22 (Max 5A - Deutsch AutoSport / Standard)"
       },
-      "22D": {
-        "P": [{ "pn": "M39029/58-360", "price": 1.85, "desc": "Size 22D Pin Contact", "size": "22D", "isStd": true }],
-        "S": [{ "pn": "M39029/56-348", "price": 2.10, "desc": "Size 22D Socket Contact", "size": "22D", "isStd": true }]
+      {
+        "size": "22D",
+        "maxAmps": 5.0,
+        "label": "Size 22D (Max 5A - D38999 High Density)"
       },
-      "20": {
-        "P": [{ "pn": "M39029/58-363", "price": 2.15, "desc": "Size 20 Pin Contact", "size": "20", "isStd": true }],
-        "S": [{ "pn": "M39029/56-351", "price": 2.40, "desc": "Size 20 Socket Contact", "size": "20", "isStd": true }]
+      {
+        "size": "20",
+        "maxAmps": 7.5,
+        "label": "Size 20 (Max 7.5A)"
       },
-      "16": {
-        "P": [{ "pn": "M39029/58-364", "price": 3.10, "desc": "Size 16 Pin Contact", "size": "16", "isStd": true }],
-        "S": [{ "pn": "M39029/56-352", "price": 3.50, "desc": "Size 16 Socket Contact", "size": "16", "isStd": true }]
+      {
+        "size": "16",
+        "maxAmps": 13.0,
+        "label": "Size 16 (Max 13A)"
+      },
+      {
+        "size": "12",
+        "maxAmps": 23.0,
+        "label": "Size 12 (Max 23A)"
+      },
+      {
+        "size": "10",
+        "maxAmps": 33.0,
+        "label": "Size 10 (Max 33A - Power)"
+      },
+      {
+        "size": "8",
+        "maxAmps": 46.0,
+        "label": "Size 8 (Max 46A - Coax/Twinax/Power)"
+      }
+    ],
+    "m39029DB": {
+      "STD": {
+        "24": {
+          "P": [
+            {
+              "pn": "605719-31",
+              "price": 3.85,
+              "desc": "Size 24 Pin Contact (Deutsch AutoSport)",
+              "size": "24",
+              "isStd": true
+            }
+          ],
+          "S": [
+            {
+              "pn": "605721",
+              "price": 4.15,
+              "desc": "Size 24 Socket Contact (Deutsch AutoSport)",
+              "size": "24",
+              "isStd": true
+            }
+          ]
+        },
+        "23": {
+          "P": [
+            {
+              "pn": "604927-31",
+              "price": 3.85,
+              "desc": "Size 23 Pin Contact (Deutsch AutoSport)",
+              "size": "23",
+              "isStd": true
+            }
+          ],
+          "S": [
+            {
+              "pn": "604935",
+              "price": 4.15,
+              "desc": "Size 23 Socket Contact (Deutsch AutoSport)",
+              "size": "23",
+              "isStd": true
+            }
+          ]
+        },
+        "22": {
+          "P": [
+            {
+              "pn": "38941-22",
+              "price": 2.95,
+              "desc": "Size 22 Pin Contact (Deutsch AutoSport)",
+              "size": "22",
+              "isStd": true
+            }
+          ],
+          "S": [
+            {
+              "pn": "38943-22",
+              "price": 3.25,
+              "desc": "Size 22 Socket Contact (Deutsch AutoSport)",
+              "size": "22",
+              "isStd": true
+            }
+          ]
+        },
+        "22D": {
+          "P": [
+            {
+              "pn": "M39029/58-360",
+              "price": 1.85,
+              "desc": "Size 22D Pin Contact",
+              "size": "22D",
+              "isStd": true
+            }
+          ],
+          "S": [
+            {
+              "pn": "M39029/56-348",
+              "price": 2.1,
+              "desc": "Size 22D Socket Contact",
+              "size": "22D",
+              "isStd": true
+            }
+          ]
+        },
+        "20": {
+          "P": [
+            {
+              "pn": "M39029/58-363",
+              "price": 2.15,
+              "desc": "Size 20 Pin Contact",
+              "size": "20",
+              "isStd": true
+            }
+          ],
+          "S": [
+            {
+              "pn": "M39029/56-351",
+              "price": 2.4,
+              "desc": "Size 20 Socket Contact",
+              "size": "20",
+              "isStd": true
+            }
+          ]
+        },
+        "16": {
+          "P": [
+            {
+              "pn": "M39029/58-364",
+              "price": 3.1,
+              "desc": "Size 16 Pin Contact",
+              "size": "16",
+              "isStd": true
+            }
+          ],
+          "S": [
+            {
+              "pn": "M39029/56-352",
+              "price": 3.5,
+              "desc": "Size 16 Socket Contact",
+              "size": "16",
+              "isStd": true
+            }
+          ]
+        },
+        "12": {
+          "P": [
+            {
+              "pn": "M39029/58-365",
+              "price": 4.5,
+              "desc": "Size 12 Pin Contact",
+              "size": "12",
+              "isStd": true
+            }
+          ],
+          "S": [
+            {
+              "pn": "M39029/56-353",
+              "price": 5.2,
+              "desc": "Size 12 Socket Contact",
+              "size": "12",
+              "isStd": true
+            }
+          ]
+        },
+        "10": {
+          "P": [
+            {
+              "pn": "M39029/58-528",
+              "price": 12.0,
+              "desc": "Size 10 Pin Power Contact",
+              "size": "10",
+              "isStd": true
+            }
+          ],
+          "S": [
+            {
+              "pn": "M39029/56-527",
+              "price": 14.0,
+              "desc": "Size 10 Socket Power Contact",
+              "size": "10",
+              "isStd": true
+            }
+          ]
+        },
+        "8": {
+          "P": [
+            {
+              "pn": "M39029/60-367",
+              "price": 18.5,
+              "desc": "Size 8 Pin Power Contact",
+              "size": "8",
+              "isStd": true
+            }
+          ],
+          "S": [
+            {
+              "pn": "M39029/59-366",
+              "price": 21.0,
+              "desc": "Size 8 Socket Power Contact",
+              "size": "8",
+              "isStd": true
+            }
+          ]
+        }
+      },
+      "TC_K": {
+        "22D": {
+          "P": [
+            {
+              "pn": "M39029/87-471",
+              "price": 7.5,
+              "desc": "Size 22D Alumel Pin Contact",
+              "size": "22D",
+              "isStd": false
+            },
+            {
+              "pn": "M39029/87-472",
+              "price": 7.5,
+              "desc": "Size 22D Chromel Pin Contact",
+              "size": "22D",
+              "isStd": false
+            }
+          ],
+          "S": [
+            {
+              "pn": "M39029/88-487",
+              "price": 8.0,
+              "desc": "Size 22D Alumel Socket Contact",
+              "size": "22D",
+              "isStd": false
+            },
+            {
+              "pn": "M39029/88-488",
+              "price": 8.0,
+              "desc": "Size 22D Chromel Socket Contact",
+              "size": "22D",
+              "isStd": false
+            }
+          ]
+        },
+        "20": {
+          "P": [
+            {
+              "pn": "M39029/87-473",
+              "price": 8.5,
+              "desc": "Size 20 Alumel Pin Contact",
+              "size": "20",
+              "isStd": false
+            },
+            {
+              "pn": "M39029/87-474",
+              "price": 8.5,
+              "desc": "Size 20 Chromel Pin Contact",
+              "size": "20",
+              "isStd": false
+            }
+          ],
+          "S": [
+            {
+              "pn": "M39029/88-489",
+              "price": 9.0,
+              "desc": "Size 20 Alumel Socket Contact",
+              "size": "20",
+              "isStd": false
+            },
+            {
+              "pn": "M39029/88-490",
+              "price": 9.0,
+              "desc": "Size 20 Chromel Socket Contact",
+              "size": "20",
+              "isStd": false
+            }
+          ]
+        }
+      },
+      "TC_E": {
+        "22D": {
+          "P": [
+            {
+              "pn": "M39029/87-472",
+              "price": 7.5,
+              "desc": "Size 22D Chromel Pin Contact",
+              "size": "22D",
+              "isStd": false
+            },
+            {
+              "pn": "M39029/87-470",
+              "price": 7.5,
+              "desc": "Size 22D Constantan Pin Contact",
+              "size": "22D",
+              "isStd": false
+            }
+          ],
+          "S": [
+            {
+              "pn": "M39029/88-488",
+              "price": 8.0,
+              "desc": "Size 22D Chromel Socket Contact",
+              "size": "22D",
+              "isStd": false
+            },
+            {
+              "pn": "M39029/88-486",
+              "price": 8.0,
+              "desc": "Size 22D Constantan Socket Contact",
+              "size": "22D",
+              "isStd": false
+            }
+          ]
+        },
+        "20": {
+          "P": [
+            {
+              "pn": "M39029/87-474",
+              "price": 8.5,
+              "desc": "Size 20 Chromel Pin Contact",
+              "size": "20",
+              "isStd": false
+            },
+            {
+              "pn": "M39029/87-470",
+              "price": 8.5,
+              "desc": "Size 20 Constantan Pin Contact",
+              "size": "20",
+              "isStd": false
+            }
+          ],
+          "S": [
+            {
+              "pn": "M39029/88-490",
+              "price": 9.0,
+              "desc": "Size 20 Chromel Socket Contact",
+              "size": "20",
+              "isStd": false
+            },
+            {
+              "pn": "M39029/88-486",
+              "price": 8.0,
+              "desc": "Size 20 Constantan Socket Contact",
+              "size": "20",
+              "isStd": false
+            }
+          ]
+        }
+      },
+      "TC_J": {
+        "22D": {
+          "P": [
+            {
+              "pn": "M39029/87-469",
+              "price": 7.5,
+              "desc": "Size 22D Iron Pin Contact",
+              "size": "22D",
+              "isStd": false
+            },
+            {
+              "pn": "M39029/87-470",
+              "price": 7.5,
+              "desc": "Size 22D Constantan Pin Contact",
+              "size": "22D",
+              "isStd": false
+            }
+          ],
+          "S": [
+            {
+              "pn": "M39029/88-485",
+              "price": 8.0,
+              "desc": "Size 22D Iron Socket Contact",
+              "size": "22D",
+              "isStd": false
+            },
+            {
+              "pn": "M39029/88-486",
+              "price": 8.0,
+              "desc": "Size 22D Constantan Socket Contact",
+              "size": "22D",
+              "isStd": false
+            }
+          ]
+        }
+      },
+      "TC_T": {
+        "22D": {
+          "P": [
+            {
+              "pn": "M39029/87-468",
+              "price": 7.5,
+              "desc": "Size 22D Copper Pin Contact",
+              "size": "22D",
+              "isStd": false
+            },
+            {
+              "pn": "M39029/87-470",
+              "price": 7.5,
+              "desc": "Size 22D Constantan Pin Contact",
+              "size": "22D",
+              "isStd": false
+            }
+          ],
+          "S": [
+            {
+              "pn": "M39029/88-484",
+              "price": 8.0,
+              "desc": "Size 22D Copper Socket Contact",
+              "size": "22D",
+              "isStd": false
+            },
+            {
+              "pn": "M39029/88-486",
+              "price": 8.0,
+              "desc": "Size 22D Constantan Socket Contact",
+              "size": "22D",
+              "isStd": false
+            }
+          ]
+        }
+      },
+      "COAX": {
+        "16": {
+          "P": [
+            {
+              "pn": "M39029/76-424",
+              "price": 22.0,
+              "desc": "Size 16 Coax Pin Contact",
+              "size": "16",
+              "isStd": false
+            }
+          ],
+          "S": [
+            {
+              "pn": "M39029/77-429",
+              "price": 25.0,
+              "desc": "Size 16 Coax Socket Contact",
+              "size": "16",
+              "isStd": false
+            }
+          ]
+        },
+        "12": {
+          "P": [
+            {
+              "pn": "M39029/28-211",
+              "price": 34.0,
+              "desc": "Size 12 Coax Pin Contact",
+              "size": "12",
+              "isStd": false
+            }
+          ],
+          "S": [
+            {
+              "pn": "M39029/75-416",
+              "price": 38.0,
+              "desc": "Size 12 Coax Socket Contact",
+              "size": "12",
+              "isStd": false
+            }
+          ]
+        },
+        "8": {
+          "P": [
+            {
+              "pn": "M39029/60-367",
+              "price": 65.0,
+              "desc": "Size 8 Twinax Pin Contact",
+              "size": "8",
+              "isStd": false
+            }
+          ],
+          "S": [
+            {
+              "pn": "M39029/91-530",
+              "price": 72.0,
+              "desc": "Size 8 Twinax Socket Contact",
+              "size": "8",
+              "isStd": false
+            }
+          ]
+        }
+      }
+    },
+    "autoSportDB": {
+      "STD": {
+        "24": {
+          "P": [
+            {
+              "pn": "605719-31",
+              "price": 3.85,
+              "desc": "Size 24 Pin Contact (Deutsch AutoSport)",
+              "size": "24",
+              "wireRange": "24-30",
+              "crimpTool": "M22520/2-01",
+              "positioner": "610286",
+              "insertionRemovalTool": "605837 Orange/White",
+              "isStd": true
+            }
+          ],
+          "S": [
+            {
+              "pn": "605721",
+              "price": 4.15,
+              "desc": "Size 24 Socket Contact (Deutsch AutoSport)",
+              "size": "24",
+              "wireRange": "24-30",
+              "crimpTool": "M22520/2-01",
+              "positioner": "610287",
+              "insertionRemovalTool": "605837 Orange/White",
+              "isStd": true
+            }
+          ]
+        },
+        "23": {
+          "P": [
+            {
+              "pn": "604927-31",
+              "price": 3.85,
+              "desc": "Size 23 Pin Contact (Deutsch AutoSport)",
+              "size": "23",
+              "wireRange": "22-28",
+              "crimpTool": "M22520/2-01",
+              "positioner": "604972",
+              "insertionRemovalTool": "M81969/14-01 Green/White",
+              "isStd": true
+            }
+          ],
+          "S": [
+            {
+              "pn": "604935",
+              "price": 4.15,
+              "desc": "Size 23 Socket Contact (Deutsch AutoSport)",
+              "size": "23",
+              "wireRange": "22-28",
+              "crimpTool": "M22520/2-01",
+              "positioner": "604973",
+              "insertionRemovalTool": "M81969/14-01 Green/White",
+              "isStd": true
+            }
+          ]
+        },
+        "22": {
+          "P": [
+            {
+              "pn": "38941-22",
+              "price": 2.95,
+              "desc": "Size 22 Pin Contact (Deutsch AutoSport)",
+              "size": "22",
+              "wireRange": "22-26",
+              "crimpTool": "M22520/2-01",
+              "positioner": "M22520/2-09",
+              "insertionRemovalTool": "M81969/14-01 Green/White",
+              "isStd": true
+            }
+          ],
+          "S": [
+            {
+              "pn": "38943-22",
+              "price": 3.25,
+              "desc": "Size 22 Socket Contact (Deutsch AutoSport)",
+              "size": "22",
+              "wireRange": "22-26",
+              "crimpTool": "M22520/2-01",
+              "positioner": "M22520/2-07",
+              "insertionRemovalTool": "M81969/14-01 Green/White",
+              "isStd": true
+            }
+          ]
+        },
+        "20": {
+          "P": [
+            {
+              "pn": "38941-20",
+              "price": 2.95,
+              "desc": "Size 20 Pin Contact (Deutsch AutoSport)",
+              "size": "20",
+              "wireRange": "20-24",
+              "crimpTool": "M22520/2-01",
+              "positioner": "M22520/2-10",
+              "insertionRemovalTool": "M81969/14-10 Red/Orange",
+              "isStd": true
+            }
+          ],
+          "S": [
+            {
+              "pn": "38943-20",
+              "price": 3.25,
+              "desc": "Size 20 Socket Contact (Deutsch AutoSport)",
+              "size": "20",
+              "wireRange": "20-24",
+              "crimpTool": "M22520/2-01",
+              "positioner": "M22520/2-10",
+              "insertionRemovalTool": "M81969/14-10 Red/Orange",
+              "isStd": true
+            }
+          ]
+        },
+        "16": {
+          "P": [
+            {
+              "pn": "38941-16",
+              "price": 3.5,
+              "desc": "Size 16 Pin Contact (Deutsch AutoSport)",
+              "size": "16",
+              "wireRange": "16-20",
+              "crimpTool": "M22520/1-01",
+              "positioner": "M22520/1-04",
+              "insertionRemovalTool": "M81969/14-03 Blue/White",
+              "isStd": true
+            }
+          ],
+          "S": [
+            {
+              "pn": "38943-16",
+              "price": 3.85,
+              "desc": "Size 16 Socket Contact (Deutsch AutoSport)",
+              "size": "16",
+              "wireRange": "16-20",
+              "crimpTool": "M22520/1-01",
+              "positioner": "M22520/1-04",
+              "insertionRemovalTool": "M81969/14-03 Blue/White",
+              "isStd": true
+            }
+          ]
+        }
+      }
+    }
+  },
+  "tooling": {
+    "shopInventory": {
+      "statusOptions": [
+        {
+          "label": "In Shop",
+          "color": "green"
+        },
+        {
+          "label": "Calibrated",
+          "color": "blue"
+        },
+        {
+          "label": "Out for Calibration",
+          "color": "yellow"
+        },
+        {
+          "label": "Missing / On Order",
+          "color": "red"
+        }
+      ],
+      "frames": [
+        {
+          "id": "AFM8",
+          "milSpec": "M22520/2-01",
+          "name": "DMC AFM8 Miniature Crimp Frame",
+          "status": "In Shop"
+        },
+        {
+          "id": "AF8",
+          "milSpec": "M22520/1-01",
+          "name": "DMC AF8 Standard Crimp Frame",
+          "status": "In Shop"
+        },
+        {
+          "id": "MH860",
+          "milSpec": "M22520/7-01",
+          "name": "DMC MH860 Clone Miniature Frame",
+          "status": "In Shop"
+        }
+      ],
+      "positioners": [
+        {
+          "id": "K40",
+          "milSpec": "M22520/2-07",
+          "name": "K40 Positioner (Size 22D Socket)",
+          "status": "In Shop"
+        },
+        {
+          "id": "K42",
+          "milSpec": "M22520/2-09",
+          "name": "K42 Positioner (Size 22D Pin)",
+          "status": "In Shop"
+        },
+        {
+          "id": "K13-1",
+          "milSpec": "M22520/2-08",
+          "name": "K13-1 Positioner (Size 20)",
+          "status": "In Shop"
+        },
+        {
+          "id": "TH163",
+          "milSpec": "M22520/1-04",
+          "name": "TH163 Turret Head (Size 16 & 12)",
+          "status": "In Shop"
+        },
+        {
+          "id": "K1584",
+          "milSpec": "DMC K1584",
+          "name": "K1584 Positioner (Size 24 AutoSport Pin/Socket)",
+          "status": "In Shop"
+        },
+        {
+          "id": "K1585",
+          "milSpec": "DMC K1585",
+          "name": "K1585 Positioner (Size 22 AutoSport Pin/Socket)",
+          "status": "In Shop"
+        },
+        {
+          "id": "K330-3",
+          "milSpec": "M39029/22-22-22",
+          "name": "K330-3 Positioner for Deutsch",
+          "status": "In Shop"
+        },
+        {
+          "id": "K1S",
+          "milSpec": "M22520/2",
+          "name": "K1S Positioner (Size 20-24)",
+          "status": "In Shop"
+        }
+      ]
+    },
+    "toolingMatrix": {
+      "8": {
+        "P": {
+          "frame": "M22520/23-01",
+          "positioner": "Die Set / Heavy-Duty Crimp Tool",
+          "setting": "Specialty Power/Coax Crimp Tool"
+        },
+        "S": {
+          "frame": "M22520/23-01",
+          "positioner": "Die Set / Heavy-Duty Crimp Tool",
+          "setting": "Specialty Power/Coax Crimp Tool"
+        }
       },
       "12": {
-        "P": [{ "pn": "M39029/58-365", "price": 4.50, "desc": "Size 12 Pin Contact", "size": "12", "isStd": true }],
-        "S": [{ "pn": "M39029/56-353", "price": 5.20, "desc": "Size 12 Socket Contact", "size": "12", "isStd": true }]
+        "P": {
+          "frame": "AF8",
+          "positioner": "TH163",
+          "setting": "Turret Position: YELLOW"
+        },
+        "S": {
+          "frame": "AF8",
+          "positioner": "TH163",
+          "setting": "Turret Position: YELLOW"
+        }
+      },
+      "16": {
+        "P": {
+          "frame": "AF8",
+          "positioner": "TH163",
+          "setting": "Turret Position: BLUE"
+        },
+        "S": {
+          "frame": "AF8",
+          "positioner": "TH163",
+          "setting": "Turret Position: BLUE"
+        }
+      },
+      "20": {
+        "P": {
+          "frame": "AFM8",
+          "positioner": "K13-1",
+          "setting": "SEL: 4-6 (AWG 20-24)"
+        },
+        "S": {
+          "frame": "AFM8",
+          "positioner": "K13-1",
+          "setting": "SEL: 4-6 (AWG 20-24)"
+        }
+      },
+      "22": {
+        "P": {
+          "frame": "AFM8",
+          "positioner": "K42",
+          "setting": "M22520/2-09 (AWG 22-26)"
+        },
+        "S": {
+          "frame": "AFM8",
+          "positioner": "K40",
+          "setting": "M22520/2-07 (AWG 22-26)"
+        }
+      },
+      "23": {
+        "P": {
+          "frame": "AFM8",
+          "positioner": "604972",
+          "setting": "SEL: 4-6 (AWG 22-28)"
+        },
+        "S": {
+          "frame": "AFM8",
+          "positioner": "604973",
+          "setting": "SEL: 4-6 (AWG 22-28)"
+        }
+      },
+      "24": {
+        "P": {
+          "frame": "AFM8",
+          "positioner": "K1584",
+          "setting": "SEL: 4-5 (AWG 24-26)"
+        },
+        "S": {
+          "frame": "AFM8",
+          "positioner": "K1584",
+          "setting": "SEL: 4-5 (AWG 24-26)"
+        }
+      },
+      "22D": {
+        "P": {
+          "frame": "AFM8",
+          "positioner": "K42",
+          "setting": "Color SEL: 4 (AWG 22-28)"
+        },
+        "S": {
+          "frame": "AFM8",
+          "positioner": "K40",
+          "setting": "Color SEL: 4 (AWG 22-28)"
+        }
+      }
+    },
+    "insertionExtractionTools": {
+      "8": {
+        "toolPN": "M81969/14-06",
+        "colors": "Red / Blue (Size 8)",
+        "badgeClass": "badge-red",
+        "desc": "Plastic Insertion/Extraction (Size 8)",
+        "status": "In Shop"
+      },
+      "12": {
+        "toolPN": "M81969/14-04",
+        "colors": "Yellow / White",
+        "badgeClass": "badge-yellow",
+        "desc": "Plastic Insertion/Extraction (Size 12)",
+        "status": "In Shop"
+      },
+      "16": {
+        "toolPN": "M81969/14-03",
+        "colors": "Blue / White",
+        "badgeClass": "badge-blue",
+        "desc": "Plastic Insertion/Extraction (Size 16)",
+        "status": "In Shop"
+      },
+      "20": {
+        "toolPN": "M81969/14-10",
+        "colors": "Red / Orange",
+        "badgeClass": "badge-orange",
+        "desc": "Plastic Insertion/Extraction (Size 20)",
+        "status": "In Shop"
+      },
+      "22": {
+        "toolPN": "M81969/14-01",
+        "colors": "Green / White",
+        "badgeClass": "badge-green",
+        "desc": "Plastic Insertion/Extraction (Size 22)",
+        "status": "In Shop"
+      },
+      "23": {
+        "toolPN": "M81969/14-01",
+        "colors": "Green / White",
+        "badgeClass": "badge-green",
+        "desc": "Plastic Insertion/Extraction (Size 23)",
+        "status": "In Shop"
+      },
+      "24": {
+        "toolPN": "605837",
+        "colors": "Orange / White",
+        "badgeClass": "badge-orange",
+        "desc": "Insertion/Extraction Tool (Size 24 AutoSport)",
+        "status": "In Shop"
+      },
+      "22D": {
+        "toolPN": "M81969/14-01",
+        "colors": "Green / White",
+        "badgeClass": "badge-green",
+        "desc": "Plastic Insertion/Extraction (Size 22D)",
+        "status": "In Shop"
+      }
+    }
+  },
+  "accessories": {
+    "backshells": [
+      {
+        "key": "M85049/38",
+        "name": "M85049/38 Strain Relief Clamp",
+        "pnTemplate": "M85049/38-{numShell}{finish}",
+        "descTemplate": "M85049/38 Strain Relief Clamp (Size {shellSize})",
+        "basePrice": 14.0,
+        "sizeStep": 0.85
+      },
+      {
+        "key": "M85049/88",
+        "name": "M85049/88 EMI/RFI Banding Backshell w/ Band",
+        "pnTemplate": "M85049/88-{numShell}{finish}02",
+        "descTemplate": "M85049/88 EMI/RFI Banding Backshell w/ Band (Size {shellSize})",
+        "basePrice": 28.0,
+        "sizeStep": 1.1
+      },
+      {
+        "key": "M85049/49",
+        "name": "M85049/49 Shrink Boot Adapter",
+        "pnTemplate": "M85049/49-2-{numShell}{finish}",
+        "descTemplate": "M85049/49 Shrink Boot Adapter (Size {shellSize})",
+        "basePrice": 18.0,
+        "sizeStep": 0.95
+      },
+      {
+        "key": "NONE",
+        "name": "No Backshell / Box Mount Pass-through",
+        "pnTemplate": "N/A",
+        "descTemplate": "No Backshell / Box Mount Pass-through",
+        "basePrice": 0.0,
+        "sizeStep": 0.0
+      }
+    ],
+    "dustCaps": {
+      "plug": {
+        "pnTemplate": "D38999/32{finish}{letterCode}N",
+        "descTemplate": "D38999/32 Protective Dust Cap for Plug (Size {letterCode})",
+        "basePrice": 15.0,
+        "sizeStep": 0.5
+      },
+      "receptacle": {
+        "pnTemplate": "D38999/33{finish}{letterCode}N",
+        "descTemplate": "D38999/33 Protective Dust Cap for Receptacle (Size {letterCode})",
+        "basePrice": 15.0,
+        "sizeStep": 0.5
+      }
+    },
+    "flanges": {
+      "accTemplate": "M85049/95-{dashNo} (3/4 Perimeter Flange)",
+      "dashTable": {
+        "9": "10A",
+        "11": "12A",
+        "13": "14A",
+        "15": "16A",
+        "17": "18A",
+        "19": "20A",
+        "21": "22A",
+        "23": "24A",
+        "25": "25A"
+      },
+      "basePrice": 9.0,
+      "sizeStep": 0.5
+    },
+    "fasteners": {
+      "desc": "Flange Fasteners, Fillister Head 1\" (McMaster: 91737A313, Box of 100)",
+      "url": "https://www.mcmaster.com/91737A313/",
+      "price": 10.04,
+      "qty": 4
+    },
+    "shrinkBoots": {
+      "straight": {
+        "06": {
+          "pn": "204W221-25-0",
+          "desc": "Raychem Straight Heat Shrink Boot (ASL Size 06)",
+          "price": 12.5
+        },
+        "07": {
+          "pn": "202K121-25-0",
+          "desc": "Raychem Straight Heat Shrink Boot (Size 07 / 08)",
+          "price": 12.5
+        },
+        "08": {
+          "pn": "202K121-25-0",
+          "desc": "Raychem Straight Heat Shrink Boot (Size 07 / 08)",
+          "price": 12.5
+        },
+        "10": {
+          "pn": "202K132-25-0",
+          "desc": "Raychem Straight Heat Shrink Boot (Size 10 / 12)",
+          "price": 14.5
+        },
+        "12": {
+          "pn": "202K132-25-0",
+          "desc": "Raychem Straight Heat Shrink Boot (Size 10 / 12)",
+          "price": 14.5
+        }
+      },
+      "rightAngle": {
+        "06": {
+          "pn": "224W221-25-0",
+          "desc": "Raychem 90\u00b0 Right-Angle Heat Shrink Boot (ASL Size 06)",
+          "price": 14.5
+        },
+        "07": {
+          "pn": "222K121-25-0",
+          "desc": "Raychem 90\u00b0 Right-Angle Heat Shrink Boot (Size 07 / 08)",
+          "price": 14.5
+        },
+        "08": {
+          "pn": "222K121-25-0",
+          "desc": "Raychem 90\u00b0 Right-Angle Heat Shrink Boot (Size 07 / 08)",
+          "price": 14.5
+        },
+        "10": {
+          "pn": "222K132-25-0",
+          "desc": "Raychem 90\u00b0 Right-Angle Heat Shrink Boot (Size 10 / 12)",
+          "price": 16.5
+        },
+        "12": {
+          "pn": "222K132-25-0",
+          "desc": "Raychem 90\u00b0 Right-Angle Heat Shrink Boot (Size 10 / 12)",
+          "price": 16.5
+        }
+      }
+    },
+    "nutPlates": {
+      "06": {
+        "pn": "ATM396-6",
+        "thread": "M2.5",
+        "desc": "Deutsch AutoSport Nut Plate (Shell 06 - M2.5)",
+        "price": 14.5
+      },
+      "07": {
+        "pn": "ATM396-7",
+        "thread": "M3",
+        "desc": "Deutsch AutoSport Nut Plate (Shell 07 - M3)",
+        "price": 14.5
+      },
+      "08": {
+        "pn": "ATM396-8",
+        "thread": "M3",
+        "desc": "Deutsch AutoSport Nut Plate (Shell 08 - M3)",
+        "price": 14.5
       },
       "10": {
-        "P": [{ "pn": "M39029/58-528", "price": 12.00, "desc": "Size 10 Pin Power Contact", "size": "10", "isStd": true }],
-        "S": [{ "pn": "M39029/56-527", "price": 14.00, "desc": "Size 10 Socket Power Contact", "size": "10", "isStd": true }]
-      },
-      "8": {
-        "P": [{ "pn": "M39029/60-367", "price": 18.50, "desc": "Size 8 Pin Power Contact", "size": "8", "isStd": true }],
-        "S": [{ "pn": "M39029/59-366", "price": 21.00, "desc": "Size 8 Socket Power Contact", "size": "8", "isStd": true }]
-      }
-    },
-    "TC_K": {
-      "22D": {
-        "P": [
-          { "pn": "M39029/87-471", "price": 7.50, "desc": "Size 22D Alumel Pin Contact", "size": "22D", "isStd": false },
-          { "pn": "M39029/87-472", "price": 7.50, "desc": "Size 22D Chromel Pin Contact", "size": "22D", "isStd": false }
-        ],
-        "S": [
-          { "pn": "M39029/88-487", "price": 8.00, "desc": "Size 22D Alumel Socket Contact", "size": "22D", "isStd": false },
-          { "pn": "M39029/88-488", "price": 8.00, "desc": "Size 22D Chromel Socket Contact", "size": "22D", "isStd": false }
-        ]
-      },
-      "20": {
-        "P": [
-          { "pn": "M39029/87-473", "price": 8.50, "desc": "Size 20 Alumel Pin Contact", "size": "20", "isStd": false },
-          { "pn": "M39029/87-474", "price": 8.50, "desc": "Size 20 Chromel Pin Contact", "size": "20", "isStd": false }
-        ],
-        "S": [
-          { "pn": "M39029/88-489", "price": 9.00, "desc": "Size 20 Alumel Socket Contact", "size": "20", "isStd": false },
-          { "pn": "M39029/88-490", "price": 9.00, "desc": "Size 20 Chromel Socket Contact", "size": "20", "isStd": false }
-        ]
-      }
-    },
-    "TC_E": {
-      "22D": {
-        "P": [
-          { "pn": "M39029/87-472", "price": 7.50, "desc": "Size 22D Chromel Pin Contact", "size": "22D", "isStd": false },
-          { "pn": "M39029/87-470", "price": 7.50, "desc": "Size 22D Constantan Pin Contact", "size": "22D", "isStd": false }
-        ],
-        "S": [
-          { "pn": "M39029/88-488", "price": 8.00, "desc": "Size 22D Chromel Socket Contact", "size": "22D", "isStd": false },
-          { "pn": "M39029/88-486", "price": 8.00, "desc": "Size 22D Constantan Socket Contact", "size": "22D", "isStd": false }
-        ]
-      },
-      "20": {
-        "P": [
-          { "pn": "M39029/87-474", "price": 8.50, "desc": "Size 20 Chromel Pin Contact", "size": "20", "isStd": false },
-          { "pn": "M39029/87-470", "price": 8.50, "desc": "Size 20 Constantan Pin Contact", "size": "20", "isStd": false }
-        ],
-        "S": [
-          { "pn": "M39029/88-490", "price": 9.00, "desc": "Size 20 Chromel Socket Contact", "size": "20", "isStd": false },
-          { "pn": "M39029/88-486", "price": 8.00, "desc": "Size 20 Constantan Socket Contact", "size": "20", "isStd": false }
-        ]
-      }
-    },
-    "TC_J": {
-      "22D": {
-        "P": [
-          { "pn": "M39029/87-469", "price": 7.50, "desc": "Size 22D Iron Pin Contact", "size": "22D", "isStd": false },
-          { "pn": "M39029/87-470", "price": 7.50, "desc": "Size 22D Constantan Pin Contact", "size": "22D", "isStd": false }
-        ],
-        "S": [
-          { "pn": "M39029/88-485", "price": 8.00, "desc": "Size 22D Iron Socket Contact", "size": "22D", "isStd": false },
-          { "pn": "M39029/88-486", "price": 8.00, "desc": "Size 22D Constantan Socket Contact", "size": "22D", "isStd": false }
-        ]
-      }
-    },
-    "TC_T": {
-      "22D": {
-        "P": [
-          { "pn": "M39029/87-468", "price": 7.50, "desc": "Size 22D Copper Pin Contact", "size": "22D", "isStd": false },
-          { "pn": "M39029/87-470", "price": 7.50, "desc": "Size 22D Constantan Pin Contact", "size": "22D", "isStd": false }
-        ],
-        "S": [
-          { "pn": "M39029/88-484", "price": 8.00, "desc": "Size 22D Copper Socket Contact", "size": "22D", "isStd": false },
-          { "pn": "M39029/88-486", "price": 8.00, "desc": "Size 22D Constantan Socket Contact", "size": "22D", "isStd": false }
-        ]
-      }
-    },
-    "COAX": {
-      "16": {
-        "P": [{ "pn": "M39029/76-424", "price": 22.00, "desc": "Size 16 Coax Pin Contact", "size": "16", "isStd": false }],
-        "S": [{ "pn": "M39029/77-429", "price": 25.00, "desc": "Size 16 Coax Socket Contact", "size": "16", "isStd": false }]
+        "pn": "ATM396-10",
+        "thread": "M3",
+        "desc": "Deutsch AutoSport Nut Plate (Shell 10 - M3)",
+        "price": 15.5
       },
       "12": {
-        "P": [{ "pn": "M39029/28-211", "price": 34.00, "desc": "Size 12 Coax Pin Contact", "size": "12", "isStd": false }],
-        "S": [{ "pn": "M39029/75-416", "price": 38.00, "desc": "Size 12 Coax Socket Contact", "size": "12", "isStd": false }]
-      },
-      "8": {
-        "P": [{ "pn": "M39029/60-367", "price": 65.00, "desc": "Size 8 Twinax Pin Contact", "size": "8", "isStd": false }],
-        "S": [{ "pn": "M39029/91-530", "price": 72.00, "desc": "Size 8 Twinax Socket Contact", "size": "8", "isStd": false }]
-      }
-    }
-  },
-  "autoSportDB": {
-    "STD": {
-      "24": {
-        "P": [{ "pn": "605719-31", "price": 3.85, "desc": "Size 24 Pin Contact (Deutsch AutoSport)", "size": "24", "wireRange": "24-30", "crimpTool": "M22520/2-01", "positioner": "610286", "insertionRemovalTool": "605837 Orange/White", "isStd": true }],
-        "S": [{ "pn": "605721", "price": 4.15, "desc": "Size 24 Socket Contact (Deutsch AutoSport)", "size": "24", "wireRange": "24-30", "crimpTool": "M22520/2-01", "positioner": "610287", "insertionRemovalTool": "605837 Orange/White", "isStd": true }]
-      },
-      "23": {
-        "P": [{ "pn": "604927-31", "price": 3.85, "desc": "Size 23 Pin Contact (Deutsch AutoSport)", "size": "23", "wireRange": "22-28", "crimpTool": "M22520/2-01", "positioner": "604972", "insertionRemovalTool": "M81969/14-01 Green/White", "isStd": true }],
-        "S": [{ "pn": "604935", "price": 4.15, "desc": "Size 23 Socket Contact (Deutsch AutoSport)", "size": "23", "wireRange": "22-28", "crimpTool": "M22520/2-01", "positioner": "604973", "insertionRemovalTool": "M81969/14-01 Green/White", "isStd": true }]
-      },
-      "22": {
-        "P": [{ "pn": "38941-22", "price": 2.95, "desc": "Size 22 Pin Contact (Deutsch AutoSport)", "size": "22", "wireRange": "22-26", "crimpTool": "M22520/2-01", "positioner": "M22520/2-09", "insertionRemovalTool": "M81969/14-01 Green/White", "isStd": true }],
-        "S": [{ "pn": "38943-22", "price": 3.25, "desc": "Size 22 Socket Contact (Deutsch AutoSport)", "size": "22", "wireRange": "22-26", "crimpTool": "M22520/2-01", "positioner": "M22520/2-07", "insertionRemovalTool": "M81969/14-01 Green/White", "isStd": true }]
-      },
-      "20": {
-        "P": [{ "pn": "38941-20", "price": 2.95, "desc": "Size 20 Pin Contact (Deutsch AutoSport)", "size": "20", "wireRange": "20-24", "crimpTool": "M22520/2-01", "positioner": "M22520/2-10", "insertionRemovalTool": "M81969/14-10 Red/Orange", "isStd": true }],
-        "S": [{ "pn": "38943-20", "price": 3.25, "desc": "Size 20 Socket Contact (Deutsch AutoSport)", "size": "20", "wireRange": "20-24", "crimpTool": "M22520/2-01", "positioner": "M22520/2-10", "insertionRemovalTool": "M81969/14-10 Red/Orange", "isStd": true }]
-      },
-      "16": {
-        "P": [{ "pn": "38941-16", "price": 3.50, "desc": "Size 16 Pin Contact (Deutsch AutoSport)", "size": "16", "wireRange": "16-20", "crimpTool": "M22520/1-01", "positioner": "M22520/1-04", "insertionRemovalTool": "M81969/14-03 Blue/White", "isStd": true }],
-        "S": [{ "pn": "38943-16", "price": 3.85, "desc": "Size 16 Socket Contact (Deutsch AutoSport)", "size": "16", "wireRange": "16-20", "crimpTool": "M22520/1-01", "positioner": "M22520/1-04", "insertionRemovalTool": "M81969/14-03 Blue/White", "isStd": true }]
+        "pn": "ATM396-12",
+        "thread": "M3",
+        "desc": "Deutsch AutoSport Nut Plate (Shell 12 - M3)",
+        "price": 16.5
       }
     }
   }
-},
-  tooling: {
-  "shopInventory": {
-    "statusOptions": [
-      { "label": "In Shop", "color": "green" },
-      { "label": "Calibrated", "color": "blue" },
-      { "label": "Out for Calibration", "color": "yellow" },
-      { "label": "Missing / On Order", "color": "red" }
-    ],
-    "frames": [
-      { "id": "AFM8", "milSpec": "M22520/2-01", "name": "DMC AFM8 Miniature Crimp Frame", "status": "In Shop" },
-      { "id": "AF8", "milSpec": "M22520/1-01", "name": "DMC AF8 Standard Crimp Frame", "status": "In Shop" }
-    ],
-    "positioners": [
-      { "id": "K40", "milSpec": "M22520/2-07", "name": "K40 Positioner (Size 22D Socket)", "status": "In Shop" },
-      { "id": "K42", "milSpec": "M22520/2-09", "name": "K42 Positioner (Size 22D Pin)", "status": "In Shop" },
-      { "id": "K13-1", "milSpec": "M22520/2-08", "name": "K13-1 Positioner (Size 20)", "status": "In Shop" },
-      { "id": "TH163", "milSpec": "M22520/1-04", "name": "TH163 Turret Head (Size 16 & 12)", "status": "In Shop" },
-      { "id": "K1584", "milSpec": "DMC K1584", "name": "K1584 Positioner (Size 24 AutoSport Pin/Socket)", "status": "In Shop" },
-      { "id": "K1585", "milSpec": "DMC K1585", "name": "K1585 Positioner (Size 22 AutoSport Pin/Socket)", "status": "In Shop" }
-    ]
-  },
-  "toolingMatrix": {
-    "24": {
-      "P": { "frame": "AFM8", "positioner": "K1584", "setting": "SEL: 4-5 (AWG 24-26)" },
-      "S": { "frame": "AFM8", "positioner": "K1584", "setting": "SEL: 4-5 (AWG 24-26)" }
-    },
-    "22": {
-      "P": { "frame": "AFM8", "positioner": "K1585", "setting": "SEL: 4-6 (AWG 22-24)" },
-      "S": { "frame": "AFM8", "positioner": "K1585", "setting": "SEL: 4-6 (AWG 22-24)" }
-    },
-    "22D": {
-      "P": { "frame": "AFM8", "positioner": "K42", "setting": "Color SEL: 4 (AWG 22-28)" },
-      "S": { "frame": "AFM8", "positioner": "K40", "setting": "Color SEL: 4 (AWG 22-28)" }
-    },
-    "20": {
-      "P": { "frame": "AFM8", "positioner": "K13-1", "setting": "SEL: 4-6 (AWG 20-24)" },
-      "S": { "frame": "AFM8", "positioner": "K13-1", "setting": "SEL: 4-6 (AWG 20-24)" }
-    },
-    "16": {
-      "P": { "frame": "AF8", "positioner": "TH163", "setting": "Turret Position: BLUE" },
-      "S": { "frame": "AF8", "positioner": "TH163", "setting": "Turret Position: BLUE" }
-    },
-    "12": {
-      "P": { "frame": "AF8", "positioner": "TH163", "setting": "Turret Position: YELLOW" },
-      "S": { "frame": "AF8", "positioner": "TH163", "setting": "Turret Position: YELLOW" }
-    },
-    "8": {
-      "P": { "frame": "M22520/23-01", "positioner": "Die Set / Heavy-Duty Crimp Tool", "setting": "Specialty Power/Coax Crimp Tool" },
-      "S": { "frame": "M22520/23-01", "positioner": "Die Set / Heavy-Duty Crimp Tool", "setting": "Specialty Power/Coax Crimp Tool" }
-    }
-  },
-  "insertionExtractionTools": {
-    "24":  { "toolPN": "605837", "colors": "Black / White", "badgeClass": "badge-blue", "desc": "Insertion/Extraction Tool (Size 24 AutoSport)", "status": "In Shop" },
-    "22":  { "toolPN": "605837", "colors": "Black / White", "badgeClass": "badge-blue", "desc": "Insertion/Extraction Tool (Size 22 AutoSport)", "status": "In Shop" },
-    "22D": { "toolPN": "M81969/14-01", "colors": "Green / White", "badgeClass": "badge-green", "desc": "Plastic Insertion/Extraction (Size 22D)", "status": "In Shop" },
-    "20":  { "toolPN": "M81969/14-10", "colors": "Red / Orange", "badgeClass": "badge-orange", "desc": "Plastic Insertion/Extraction (Size 20)", "status": "In Shop" },
-    "16":  { "toolPN": "M81969/14-03", "colors": "Blue / White", "badgeClass": "badge-blue", "desc": "Plastic Insertion/Extraction (Size 16)", "status": "In Shop" },
-    "12":  { "toolPN": "M81969/14-04", "colors": "Yellow / White", "badgeClass": "badge-yellow", "desc": "Plastic Insertion/Extraction (Size 12)", "status": "In Shop" },
-    "8":   { "toolPN": "M81969/14-06", "colors": "Red / Blue (Size 8)", "badgeClass": "badge-red", "desc": "Plastic Insertion/Extraction (Size 8)", "status": "In Shop" }
-  }
-},
-  accessories: {
-  "backshells": [
-    {
-      "key": "M85049/38",
-      "name": "M85049/38 Strain Relief Clamp",
-      "pnTemplate": "M85049/38-{numShell}{finish}",
-      "descTemplate": "M85049/38 Strain Relief Clamp (Size {shellSize})",
-      "basePrice": 14.00,
-      "sizeStep": 0.85
-    },
-    {
-      "key": "M85049/88",
-      "name": "M85049/88 EMI/RFI Banding Backshell w/ Band",
-      "pnTemplate": "M85049/88-{numShell}{finish}02",
-      "descTemplate": "M85049/88 EMI/RFI Banding Backshell w/ Band (Size {shellSize})",
-      "basePrice": 28.00,
-      "sizeStep": 1.10
-    },
-    {
-      "key": "M85049/49",
-      "name": "M85049/49 Shrink Boot Adapter",
-      "pnTemplate": "M85049/49-2-{numShell}{finish}",
-      "descTemplate": "M85049/49 Shrink Boot Adapter (Size {shellSize})",
-      "basePrice": 18.00,
-      "sizeStep": 0.95
-    },
-    {
-      "key": "NONE",
-      "name": "No Backshell / Box Mount Pass-through",
-      "pnTemplate": "N/A",
-      "descTemplate": "No Backshell / Box Mount Pass-through",
-      "basePrice": 0.00,
-      "sizeStep": 0.00
-    }
-  ],
-  "dustCaps": {
-    "plug": {
-      "pnTemplate": "D38999/32{finish}{letterCode}N",
-      "descTemplate": "D38999/32 Protective Dust Cap for Plug (Size {letterCode})",
-      "basePrice": 15.00,
-      "sizeStep": 0.50
-    },
-    "receptacle": {
-      "pnTemplate": "D38999/33{finish}{letterCode}N",
-      "descTemplate": "D38999/33 Protective Dust Cap for Receptacle (Size {letterCode})",
-      "basePrice": 15.00,
-      "sizeStep": 0.50
-    }
-  },
-  "flanges": {
-    "accTemplate": "M85049/95-{dashNo} (3/4 Perimeter Flange)",
-    "dashTable": {
-      "9": "10A",
-      "11": "12A",
-      "13": "14A",
-      "15": "16A",
-      "17": "18A",
-      "19": "20A",
-      "21": "22A",
-      "23": "24A",
-      "25": "25A"
-    },
-    "basePrice": 9.00,
-    "sizeStep": 0.50
-  },
-  "fasteners": {
-    "desc": "Flange Fasteners, Fillister Head 1\" (McMaster: 91737A313, Box of 100)",
-    "url": "https://www.mcmaster.com/91737A313/",
-    "price": 10.04,
-    "qty": 4
-  },
-  "shrinkBoots": {
-    "straight": {
-      "06": { "pn": "204W221-25-0", "desc": "Raychem Straight Heat Shrink Boot (ASL Size 06)", "price": 12.50 },
-      "07": { "pn": "202K121-25-0", "desc": "Raychem Straight Heat Shrink Boot (Size 07 / 08)", "price": 12.50 },
-      "08": { "pn": "202K121-25-0", "desc": "Raychem Straight Heat Shrink Boot (Size 07 / 08)", "price": 12.50 },
-      "10": { "pn": "202K132-25-0", "desc": "Raychem Straight Heat Shrink Boot (Size 10 / 12)", "price": 14.50 },
-      "12": { "pn": "202K132-25-0", "desc": "Raychem Straight Heat Shrink Boot (Size 10 / 12)", "price": 14.50 }
-    },
-    "rightAngle": {
-      "06": { "pn": "224W221-25-0", "desc": "Raychem 90Â° Right-Angle Heat Shrink Boot (ASL Size 06)", "price": 14.50 },
-      "07": { "pn": "222K121-25-0", "desc": "Raychem 90Â° Right-Angle Heat Shrink Boot (Size 07 / 08)", "price": 14.50 },
-      "08": { "pn": "222K121-25-0", "desc": "Raychem 90Â° Right-Angle Heat Shrink Boot (Size 07 / 08)", "price": 14.50 },
-      "10": { "pn": "222K132-25-0", "desc": "Raychem 90Â° Right-Angle Heat Shrink Boot (Size 10 / 12)", "price": 16.50 },
-      "12": { "pn": "222K132-25-0", "desc": "Raychem 90Â° Right-Angle Heat Shrink Boot (Size 10 / 12)", "price": 16.50 }
-    }
-  },
-  "nutPlates": {
-    "06": { "pn": "ATM396-6", "thread": "M2.5", "desc": "Deutsch AutoSport Nut Plate (Shell 06 - M2.5)", "price": 14.50 },
-    "07": { "pn": "ATM396-7", "thread": "M3", "desc": "Deutsch AutoSport Nut Plate (Shell 07 - M3)", "price": 14.50 },
-    "08": { "pn": "ATM396-8", "thread": "M3", "desc": "Deutsch AutoSport Nut Plate (Shell 08 - M3)", "price": 14.50 },
-    "10": { "pn": "ATM396-10", "thread": "M3", "desc": "Deutsch AutoSport Nut Plate (Shell 10 - M3)", "price": 15.50 },
-    "12": { "pn": "ATM396-12", "thread": "M3", "desc": "Deutsch AutoSport Nut Plate (Shell 12 - M3)", "price": 16.50 }
-  }
-}
 };

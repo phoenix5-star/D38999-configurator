@@ -663,12 +663,9 @@
             nonMappedSize = remaining.length > 0 ? remaining[0] : Object.keys(counts)[0];
         }
 
-        // Pre-build sequential size partition if counts has multiple sizes and no contactMap
-        const seqSizes = [];
+        // Strict safeguard: if counts has multiple sizes but no contactMap, warn loudly
         if (!contactMap && counts && Object.keys(counts).length > 1) {
-            for (const [sz, qty] of Object.entries(counts)) {
-                for (let k = 0; k < qty; k++) seqSizes.push(sz);
-            }
+            console.warn(`[SkyCAD Exporter] Layout ${layout && layout.arrangement} has multiple contact sizes (${JSON.stringify(counts)}) but lacks an explicit contactMap. Contact assignments require verified drawing mapping.`);
         }
 
         // Map custom contacts by size if provided
@@ -694,8 +691,6 @@
                     }
                 }
                 if (!sz) sz = nonMappedSize;
-            } else if (seqSizes.length > i) {
-                sz = seqSizes[i];
             } else if (counts && Object.keys(counts).length > 0) {
                 sz = Object.keys(counts)[0];
             } else {
