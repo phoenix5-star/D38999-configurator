@@ -1,5 +1,5 @@
 // Configurator Metadata
-const CONFIG_VERSION = "V002.4.4";
+const CONFIG_VERSION = "V002.5.0";
 
 
 // Shop Tooling Inventory & Contact Ratings loaded via DataService
@@ -1014,8 +1014,13 @@ function calculate(isSilent = false) {
             let defaultMatingShell = match.shellType === 'Plug' ? (isAutoSport ? '2-Hole Flange Receptacle' : 'Wall Mount') : 'Plug';
             let mating = getMatingConnector(match, pnType, defaultMatingShell);
 
-            let priContacts = resolveGroupContacts(groupSpecs, match.contactType, isAutoSport);
-            let matContacts = mating ? resolveGroupContacts(groupSpecs, mating.contactType, isAutoSport) : [];
+            let effectivePriSpecs = (groupSpecs && groupSpecs.length > 0)
+                ? groupSpecs
+                : (match.counts ? Object.entries(match.counts).map(([sz, qty]) => ({ size: sz, matType: 'STD', qty })) : []);
+            let effectiveMatSpecs = effectivePriSpecs;
+
+            let priContacts = resolveGroupContacts(effectivePriSpecs, match.contactType, isAutoSport);
+            let matContacts = mating ? resolveGroupContacts(effectiveMatSpecs, mating.contactType, isAutoSport) : [];
 
             let defaultBackshell = isAutoSport ? 'BOOT_STRAIGHT' : (match.shellType === 'Box Mount' ? 'NONE' : 'M85049/38');
             let defaultMatBackshell = mating ? (isAutoSport ? 'BOOT_STRAIGHT' : (mating.shellType === 'Box Mount' ? 'NONE' : 'M85049/38')) : 'NONE';
@@ -1449,7 +1454,11 @@ function changeMatingShellType(solutionIndex, newShellType) {
     let newMating = getMatingConnector(pri, pnType, newShellType);
 
     if (newMating) {
-        let matContacts = resolveGroupContacts(pair.groupSpecs, newMating.contactType);
+        let isAutoSport = pair.pnType === 'as' || pri.seriesId === 'deutsch_autosport';
+        let effectiveMatSpecs = (pair.groupSpecs && pair.groupSpecs.length > 0)
+            ? pair.groupSpecs
+            : (newMating.counts ? Object.entries(newMating.counts).map(([sz, qty]) => ({ size: sz, matType: 'STD', qty })) : []);
+        let matContacts = resolveGroupContacts(effectiveMatSpecs, newMating.contactType, isAutoSport);
         let prevSelectedBs = pair.mating ? pair.mating.selectedBackshell : 'M85049/38';
         if (newShellType === 'Box Mount') prevSelectedBs = 'NONE';
         let prevDustCap = pair.mating ? pair.mating.includeDustCap : false;
