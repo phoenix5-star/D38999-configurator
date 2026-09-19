@@ -19,6 +19,8 @@
 
 ## 3. Planning & Implementation Workflow
 - For any request that involves generating or modifying code, always create or update an `implementation_plan.md` artifact first.
+- Alongside the implementation plan, always create a companion `task_list.md` artifact detailing actionable engineering tasks with realistic time estimates.
+- Update the `task_list.md` artifact in real time as implementation proceeds (tracking status: `[ ]` Pending, `[/]` In Progress, `[x]` Completed).
 - Do not write code or edit files until the implementation plan is presented and approved by the user.
 
 ## 4. Frontend Verification & "Definition of Done"

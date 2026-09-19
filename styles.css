@@ -430,6 +430,43 @@ button:disabled {
     border-left: 4px solid var(--accent);
 }
 
+.card-kc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 8px 12px;
+    margin: 10px 0 12px 0;
+    padding: 10px 12px;
+    background: var(--filter-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    font-size: 12.5px;
+}
+
+.kc-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.kc-item-full {
+    grid-column: 1 / -1;
+}
+
+.kc-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-color);
+    opacity: 0.75;
+    font-weight: 600;
+}
+
+.kc-value {
+    font-weight: 600;
+    color: var(--heading-color);
+    word-break: break-word;
+}
+
 .diagram-section {
     display: flex;
     gap: 12px;
@@ -473,6 +510,41 @@ button:disabled {
     color: var(--text-color);
     opacity: 0.75;
     text-align: center;
+}
+
+.card-section {
+    margin: 12px 0;
+    padding: 12px;
+    background: var(--filter-bg);
+    border-radius: 6px;
+    border: 1px solid var(--card-border);
+}
+
+.card-section.contacts-tooling-block {
+    background: var(--tooling-bg);
+}
+
+.card-section-header {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--heading-color);
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--card-border);
+    letter-spacing: 0.3px;
+}
+
+.card-subheading {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 6px 0 4px 0;
+}
+
+.card-subsection:not(:first-child) {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--card-border);
 }
 
 .contact-list, .tooling-list {
@@ -547,16 +619,42 @@ button:disabled {
     height: 32px;
 }
 
+.accessory-detail {
+    margin: 4px 0 6px 0;
+    font-size: 12px;
+    color: var(--text-color);
+}
+
+.hardware-rows {
+    margin-top: 8px;
+    padding-top: 6px;
+    border-top: 1px dashed var(--card-border);
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.hardware-row {
+    color: var(--text-color);
+    line-height: 1.4;
+}
+
 .mating-shell-select {
     padding: 4px 8px;
     font-size: 13px;
     height: 32px;
     border-radius: 4px;
     margin-top: 4px;
-    margin-bottom: 8px;
+    margin-bottom: 0;
+    width: 100%;
     background-color: var(--input-bg);
     color: var(--text-color);
     border: 1px solid var(--input-border);
+}
+
+.skycad-export-wrap {
+    margin-top: 12px;
 }
 
 .tooling-ref-header {

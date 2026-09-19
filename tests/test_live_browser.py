@@ -119,9 +119,9 @@ def main():
         print(f"Header Version Tag: {version_tag}")
         print(f"CONFIG_VERSION constant: {config_version}")
 
-        assert "V002.4.3" in title, f"Title does not contain V002.4.3: {title}"
-        assert version_tag == "V002.4.3", f"Version tag is not V002.4.3: {version_tag}"
-        assert config_version == "V002.4.3", f"CONFIG_VERSION is not V002.4.3: {config_version}"
+        assert "V002.4.4" in title, f"Title does not contain V002.4.4: {title}"
+        assert version_tag == "V002.4.4", f"Version tag is not V002.4.4: {version_tag}"
+        assert config_version == "V002.4.4", f"CONFIG_VERSION is not V002.4.4: {config_version}"
         print("[PASS] Version synchronization verified across DOM and JS.")
 
         print("\n--- Check 2: SkyCAD Feature Enabled in UI ---")
@@ -146,7 +146,26 @@ def main():
         print(f"Mating Card Export Button: {mat_btn_after}")
         assert pri_btn_after and "Export to SkyCAD" in pri_btn_after, f"Primary card SkyCAD button missing: {pri_btn_after}"
         assert mat_btn_after and "Export to SkyCAD" in mat_btn_after, f"Mating card SkyCAD button missing: {mat_btn_after}"
-        print("[PASS] Solution cards physically rendered with clean layout and SkyCAD export buttons active.")
+
+        # Card layout and content checks
+        pri_card_text = cdp_eval(ws, "document.querySelector('.primary-card')?.innerText")
+        mat_card_text = cdp_eval(ws, "document.querySelector('.mating-card')?.innerText")
+        print("\n--- Card Cleanliness & Structure Verification ---")
+        print("Sample Primary Card Text:\n" + pri_card_text[:500] + "\n...")
+
+        assert "$" not in pri_card_text, f"Dollar amount found on primary card: {pri_card_text}"
+        assert "$" not in mat_card_text, f"Dollar amount found on mating card: {mat_card_text}"
+        assert "Connector P/N:" not in pri_card_text, "Redundant Connector P/N line found on primary card!"
+        assert "Connector P/N:" not in mat_card_text, "Redundant Connector P/N line found on mating card!"
+        assert "total contacts" in pri_card_text.lower(), "Total Contacts missing from primary card KC grid!"
+        assert "contact size(s)" in pri_card_text.lower(), "Contact Size(s) missing from primary card KC grid!"
+
+        has_contacts_block = cdp_eval(ws, "document.querySelector('.primary-card .contacts-tooling-block') !== null")
+        has_accessories_block = cdp_eval(ws, "document.querySelector('.primary-card .accessories-block') !== null")
+        assert has_contacts_block, "Contacts & Tooling block missing!"
+        assert has_accessories_block, "Accessories block missing!"
+
+        print("[PASS] Card verified: $ costs excised, Connector P/N redundant line removed, Total Contacts & Contact Size(s) present, Contacts & Accessories grouped into unified blocks.")
 
         print("\n--- Check 4: Add to Active Project List & BOM UI Verification ---")
         add_res = cdp_eval(ws, """

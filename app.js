@@ -1,5 +1,5 @@
 // Configurator Metadata
-const CONFIG_VERSION = "V002.4.3";
+const CONFIG_VERSION = "V002.4.4";
 
 
 // Shop Tooling Inventory & Contact Ratings loaded via DataService
@@ -1105,10 +1105,22 @@ function loadMoreSolutions() {
     renderSolutionCards();
 }
 
+function getConnectorContactStats(item) {
+    if (!item || !item.counts) return { total: 'N/A', sizesText: 'N/A' };
+    const entries = Object.entries(item.counts);
+    if (entries.length === 0) return { total: 'N/A', sizesText: 'N/A' };
+    const total = entries.reduce((sum, [, qty]) => sum + Number(qty), 0);
+    const sizesText = entries.map(([sz, qty]) => `${qty}x Size ${sz}`).join(', ');
+    return { total, sizesText };
+}
+
 function renderSolutionPairHTML(pair, index) {
     const pri = pair.primary;
     const mat = pair.mating;
     const pnType = pair.pnType;
+
+    const priStats = getConnectorContactStats(pri);
+    const matStats = getConnectorContactStats(mat);
 
     // Primary accessories
     const priBackshellOpts = getBackshellOptions(pri.shellSize, pri.finish);
@@ -1125,14 +1137,14 @@ function renderSolutionPairHTML(pair, index) {
     const priNutPlate = (isAutoSport && priIsFlange) ? getNutPlate(pri.shellSize) : null;
 
     let priFlangeHtml = isAutoSport 
-        ? (priIsFlange ? (priNutPlate ? `<strong>${priNutPlate.pn}</strong> Nut Plate (${priNutPlate.thread} Thread) (Est. $${priNutPlate.price.toFixed(2)})` : `<span class="na-text">Integral 2-Hole Flange on Shell</span>`) : `<span class="na-text">N/A (Not Required for Shell Type)</span>`)
-        : (priIsWall ? `${pri.flangeAcc} (Est. $${pri.unitPriceFlange.toFixed(2)})` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`);
+        ? (priIsFlange ? (priNutPlate ? `<strong>${priNutPlate.pn}</strong> Nut Plate (${priNutPlate.thread} Thread)` : `<span class="na-text">Integral 2-Hole Flange on Shell</span>`) : `<span class="na-text">N/A (Not Required for Shell Type)</span>`)
+        : (priIsWall ? `${pri.flangeAcc} Sealing Gasket` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`);
     let priFastenerHtml = isAutoSport
-        ? (priIsFlange ? (priNutPlate ? `2x ${priNutPlate.thread} Stainless Socket Head Screws (@ $4.50/pair)` : `2x M3 / 4-40 Stainless Socket Head Screws (@ $4.50/pair)`) : `<span class="na-text">N/A (Not Required for Shell Type)</span>`)
-        : ((priIsWall || priIsBox) ? `4x <a href="https://www.mcmaster.com/91737A313/" target="_blank">91737A313</a> - Fillister Head 1" (Sold in Box of 100 @ $10.04 - covers up to 25 connectors)` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`);
+        ? (priIsFlange ? (priNutPlate ? `2x ${priNutPlate.thread} Stainless Socket Head Screws` : `2x M3 / 4-40 Stainless Socket Head Screws`) : `<span class="na-text">N/A (Not Required for Shell Type)</span>`)
+        : ((priIsWall || priIsBox) ? `4x <a href="https://www.mcmaster.com/91737A313/" target="_blank">91737A313</a> - Fillister Head 1"` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`);
 
     let priContactListHtml = pri.contacts.map(c => 
-        `<li><strong>${c.qty}x ${c.pn}</strong> - ${c.desc} (Est. $${c.price.toFixed(2)}/ea) ${c.isStd ? '<span class="na-text">(Standard Contact)</span>' : '<span style="color:#d97706; font-weight:bold;">(Specialty TC/Coax Contact)</span>'}</li>`
+        `<li><strong>${c.qty}x ${c.pn}</strong> - ${c.desc} ${c.isStd ? '<span class="na-text">(Standard Contact)</span>' : '<span style="color:#d97706; font-weight:bold;">(Specialty TC/Coax Contact)</span>'}</li>`
     ).join('');
 
     const priTooling = getToolingStatus(pri.contacts);
@@ -1157,14 +1169,14 @@ function renderSolutionPairHTML(pair, index) {
     const matNutPlate = (isAutoSport && matIsFlange && mat) ? getNutPlate(mat.shellSize) : null;
 
     let matFlangeHtml = isAutoSport 
-        ? (matIsFlange ? (matNutPlate ? `<strong>${matNutPlate.pn}</strong> Nut Plate (${matNutPlate.thread} Thread) (Est. $${matNutPlate.price.toFixed(2)})` : `<span class="na-text">Integral 2-Hole Flange on Shell</span>`) : `<span class="na-text">N/A (Not Required for Shell Type)</span>`)
-        : (matIsWall ? `${mat.flangeAcc} (Est. $${mat.unitPriceFlange.toFixed(2)})` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`);
+        ? (matIsFlange ? (matNutPlate ? `<strong>${matNutPlate.pn}</strong> Nut Plate (${matNutPlate.thread} Thread)` : `<span class="na-text">Integral 2-Hole Flange on Shell</span>`) : `<span class="na-text">N/A (Not Required for Shell Type)</span>`)
+        : (matIsWall ? `${mat.flangeAcc} Sealing Gasket` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`);
     let matFastenerHtml = isAutoSport
-        ? (matIsFlange ? (matNutPlate ? `2x ${matNutPlate.thread} Stainless Socket Head Screws (@ $4.50/pair)` : `2x M3 / 4-40 Stainless Socket Head Screws (@ $4.50/pair)`) : `<span class="na-text">N/A (Not Required for Shell Type)</span>`)
-        : ((matIsWall || matIsBox) ? `4x <a href="https://www.mcmaster.com/91737A313/" target="_blank">91737A313</a> - Fillister Head 1" (Sold in Box of 100 @ $10.04 - covers up to 25 connectors)` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`);
+        ? (matIsFlange ? (matNutPlate ? `2x ${matNutPlate.thread} Stainless Socket Head Screws` : `2x M3 / 4-40 Stainless Socket Head Screws`) : `<span class="na-text">N/A (Not Required for Shell Type)</span>`)
+        : ((matIsWall || matIsBox) ? `4x <a href="https://www.mcmaster.com/91737A313/" target="_blank">91737A313</a> - Fillister Head 1"` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`);
 
     let matContactListHtml = mat ? mat.contacts.map(c => 
-        `<li><strong>${c.qty}x ${c.pn}</strong> - ${c.desc} (Est. $${c.price.toFixed(2)}/ea) ${c.isStd ? '<span class="na-text">(Standard Contact)</span>' : '<span style="color:#d97706; font-weight:bold;">(Specialty TC/Coax Contact)</span>'}</li>`
+        `<li><strong>${c.qty}x ${c.pn}</strong> - ${c.desc} ${c.isStd ? '<span class="na-text">(Standard Contact)</span>' : '<span style="color:#d97706; font-weight:bold;">(Specialty TC/Coax Contact)</span>'}</li>`
     ).join('') : '<li>N/A</li>';
 
     const matTooling = mat ? getToolingStatus(mat.contacts) : { results: [], missingTools: [] };
@@ -1176,48 +1188,35 @@ function renderSolutionPairHTML(pair, index) {
         : '';
     let matM81969Html = mat ? renderM81969Html(mat.contacts) : '';
 
-    // Mating shell style selector HTML
-    let matingShellSelectorHtml = '';
-    const matContactTypeStr = mat ? (mat.contactType === 'P' ? 'Pins' : 'Sockets') : 'N/A';
+    // Mating shell style selector HTML for Shell Type row
+    let matShellTypeHtml = '';
     if (pri.shellType === 'Plug') {
         if (pnType === 'as') {
-            matingShellSelectorHtml = `
-                <div style="margin-bottom: 8px;">
-                    <label for="matingShellSelect_${index}"><strong>Mating Shell Style:</strong></label>
-                    <select id="matingShellSelect_${index}" class="mating-shell-select" onchange="changeMatingShellType(${index}, this.value)">
-                        <option value="2-Hole Flange Receptacle" ${mat && mat.shellType === '2-Hole Flange Receptacle' ? 'selected' : ''}>2-Hole Flange Receptacle (ASL0 / ASM0 / AS0)</option>
-                        <option value="Jam Nut Receptacle" ${mat && mat.shellType === 'Jam Nut Receptacle' ? 'selected' : ''}>Jam Nut Receptacle (ASL7 / ASM7 / AS7)</option>
-                        <option value="In-Line Receptacle" ${mat && mat.shellType === 'In-Line Receptacle' ? 'selected' : ''}>In-Line Receptacle (ASL1 / ASM1 / AS1)</option>
-                    </select>
-                </div>
-                <p><strong>Contact Type:</strong> ${matContactTypeStr} | <strong>Keying:</strong> ${mat ? mat.keying : 'N/A'}</p>
+            matShellTypeHtml = `
+                <select id="matingShellSelect_${index}" class="mating-shell-select" onchange="changeMatingShellType(${index}, this.value)">
+                    <option value="2-Hole Flange Receptacle" ${mat && mat.shellType === '2-Hole Flange Receptacle' ? 'selected' : ''}>2-Hole Flange Receptacle (ASL0 / ASM0 / AS0)</option>
+                    <option value="Jam Nut Receptacle" ${mat && mat.shellType === 'Jam Nut Receptacle' ? 'selected' : ''}>Jam Nut Receptacle (ASL7 / ASM7 / AS7)</option>
+                    <option value="In-Line Receptacle" ${mat && mat.shellType === 'In-Line Receptacle' ? 'selected' : ''}>In-Line Receptacle (ASL1 / ASM1 / AS1)</option>
+                </select>
             `;
         } else if (pnType === 'mil') {
-            matingShellSelectorHtml = `
-                <div style="margin-bottom: 8px;">
-                    <label for="matingShellSelect_${index}"><strong>Mating Shell Style:</strong></label>
-                    <select id="matingShellSelect_${index}" class="mating-shell-select" onchange="changeMatingShellType(${index}, this.value)">
-                        <option value="Wall Mount" ${mat && mat.shellType === 'Wall Mount' ? 'selected' : ''}>Wall Mount Receptacle (D38999/20)</option>
-                        <option value="Jam Nut" ${mat && mat.shellType === 'Jam Nut' ? 'selected' : ''}>Jam Nut Receptacle (D38999/24)</option>
-                    </select>
-                </div>
-                <p><strong>Contact Type:</strong> ${matContactTypeStr} | <strong>Keying:</strong> ${mat ? mat.keying : 'N/A'}</p>
+            matShellTypeHtml = `
+                <select id="matingShellSelect_${index}" class="mating-shell-select" onchange="changeMatingShellType(${index}, this.value)">
+                    <option value="Wall Mount" ${mat && mat.shellType === 'Wall Mount' ? 'selected' : ''}>Wall Mount Receptacle (D38999/20)</option>
+                    <option value="Jam Nut" ${mat && mat.shellType === 'Jam Nut' ? 'selected' : ''}>Jam Nut Receptacle (D38999/24)</option>
+                </select>
             `;
         } else {
-            matingShellSelectorHtml = `
-                <div style="margin-bottom: 8px;">
-                    <label for="matingShellSelect_${index}"><strong>Mating Shell Style:</strong></label>
-                    <select id="matingShellSelect_${index}" class="mating-shell-select" onchange="changeMatingShellType(${index}, this.value)">
-                        <option value="Wall Mount" ${mat && mat.shellType === 'Wall Mount' ? 'selected' : ''}>Wall Mount Receptacle (TVPS00 / CTVP00)</option>
-                        <option value="Box Mount" ${mat && mat.shellType === 'Box Mount' ? 'selected' : ''}>Box Mount Receptacle (TVPS02 / CTVP02)</option>
-                        <option value="Jam Nut" ${mat && mat.shellType === 'Jam Nut' ? 'selected' : ''}>Jam Nut Receptacle (TVS07 / CTV07)</option>
-                    </select>
-                </div>
-                <p><strong>Contact Type:</strong> ${matContactTypeStr} | <strong>Keying:</strong> ${mat ? mat.keying : 'N/A'}</p>
+            matShellTypeHtml = `
+                <select id="matingShellSelect_${index}" class="mating-shell-select" onchange="changeMatingShellType(${index}, this.value)">
+                    <option value="Wall Mount" ${mat && mat.shellType === 'Wall Mount' ? 'selected' : ''}>Wall Mount Receptacle (TVPS00 / CTVP00)</option>
+                    <option value="Box Mount" ${mat && mat.shellType === 'Box Mount' ? 'selected' : ''}>Box Mount Receptacle (TVPS02 / CTVP02)</option>
+                    <option value="Jam Nut" ${mat && mat.shellType === 'Jam Nut' ? 'selected' : ''}>Jam Nut Receptacle (TVS07 / CTV07)</option>
+                </select>
             `;
         }
     } else {
-        matingShellSelectorHtml = `<p><strong>Shell Type:</strong> ${mat ? mat.shellType : 'N/A'} (Mates with Receptacle) | <strong>Contact Type:</strong> ${matContactTypeStr} | <strong>Keying:</strong> ${mat ? mat.keying : 'N/A'}</p>`;
+        matShellTypeHtml = `<span class="kc-value">${mat ? mat.shellType : 'N/A'} (Mates with Receptacle)</span>`;
     }
 
     return `
@@ -1225,14 +1224,22 @@ function renderSolutionPairHTML(pair, index) {
         <div class="solution-grid">
             <div class="solution-card primary-card">
                 <h4 style="margin-top:0; color:var(--accent);">Primary Connector: ${pri.activePN}</h4>
-                <p><strong>Shell Type:</strong> ${pri.shellType} | <strong>Contact Type:</strong> ${pri.contactType === 'P' ? 'Pins' : 'Sockets'} | <strong>Keying:</strong> ${pri.keying}</p>
-                <p><strong>Arrangement:</strong> ${pri.shellLabel}</p>
+                
+                <div class="card-kc-grid">
+                    <div class="kc-item"><span class="kc-label">Shell Type:</span> <span class="kc-value">${pri.shellType}</span></div>
+                    <div class="kc-item"><span class="kc-label">Shell Size:</span> <span class="kc-value">${pri.shellSize}${pri.letterCode ? ` (${pri.letterCode})` : ''}</span></div>
+                    <div class="kc-item"><span class="kc-label">Arrangement:</span> <span class="kc-value">${pri.arrangement}</span></div>
+                    <div class="kc-item"><span class="kc-label">Total Contacts:</span> <span class="kc-value">${priStats.total}</span></div>
+                    <div class="kc-item"><span class="kc-label">Contact Size(s):</span> <span class="kc-value">${priStats.sizesText}</span></div>
+                    <div class="kc-item"><span class="kc-label">Contact Type:</span> <span class="kc-value">${pri.contactType === 'P' ? 'Pins (P)' : 'Sockets (S)'}</span></div>
+                    <div class="kc-item"><span class="kc-label">Keying:</span> <span class="kc-value">${pri.keying}</span></div>
+                </div>
                 
                 <div class="diagram-section">
                     <div class="diagram-box">
                         <label>Insert Diagram:</label>
                         ${pri.diagramImg ? `
-                            <a href="javascript:void(0)" onclick="openImageModal('${pri.diagramImg}', 'Insert Diagram - ${pri.shellLabel}')"><img class="preview-img" src="${pri.diagramImg}" alt="Insert Diagram" onerror="this.parentElement.style.display='none'"></a>
+                            <a href="javascript:void(0)" onclick="openImageModal('${pri.diagramImg}', 'Insert Diagram - ${pri.arrangement}')"><img class="preview-img" src="${pri.diagramImg}" alt="Insert Diagram" onerror="this.parentElement.style.display='none'"></a>
                         ` : `
                             <div class="diagram-placeholder">${isAutoSport ? 'Insert arrangements coming soon!' : 'No diagram available'}</div>
                         `}
@@ -1248,52 +1255,58 @@ function renderSolutionPairHTML(pair, index) {
                     </div>` : ''}
                 </div>
 
-                <p><strong>Connector P/N:</strong> ${pri.activePN} (Est. $${pri.unitPriceConnector.toFixed(2)})</p>
+                <div class="card-section contacts-tooling-block">
+                    <div class="card-section-header">Required Contacts &amp; Tooling</div>
+                    <div class="card-subsection">
+                        <div class="card-subheading">Required Contacts:</div>
+                        <ul class="contact-list">${priContactListHtml}</ul>
+                    </div>
+                    <div class="card-subsection tooling-subblock">
+                        <div class="card-subheading">Crimp Tooling Setup:</div>
+                        <ul class="tooling-list">${priToolHtml}</ul>
+                        ${priToolAlert}
+                        ${priM81969Html}
+                    </div>
+                </div>
 
-                <div class="accessory-section">
+                <div class="card-section accessories-block">
+                    <div class="card-section-header">Accessories &amp; Hardware</div>
                     <div class="accessory-row">
                         <label><strong>${isAutoSport ? 'Heat Shrink Boot:' : 'Backshell Style:'}</strong></label>
                         ${priIsBox ? `<span class="box-mount-notice">Box Mount (No rear accessory threads)</span>` : (isAutoSport ? `
                         <select onchange="updateCardBackshell(${index}, true, this.value)">
-                            <option value="BOOT_STRAIGHT" ${pri.selectedBackshell === 'BOOT_STRAIGHT' ? 'selected' : ''}>Straight Boot (${priBackshellOpts['BOOT_STRAIGHT'] ? priBackshellOpts['BOOT_STRAIGHT'].pn : 'Straight Boot'}) - $${priBackshellOpts['BOOT_STRAIGHT'] ? priBackshellOpts['BOOT_STRAIGHT'].price.toFixed(2) : '12.50'}</option>
-                            <option value="BOOT_RA" ${pri.selectedBackshell === 'BOOT_RA' ? 'selected' : ''}>90° Right-Angle Boot (${priBackshellOpts['BOOT_RA'] ? priBackshellOpts['BOOT_RA'].pn : '90° Boot'}) - $${priBackshellOpts['BOOT_RA'] ? priBackshellOpts['BOOT_RA'].price.toFixed(2) : '14.50'}</option>
-                            <option value="NONE" ${pri.selectedBackshell === 'NONE' ? 'selected' : ''}>None (No Boot) - $0.00</option>
+                            <option value="BOOT_STRAIGHT" ${pri.selectedBackshell === 'BOOT_STRAIGHT' ? 'selected' : ''}>Straight Boot (${priBackshellOpts['BOOT_STRAIGHT'] ? priBackshellOpts['BOOT_STRAIGHT'].pn : 'Straight Boot'})</option>
+                            <option value="BOOT_RA" ${pri.selectedBackshell === 'BOOT_RA' ? 'selected' : ''}>90° Right-Angle Boot (${priBackshellOpts['BOOT_RA'] ? priBackshellOpts['BOOT_RA'].pn : '90° Boot'})</option>
+                            <option value="NONE" ${pri.selectedBackshell === 'NONE' ? 'selected' : ''}>None (No Boot)</option>
                         </select>` : `
                         <select onchange="updateCardBackshell(${index}, true, this.value)">
-                            <option value="M85049/38" ${pri.selectedBackshell === 'M85049/38' ? 'selected' : ''}>Strain Relief (M85049/38) - $${priBackshellOpts['M85049/38'].price.toFixed(2)}</option>
-                            <option value="M85049/88" ${pri.selectedBackshell === 'M85049/88' ? 'selected' : ''}>EMI Banding (M85049/88) - $${priBackshellOpts['M85049/88'].price.toFixed(2)}</option>
-                            <option value="M85049/49" ${pri.selectedBackshell === 'M85049/49' ? 'selected' : ''}>Shrink Boot (M85049/49) - $${priBackshellOpts['M85049/49'].price.toFixed(2)}</option>
-                            <option value="NONE" ${pri.selectedBackshell === 'NONE' ? 'selected' : ''}>None (No Backshell) - $0.00</option>
+                            <option value="M85049/38" ${pri.selectedBackshell === 'M85049/38' ? 'selected' : ''}>Strain Relief (M85049/38)</option>
+                            <option value="M85049/88" ${pri.selectedBackshell === 'M85049/88' ? 'selected' : ''}>EMI Banding (M85049/88)</option>
+                            <option value="M85049/49" ${pri.selectedBackshell === 'M85049/49' ? 'selected' : ''}>Shrink Boot (M85049/49)</option>
+                            <option value="NONE" ${pri.selectedBackshell === 'NONE' ? 'selected' : ''}>None (No Backshell)</option>
                         </select>`)}
                     </div>
-                    ${(!priIsBox && pri.selectedBackshell !== 'NONE') ? `<p style="margin: 4px 0 8px 0; font-size: 12px;"><strong>Active ${isAutoSport ? 'Boot' : 'Backshell'}:</strong> ${priSelectedBs.pn} (Est. $${priSelectedBs.price.toFixed(2)})</p>` : ''}
+                    ${(!priIsBox && pri.selectedBackshell !== 'NONE') ? `<div class="accessory-detail"><strong>Active ${isAutoSport ? 'Boot' : 'Backshell'}:</strong> ${priSelectedBs.pn}</div>` : ''}
                     
                     <div class="checkbox-row" style="margin-top: 6px;">
                         <input type="checkbox" id="priCap_${index}" ${pri.includeDustCap ? 'checked' : ''} onchange="updateCardDustCap(${index}, true, this.checked)">
                         <label for="priCap_${index}" style="font-weight: normal; font-size: 12px; margin-bottom: 0;">
-                            Include Protective Dust Cap (${priCap.pn} - Est. $${priCap.price.toFixed(2)})
+                            Include Protective Dust Cap (${priCap.pn})
                         </label>
                     </div>
                     ${(isAutoSport && priIsFlange && priNutPlate) ? `
                     <div class="checkbox-row" style="margin-top: 6px;">
                         <input type="checkbox" id="priNutPlate_${index}" ${pri.includeNutPlate !== false ? 'checked' : ''} onchange="updateCardNutPlate(${index}, true, this.checked)">
                         <label for="priNutPlate_${index}" style="font-weight: normal; font-size: 12px; margin-bottom: 0;">
-                            Include Bulkhead Mounting Nut Plate (${priNutPlate.pn} - ${priNutPlate.thread} - Est. $${priNutPlate.price.toFixed(2)})
+                            Include Bulkhead Mounting Nut Plate (${priNutPlate.pn} - ${priNutPlate.thread})
                         </label>
                     </div>` : ''}
-                </div>
 
-                <p><strong>Flange Accessory:</strong> ${priFlangeHtml}</p>
-                <p><strong>Flange Fasteners:</strong> ${priFastenerHtml}</p>
-                
-                <p style="margin-bottom: 2px;"><strong>Required Contacts:</strong></p>
-                <ul class="contact-list">${priContactListHtml}</ul>
-                
-                <div class="tooling-block">
-                    <p style="margin-top:0; margin-bottom:4px;"><strong>Crimp Tooling Setup:</strong></p>
-                    <ul class="tooling-list">${priToolHtml}</ul>
-                    ${priToolAlert}
-                    ${priM81969Html}
+                    ${(priIsFlange || priIsWall || priIsBox) ? `
+                    <div class="hardware-rows">
+                        <div class="hardware-row"><strong>Flange Accessory:</strong> ${priFlangeHtml}</div>
+                        <div class="hardware-row"><strong>Flange Fasteners:</strong> ${priFastenerHtml}</div>
+                    </div>` : ''}
                 </div>
 
                 <div class="link-group" style="margin-top: 10px;">
@@ -1303,7 +1316,7 @@ function renderSolutionPairHTML(pair, index) {
                     <a href="https://www.newark.com/search?st=${encodeURIComponent(pri.activePN)}" target="_blank">Newark ↗</a>
                 </div>
 
-                <div style="margin-top: 10px;">
+                <div class="skycad-export-wrap">
                     ${pnType === 'mil' ? `
                         <button type="button" class="btn-outline" style="width: 100%;" onclick="exportSolutionToSkyCAD(${index}, true)">⚡ Export to SkyCAD (.SkyCadPackage)</button>
                     ` : `
@@ -1314,14 +1327,25 @@ function renderSolutionPairHTML(pair, index) {
 
             <div class="solution-card mating-card">
                 <h4 style="margin-top:0; color:var(--accent);">Mating Connector: ${mat ? mat.activePN : 'N/A'}</h4>
-                ${matingShellSelectorHtml}
-                <p><strong>Arrangement:</strong> ${mat ? mat.shellLabel : 'N/A'}</p>
+                
+                <div class="card-kc-grid">
+                    <div class="kc-item ${pri.shellType === 'Plug' ? 'kc-item-full' : ''}">
+                        <span class="kc-label">Shell Type:</span>
+                        ${matShellTypeHtml}
+                    </div>
+                    <div class="kc-item"><span class="kc-label">Shell Size:</span> <span class="kc-value">${mat ? mat.shellSize : 'N/A'}${mat && mat.letterCode ? ` (${mat.letterCode})` : ''}</span></div>
+                    <div class="kc-item"><span class="kc-label">Arrangement:</span> <span class="kc-value">${mat ? mat.arrangement : 'N/A'}</span></div>
+                    <div class="kc-item"><span class="kc-label">Total Contacts:</span> <span class="kc-value">${matStats.total}</span></div>
+                    <div class="kc-item"><span class="kc-label">Contact Size(s):</span> <span class="kc-value">${matStats.sizesText}</span></div>
+                    <div class="kc-item"><span class="kc-label">Contact Type:</span> <span class="kc-value">${mat ? (mat.contactType === 'P' ? 'Pins (P)' : 'Sockets (S)') : 'N/A'}</span></div>
+                    <div class="kc-item"><span class="kc-label">Keying:</span> <span class="kc-value">${mat ? mat.keying : 'N/A'}</span></div>
+                </div>
                 
                 <div class="diagram-section">
                     <div class="diagram-box">
                         <label>Insert Diagram:</label>
                         ${(mat && mat.diagramImg) ? `
-                            <a href="javascript:void(0)" onclick="openImageModal('${mat.diagramImg}', 'Insert Diagram - ${mat.shellLabel}')"><img class="preview-img" src="${mat.diagramImg}" alt="Mating Insert Diagram" onerror="this.parentElement.style.display='none'"></a>
+                            <a href="javascript:void(0)" onclick="openImageModal('${mat.diagramImg}', 'Insert Diagram - ${mat.arrangement}')"><img class="preview-img" src="${mat.diagramImg}" alt="Mating Insert Diagram" onerror="this.parentElement.style.display='none'"></a>
                         ` : `
                             <div class="diagram-placeholder">${isAutoSport ? 'Insert arrangements coming soon!' : 'No diagram available'}</div>
                         `}
@@ -1337,54 +1361,60 @@ function renderSolutionPairHTML(pair, index) {
                     </div>` : ''}
                 </div>
 
-                <p><strong>Connector P/N:</strong> ${mat ? mat.activePN : 'N/A'} (Est. $${mat ? mat.unitPriceConnector.toFixed(2) : '0.00'})</p>
+                <div class="card-section contacts-tooling-block">
+                    <div class="card-section-header">Required Contacts &amp; Tooling</div>
+                    <div class="card-subsection">
+                        <div class="card-subheading">Required Contacts:</div>
+                        <ul class="contact-list">${matContactListHtml}</ul>
+                    </div>
+                    <div class="card-subsection tooling-subblock">
+                        <div class="card-subheading">Crimp Tooling Setup:</div>
+                        <ul class="tooling-list">${mat ? matToolHtml : '<li>N/A</li>'}</ul>
+                        ${matToolAlert}
+                        ${matM81969Html}
+                    </div>
+                </div>
 
                 ${mat ? `
-                <div class="accessory-section">
+                <div class="card-section accessories-block">
+                    <div class="card-section-header">Accessories &amp; Hardware</div>
                     <div class="accessory-row">
                         <label><strong>${isAutoSport ? 'Heat Shrink Boot:' : 'Backshell Style:'}</strong></label>
                         ${matIsBox ? `<span class="box-mount-notice">Box Mount (No rear accessory threads)</span>` : (isAutoSport ? `
                         <select onchange="updateCardBackshell(${index}, false, this.value)">
-                            <option value="BOOT_STRAIGHT" ${mat.selectedBackshell === 'BOOT_STRAIGHT' ? 'selected' : ''}>Straight Boot (${matBackshellOpts['BOOT_STRAIGHT'] ? matBackshellOpts['BOOT_STRAIGHT'].pn : 'Straight Boot'}) - $${matBackshellOpts['BOOT_STRAIGHT'] ? matBackshellOpts['BOOT_STRAIGHT'].price.toFixed(2) : '12.50'}</option>
-                            <option value="BOOT_RA" ${mat.selectedBackshell === 'BOOT_RA' ? 'selected' : ''}>90° Right-Angle Boot (${matBackshellOpts['BOOT_RA'] ? matBackshellOpts['BOOT_RA'].pn : '90° Boot'}) - $${matBackshellOpts['BOOT_RA'] ? matBackshellOpts['BOOT_RA'].price.toFixed(2) : '14.50'}</option>
-                            <option value="NONE" ${mat.selectedBackshell === 'NONE' ? 'selected' : ''}>None (No Boot) - $0.00</option>
+                            <option value="BOOT_STRAIGHT" ${mat.selectedBackshell === 'BOOT_STRAIGHT' ? 'selected' : ''}>Straight Boot (${matBackshellOpts['BOOT_STRAIGHT'] ? matBackshellOpts['BOOT_STRAIGHT'].pn : 'Straight Boot'})</option>
+                            <option value="BOOT_RA" ${mat.selectedBackshell === 'BOOT_RA' ? 'selected' : ''}>90° Right-Angle Boot (${matBackshellOpts['BOOT_RA'] ? matBackshellOpts['BOOT_RA'].pn : '90° Boot'})</option>
+                            <option value="NONE" ${mat.selectedBackshell === 'NONE' ? 'selected' : ''}>None (No Boot)</option>
                         </select>` : `
                         <select onchange="updateCardBackshell(${index}, false, this.value)">
-                            <option value="M85049/38" ${mat.selectedBackshell === 'M85049/38' ? 'selected' : ''}>Strain Relief (M85049/38) - $${matBackshellOpts['M85049/38'].price.toFixed(2)}</option>
-                            <option value="M85049/88" ${mat.selectedBackshell === 'M85049/88' ? 'selected' : ''}>EMI Banding (M85049/88) - $${matBackshellOpts['M85049/88'].price.toFixed(2)}</option>
-                            <option value="M85049/49" ${mat.selectedBackshell === 'M85049/49' ? 'selected' : ''}>Shrink Boot (M85049/49) - $${matBackshellOpts['M85049/49'].price.toFixed(2)}</option>
-                            <option value="NONE" ${mat.selectedBackshell === 'NONE' ? 'selected' : ''}>None (No Backshell) - $0.00</option>
+                            <option value="M85049/38" ${mat.selectedBackshell === 'M85049/38' ? 'selected' : ''}>Strain Relief (M85049/38)</option>
+                            <option value="M85049/88" ${mat.selectedBackshell === 'M85049/88' ? 'selected' : ''}>EMI Banding (M85049/88)</option>
+                            <option value="M85049/49" ${mat.selectedBackshell === 'M85049/49' ? 'selected' : ''}>Shrink Boot (M85049/49)</option>
+                            <option value="NONE" ${mat.selectedBackshell === 'NONE' ? 'selected' : ''}>None (No Backshell)</option>
                         </select>`)}
                     </div>
-                    ${(!matIsBox && mat.selectedBackshell !== 'NONE') ? `<p style="margin: 4px 0 8px 0; font-size: 12px;"><strong>Active ${isAutoSport ? 'Boot' : 'Backshell'}:</strong> ${matSelectedBs.pn} (Est. $${matSelectedBs.price.toFixed(2)})</p>` : ''}
+                    ${(!matIsBox && mat.selectedBackshell !== 'NONE') ? `<div class="accessory-detail"><strong>Active ${isAutoSport ? 'Boot' : 'Backshell'}:</strong> ${matSelectedBs.pn}</div>` : ''}
                     
                     <div class="checkbox-row" style="margin-top: 6px;">
                         <input type="checkbox" id="matCap_${index}" ${mat.includeDustCap ? 'checked' : ''} onchange="updateCardDustCap(${index}, false, this.checked)">
                         <label for="matCap_${index}" style="font-weight: normal; font-size: 12px; margin-bottom: 0;">
-                            Include Protective Dust Cap (${matCap.pn} - Est. $${matCap.price.toFixed(2)})
+                            Include Protective Dust Cap (${matCap.pn})
                         </label>
                     </div>
                     ${(isAutoSport && matIsFlange && matNutPlate) ? `
                     <div class="checkbox-row" style="margin-top: 6px;">
                         <input type="checkbox" id="matNutPlate_${index}" ${mat.includeNutPlate !== false ? 'checked' : ''} onchange="updateCardNutPlate(${index}, false, this.checked)">
                         <label for="matNutPlate_${index}" style="font-weight: normal; font-size: 12px; margin-bottom: 0;">
-                            Include Bulkhead Mounting Nut Plate (${matNutPlate.pn} - ${matNutPlate.thread} - Est. $${matNutPlate.price.toFixed(2)})
+                            Include Bulkhead Mounting Nut Plate (${matNutPlate.pn} - ${matNutPlate.thread})
                         </label>
                     </div>` : ''}
-                </div>` : ''}
 
-                <p><strong>Flange Accessory:</strong> ${matFlangeHtml}</p>
-                <p><strong>Flange Fasteners:</strong> ${matFastenerHtml}</p>
-                
-                <p style="margin-bottom: 2px;"><strong>Required Contacts:</strong></p>
-                <ul class="contact-list">${matContactListHtml}</ul>
-                
-                <div class="tooling-block">
-                    <p style="margin-top:0; margin-bottom:4px;"><strong>Crimp Tooling Setup:</strong></p>
-                    <ul class="tooling-list">${mat ? matToolHtml : '<li>N/A</li>'}</ul>
-                    ${matToolAlert}
-                    ${matM81969Html}
-                </div>
+                    ${(matIsFlange || matIsWall || matIsBox) ? `
+                    <div class="hardware-rows">
+                        <div class="hardware-row"><strong>Flange Accessory:</strong> ${matFlangeHtml}</div>
+                        <div class="hardware-row"><strong>Flange Fasteners:</strong> ${matFastenerHtml}</div>
+                    </div>` : ''}
+                </div>` : ''}
 
                 <div class="link-group" style="margin-top: 10px;">
                     <label>Distributor Live Stock:</label>
@@ -1394,7 +1424,7 @@ function renderSolutionPairHTML(pair, index) {
                 </div>
 
                 ${mat ? `
-                <div style="margin-top: 10px;">
+                <div class="skycad-export-wrap">
                     ${pnType === 'mil' ? `
                         <button type="button" class="btn-outline" style="width: 100%;" onclick="exportSolutionToSkyCAD(${index}, false)">⚡ Export to SkyCAD (.SkyCadPackage)</button>
                     ` : `
