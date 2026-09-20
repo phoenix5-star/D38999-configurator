@@ -689,9 +689,11 @@ def main():
         with zipfile.ZipFile(io.BytesIO(zip_bytes_acc1), 'r') as zf:
             f_names = zf.namelist()
             acc_files = [f for f in f_names if "Harness accessory" in f]
-            assert len(acc_files) == 1, f"Expected 1 accessory file, found: {acc_files}"
-            assert "M85049_38-15W.SkyCadFile" in acc_files[0], f"Expected M85049_38-15W.SkyCadFile, got {acc_files[0]}"
-            print(f"[PASS] Dynamic accessory file verified in ZIP: {acc_files[0]}")
+            assert len(acc_files) == 3, f"Expected 3 accessory files (Backshell, Fastener, Flange), found: {acc_files}"
+            assert any("M85049_38-15W.SkyCadFile" in f for f in acc_files), f"Expected M85049_38-15W.SkyCadFile, got {acc_files}"
+            assert any("92220A122.SkyCadFile" in f for f in acc_files), f"Expected 92220A122.SkyCadFile, got {acc_files}"
+            assert any("M85049_95-16A.SkyCadFile" in f for f in acc_files), f"Expected M85049_95-16A.SkyCadFile, got {acc_files}"
+            print(f"[PASS] Dynamic multi-accessories verified in ZIP: {acc_files}")
 
         # Test in SkyCadKernel
         out_acc1_pkg = os.path.join(PROJECT_DIR, "scratch", "browser_exported_20wd35pn_acc38.SkyCadPackage")
@@ -740,9 +742,11 @@ def main():
         with zipfile.ZipFile(io.BytesIO(zip_bytes_acc2), 'r') as zf:
             f_names = zf.namelist()
             acc_files = [f for f in f_names if "Harness accessory" in f]
-            assert len(acc_files) == 1, f"Expected 1 accessory file, found: {acc_files}"
-            assert "M85049_88-15W02.SkyCadFile" in acc_files[0], f"Expected M85049_88-15W02.SkyCadFile, got {acc_files[0]}"
-            print(f"[PASS] Switched backshell verified: {acc_files[0]}")
+            assert len(acc_files) == 3, f"Expected 3 accessory files (Backshell, Fastener, Flange), found: {acc_files}"
+            assert any("M85049_88-15W02.SkyCadFile" in f for f in acc_files), f"Expected M85049_88-15W02.SkyCadFile, got {acc_files}"
+            assert any("92220A122.SkyCadFile" in f for f in acc_files), f"Expected 92220A122.SkyCadFile, got {acc_files}"
+            assert any("M85049_95-16A.SkyCadFile" in f for f in acc_files), f"Expected M85049_95-16A.SkyCadFile, got {acc_files}"
+            print(f"[PASS] Switched backshell and multi-accessories verified: {acc_files}")
 
         # 3. Switch backshell to NONE via card UI and verify clean omit
         cdp_eval(ws, "updateCardBackshell(0, true, 'NONE');")
@@ -766,8 +770,11 @@ def main():
         with zipfile.ZipFile(io.BytesIO(zip_bytes_acc3), 'r') as zf:
             f_names = zf.namelist()
             acc_files = [f for f in f_names if "Harness accessory" in f]
-            assert len(acc_files) == 0, f"Expected 0 accessory files for NONE, found: {acc_files}"
-            print("[PASS] NONE backshell cleanly omitted Harness accessory file from package!")
+            assert len(acc_files) == 2, f"Expected 2 accessory files for NONE (Fasteners + Flange), found: {acc_files}"
+            assert not any("M85049_38" in f or "M85049_88" in f for f in acc_files), f"Backshell was not omitted: {acc_files}"
+            assert any("92220A122.SkyCadFile" in f for f in acc_files), f"Fastener missing: {acc_files}"
+            assert any("M85049_95-16A.SkyCadFile" in f for f in acc_files), f"Flange missing: {acc_files}"
+            print("[PASS] NONE backshell cleanly omitted Backshell Harness accessory while preserving Fasteners and Flange!")
 
         out_acc3_pkg = os.path.join(PROJECT_DIR, "scratch", "browser_exported_20wd35pn_acc_none.SkyCadPackage")
         with open(out_acc3_pkg, "wb") as f:
@@ -785,6 +792,113 @@ def main():
         print(f"BOM SkyCAD Export Button: {bom_btn}")
         assert bom_btn and ".SkyCadPackage" in bom_btn, f"BOM export button missing or mismatch: {bom_btn}"
         print("[PASS] Active list BOM updated and BOM export button verified.")
+
+        print("\n--- Check 7: Multi-Accessory Permutation Verification (Task 4.2) ---")
+        test_perms = [
+            {
+                "pn": "20FA35PN",
+                "full_pn": "D38999/20FA35PN",
+                "shell": "9",
+                "finish": "F",
+                "expected_fastener": "93615A111",
+                "expected_flange": "M85049_95-10A",
+                "expected_backshell": "M85049_38-9N"
+            },
+            {
+                "pn": "20FJ35PN",
+                "full_pn": "D38999/20FJ35PN",
+                "shell": "25",
+                "finish": "F",
+                "expected_fastener": "93615A215",
+                "expected_flange": "M85049_95-25A",
+                "expected_backshell": "M85049_38-25N"
+            },
+            {
+                "pn": "20WD18PN",
+                "full_pn": "D38999/20WD18PN",
+                "shell": "15",
+                "finish": "W",
+                "expected_fastener": "92220A122",
+                "expected_flange": "M85049_95-16A",
+                "expected_backshell": "M85049_38-15W"
+            },
+            {
+                "pn": "20WH35PN",
+                "full_pn": "D38999/20WH35PN",
+                "shell": "23",
+                "finish": "W",
+                "expected_fastener": "92220A142",
+                "expected_flange": "M85049_95-24B",
+                "expected_backshell": "M85049_38-23W"
+            }
+        ]
+
+        for p in test_perms:
+            print(f"\nTesting Multi-Accessory Permutation: {p['full_pn']} (Shell {p['shell']}, Finish {p['finish']})")
+            cdp_eval(ws, f"document.getElementById('pnDecodeInput').value = '{p['pn']}';")
+            cdp_eval(ws, f"liveDecodePN('{p['pn']}');")
+            cdp_eval(ws, "applyDecodedPN();")
+            time.sleep(1)
+
+            b64_zip = cdp_eval(ws, """
+                (async () => {
+                    const pair = currentCalculatedSolutions[0];
+                    const formatted = SkyCadExporter.formatConnectorData(pair.primary, pair, true);
+                    const blob = await SkyCadExporter.generatePackageBlob(formatted);
+                    return new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                            resolve(reader.result.split(',')[1]);
+                        };
+                        reader.readAsDataURL(blob);
+                    });
+                })()
+            """)
+            assert b64_zip, f"Failed to generate package for {p['full_pn']}"
+            zip_bytes = base64.b64decode(b64_zip)
+
+            # Inspect ZIP contents
+            with zipfile.ZipFile(io.BytesIO(zip_bytes), 'r') as zf:
+                f_names = zf.namelist()
+                print(f"Files in {p['full_pn']} package ({len(f_names)} total):")
+                for fn in f_names:
+                    if "Harness accessory" in fn or "Images" in fn or "Accessories_BOM" in fn:
+                        print(f"  {fn}")
+
+                # Assert backshell, fastener, flange
+                assert any(f"{p['expected_backshell']}.SkyCadFile" in fn for fn in f_names), f"Missing backshell {p['expected_backshell']} in {f_names}"
+                assert any(f"{p['expected_fastener']}.SkyCadFile" in fn for fn in f_names), f"Missing fastener {p['expected_fastener']} in {f_names}"
+                assert any(f"{p['expected_flange']}.SkyCadFile" in fn for fn in f_names), f"Missing flange {p['expected_flange']} in {f_names}"
+
+                # Assert fastener and flange images
+                fast_img_entry = next((fn for fn in f_names if f"{p['expected_fastener'].lower()}.png" in fn.lower()), None)
+                flange_img_entry = next((fn for fn in f_names if f"{p['expected_flange'].lower()}.png" in fn.lower()), None)
+                assert fast_img_entry, f"Missing fastener image {p['expected_fastener']}.PNG in {f_names}"
+                assert flange_img_entry, f"Missing flange image {p['expected_flange']}.PNG in {f_names}"
+
+                fast_img_bytes = zf.read(fast_img_entry)
+                flange_img_bytes = zf.read(flange_img_entry)
+                assert len(fast_img_bytes) > 0, f"Fastener image {fast_img_entry} is empty!"
+                assert len(flange_img_bytes) > 0, f"Flange image {flange_img_entry} is empty!"
+
+                # Assert BOM CSV contains all accessories
+                bom_entry = next((fn for fn in f_names if "accessories_bom.csv" in fn.lower()), None)
+                assert bom_entry, f"Missing Accessories_BOM.csv in {f_names}"
+                bom_text = zf.read(bom_entry).decode('utf-8', errors='replace')
+                assert p['expected_fastener'] in bom_text, f"Fastener {p['expected_fastener']} not in BOM: {bom_text}"
+                assert p['expected_flange'].replace('_', '/') in bom_text or p['expected_flange'] in bom_text, f"Flange {p['expected_flange']} not in BOM: {bom_text}"
+
+            # Verify in SkyCadKernel
+            pkg_path = os.path.join(PROJECT_DIR, "scratch", f"browser_exported_{p['pn']}.SkyCadPackage")
+            with open(pkg_path, "wb") as f:
+                f.write(zip_bytes)
+            test_cmd = ["powershell", "-ExecutionPolicy", "Bypass", "-File", "tools/test_package_load.ps1", "-PackagePath", pkg_path]
+            test_proc = subprocess.run(test_cmd, capture_output=True, text=True)
+            print(f"Kernel load output for {p['full_pn']}:")
+            print(test_proc.stdout)
+            assert "STREAM_SUCCESS" in test_proc.stdout, f"Kernel stream failure for {p['full_pn']}: {test_proc.stdout}"
+            assert "LOAD_SUCCESS" in test_proc.stdout, f"Kernel load failure for {p['full_pn']}: {test_proc.stdout}"
+            print(f"[PASS] Multi-accessory permutation {p['full_pn']} verified with STREAM_SUCCESS and LOAD_SUCCESS!")
 
         check_messages()
         print("\n--- Console Error Check ---")

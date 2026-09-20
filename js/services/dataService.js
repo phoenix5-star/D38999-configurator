@@ -195,6 +195,48 @@ const DataService = (function () {
             const sz = String(shellSize).padStart(2, '0');
             return plates[sz] || null;
         },
+        getFastenerForConnector: function (shellSize, finishCode) {
+            const szNum = parseInt(shellSize, 10);
+            const isNickel = ['F', 'N', 'E', 'G', 'K', 'S', 'M'].includes(String(finishCode).toUpperCase());
+            const group = isNickel ? 'nickel' : 'cadmium';
+            const sizeKey = (szNum >= 23) ? 'large' : 'small';
+            
+            const specs = this.getFastenerSpecs();
+            if (specs && specs[group] && specs[group][sizeKey]) {
+                return specs[group][sizeKey];
+            }
+            if (isNickel) {
+                return (szNum >= 23)
+                    ? { pn: '93615A215', desc: '18-8 Stainless Steel Low-Profile Socket Head Screw', thread: '#6-32', length: '3/8"', url: 'https://www.mcmaster.com/93615A215/', image: '93615A215.PNG', price: 13.50, qty: 4 }
+                    : { pn: '93615A111', desc: '18-8 Stainless Steel Low-Profile Socket Head Screw', thread: '#4-40', length: '3/8"', url: 'https://www.mcmaster.com/93615A111/', image: '93615A111.PNG', price: 12.50, qty: 4 };
+            } else {
+                return (szNum >= 23)
+                    ? { pn: '92220A142', desc: 'Alloy Steel Low-Profile Socket Head Screw', thread: '#6-32', length: '3/8"', url: 'https://www.mcmaster.com/92220A142/', image: '92220A142.PNG', price: 11.50, qty: 4 }
+                    : { pn: '92220A122', desc: 'Alloy Steel Low-Profile Socket Head Screw', thread: '#4-40', length: '3/8"', url: 'https://www.mcmaster.com/92220A122/', image: '92220A122.PNG', price: 10.50, qty: 4 };
+            }
+        },
+        getFlangeForConnector: function (shellSize) {
+            const szStr = String(parseInt(shellSize, 10));
+            const dashTable = {
+                '9': '10A', '11': '12A', '13': '14A', '15': '16A',
+                '17': '18A', '19': '20A', '21': '22A', '23': '24B', '25': '25A'
+            };
+            const dash = dashTable[szStr] || `${szStr.padStart(2, '0')}A`;
+            const thread = (dash === '24B' || dash === '25A') ? '#6-32' : '#4-40';
+            const pn = `M85049/95-${dash}`;
+            const desc = `3/4 Perimeter Flange Mount, ${thread} Self-Locking Clinch Nut (Size ${shellSize})`;
+            const szNum = parseInt(shellSize, 10);
+            const price = 9.00 + (szNum * 0.50);
+            return {
+                pn: pn,
+                safePN: `M85049_95-${dash}`,
+                dash: dash,
+                thread: thread,
+                desc: desc,
+                price: price,
+                image: `M85049_95-${dash}.PNG`
+            };
+        },
 
         // Dynamic Calculations
         getBackshellOptions: function (shellSize, finishCode) {
@@ -257,19 +299,20 @@ const DataService = (function () {
 
             const numShell = String(shellSize).padStart(2, '0');
             const szNum = parseInt(shellSize, 10);
+            const bsShell = String(szNum);
             const finishObj = this.getFinishByCode(finishCode);
-            const bsFinish = (finishObj && finishObj.backshellFinish) ? finishObj.backshellFinish : finishCode;
+            const bsFinish = (finishObj && finishObj.backshellFinish) ? finishObj.backshellFinish : (CONNECTOR_TO_BACKSHELL_FINISH[finishCode] || finishCode);
 
             return {
                 "M85049/38": {
                     key: "M85049/38",
-                    pn: `M85049/38-${numShell}${bsFinish}`,
+                    pn: `M85049/38-${bsShell}${bsFinish}`,
                     desc: `M85049/38 Strain Relief Clamp (Size ${shellSize})`,
                     price: 14.00 + (szNum * 0.85)
                 },
                 "M85049/88": {
                     key: "M85049/88",
-                    pn: `M85049/88-${numShell}${bsFinish}02`,
+                    pn: `M85049/88-${bsShell}${bsFinish}02`,
                     desc: `M85049/88 EMI/RFI Banding Backshell w/ Band (Size ${shellSize})`,
                     price: 28.00 + (szNum * 1.10)
                 },

@@ -1,5 +1,5 @@
 // Configurator Metadata
-const CONFIG_VERSION = "V002.6.0";
+const CONFIG_VERSION = "V002.7.0";
 
 
 // Shop Tooling Inventory & Contact Ratings loaded via DataService
@@ -135,17 +135,18 @@ function getBackshellOptions(shellSize, finishCode) {
     }
     const numShell = String(shellSize).padStart(2, '0');
     const szNum = parseInt(shellSize, 10);
+    const bsShell = String(szNum);
     const bsFinish = CONNECTOR_TO_BACKSHELL_FINISH[finishCode] || finishCode;
     return {
         "M85049/38": {
             key: "M85049/38",
-            pn: `M85049/38-${numShell}${bsFinish}`,
+            pn: `M85049/38-${bsShell}${bsFinish}`,
             desc: `M85049/38 Strain Relief Clamp (Size ${shellSize})`,
             price: 14.00 + (szNum * 0.85)
         },
         "M85049/88": {
             key: "M85049/88",
-            pn: `M85049/88-${numShell}${bsFinish}02`,
+            pn: `M85049/88-${bsShell}${bsFinish}02`,
             desc: `M85049/88 EMI/RFI Banding Backshell w/ Band (Size ${shellSize})`,
             price: 28.00 + (szNum * 1.10)
         },
@@ -161,6 +162,49 @@ function getBackshellOptions(shellSize, finishCode) {
             desc: "No Backshell / Box Mount Pass-through",
             price: 0.00
         }
+    };
+}
+
+function getFastenerForConnector(shellSize, finishCode) {
+    if (typeof DataService !== 'undefined' && DataService.getFastenerForConnector) {
+        return DataService.getFastenerForConnector(shellSize, finishCode);
+    }
+    const szNum = parseInt(shellSize, 10);
+    const isNickel = ['F', 'N', 'E', 'G', 'K', 'S', 'M'].includes(String(finishCode).toUpperCase());
+    if (isNickel) {
+        return (szNum >= 23)
+            ? { pn: '93615A215', desc: '18-8 Stainless Steel Low-Profile Socket Head Screw', thread: '#6-32', length: '3/8"', url: 'https://www.mcmaster.com/93615A215/', image: '93615A215.PNG', price: 13.50, qty: 4 }
+            : { pn: '93615A111', desc: '18-8 Stainless Steel Low-Profile Socket Head Screw', thread: '#4-40', length: '3/8"', url: 'https://www.mcmaster.com/93615A111/', image: '93615A111.PNG', price: 12.50, qty: 4 };
+    } else {
+        return (szNum >= 23)
+            ? { pn: '92220A142', desc: 'Alloy Steel Low-Profile Socket Head Screw', thread: '#6-32', length: '3/8"', url: 'https://www.mcmaster.com/92220A142/', image: '92220A142.PNG', price: 11.50, qty: 4 }
+            : { pn: '92220A122', desc: 'Alloy Steel Low-Profile Socket Head Screw', thread: '#4-40', length: '3/8"', url: 'https://www.mcmaster.com/92220A122/', image: '92220A122.PNG', price: 10.50, qty: 4 };
+    }
+}
+
+function getFlangeForConnector(shellSize) {
+    if (typeof DataService !== 'undefined' && DataService.getFlangeForConnector) {
+        return DataService.getFlangeForConnector(shellSize);
+    }
+    const szStr = String(parseInt(shellSize, 10));
+    const dashTable = {
+        '9': '10A', '11': '12A', '13': '14A', '15': '16A',
+        '17': '18A', '19': '20A', '21': '22A', '23': '24B', '25': '25A'
+    };
+    const dash = dashTable[szStr] || `${szStr.padStart(2, '0')}A`;
+    const thread = (dash === '24B' || dash === '25A') ? '#6-32' : '#4-40';
+    const pn = `M85049/95-${dash}`;
+    const desc = `3/4 Perimeter Flange Mount, ${thread} Self-Locking Clinch Nut (Size ${shellSize})`;
+    const szNum = parseInt(shellSize, 10);
+    const price = 9.00 + (szNum * 0.50);
+    return {
+        pn: pn,
+        safePN: `M85049_95-${dash}`,
+        dash: dash,
+        thread: thread,
+        desc: desc,
+        price: price,
+        image: `M85049_95-${dash}.PNG`
     };
 }
 
@@ -284,24 +328,13 @@ masterLayouts.forEach(layout => {
             });
         });
     } else {
-        const numShell = layout.shellSize.padStart(2, '0');
         const szNum = parseInt(layout.shellSize, 10);
-        
-        let basePrice = 30.00 + (szNum * 3.50);
-        let flangePrice = 9.00 + (szNum * 0.50);
-
-        let fastenerDesc = "Flange Fasteners, Fillister Head 1\" (McMaster: 91737A313, Box of 100)";
-        let fastenerUrl = "https://www.mcmaster.com/91737A313/";
-        let fastenerPrice = 10.04;
-        let fastenerQty = 4;
-
-        const m85049Table = (typeof accessoriesData !== 'undefined' && accessoriesData.flanges && accessoriesData.flanges.dashTable) || {
-            '9': '10A', '11': '12A', '13': '14A', '15': '16A', '17': '18A', '19': '20A', '21': '22A', '23': '24A', '25': '25A'
-        };
-        const flangeDash = m85049Table[layout.shellSize] || `${numShell}A`;
+        const basePrice = 30.00 + (szNum * 3.50);
+        const flangeInfo = getFlangeForConnector(layout.shellSize);
 
         d38999ShellTypes.forEach(st => {
             d38999Finishes.forEach(fin => {
+                const fastenerInfo = getFastenerForConnector(layout.shellSize, fin.code);
                 contactTypes.forEach(ct => {
                     keyingPositions.forEach(ky => {
                         const milPN = `D38999/${st.milCode}${fin.code}${layout.letterCode}${layout.arrangement.split('-')[1]}${ct}${ky}`;
@@ -323,12 +356,13 @@ masterLayouts.forEach(layout => {
                             commPN: commPN,
                             asPN: milPN,
                             unitPriceConnector: basePrice * fin.costMult,
-                            flangeAcc: `M85049/95-${flangeDash} (3/4 Perimeter Flange)`,
-                            unitPriceFlange: flangePrice,
-                            fastener: fastenerDesc,
-                            fastenerUrl: fastenerUrl,
-                            fastenerQty: fastenerQty,
-                            unitPriceFastener: fastenerPrice,
+                            flangeAcc: `${flangeInfo.pn} (3/4 Perimeter Flange)`,
+                            unitPriceFlange: flangeInfo.price,
+                            fastener: `${fastenerInfo.desc} (${fastenerInfo.thread} x ${fastenerInfo.length})`,
+                            fastenerPn: fastenerInfo.pn,
+                            fastenerUrl: fastenerInfo.url,
+                            fastenerQty: fastenerInfo.qty,
+                            unitPriceFastener: fastenerInfo.price,
                             diagramImg: layout.diagramImg || `assets/inserts/${getInsertImageFilename(layout.arrangement, layout.shellSize)}`,
                             cutoutImg: `assets/cutouts/Shell${layout.shellSize}.png`,
                             pins: layout.pins,
@@ -1144,9 +1178,10 @@ function renderSolutionPairHTML(pair, index) {
     let priFlangeHtml = isAutoSport 
         ? (priIsFlange ? (priNutPlate ? `<strong>${priNutPlate.pn}</strong> Nut Plate (${priNutPlate.thread} Thread)` : `<span class="na-text">Integral 2-Hole Flange on Shell</span>`) : `<span class="na-text">N/A (Not Required for Shell Type)</span>`)
         : (priIsWall ? `${pri.flangeAcc} Sealing Gasket` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`);
+    const priFastenerInfo = getFastenerForConnector(pri.shellSize, pri.finish);
     let priFastenerHtml = isAutoSport
         ? (priIsFlange ? (priNutPlate ? `2x ${priNutPlate.thread} Stainless Socket Head Screws` : `2x M3 / 4-40 Stainless Socket Head Screws`) : `<span class="na-text">N/A (Not Required for Shell Type)</span>`)
-        : ((priIsWall || priIsBox) ? `4x <a href="https://www.mcmaster.com/91737A313/" target="_blank">91737A313</a> - Fillister Head 1"` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`);
+        : ((priIsWall || priIsBox) ? `4x <a href="${priFastenerInfo.url}" target="_blank">${priFastenerInfo.pn}</a> - ${priFastenerInfo.desc} (${priFastenerInfo.thread} x ${priFastenerInfo.length})` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`);
 
     let priContactListHtml = pri.contacts.map(c => 
         `<li><strong>${c.qty}x ${c.pn}</strong> - ${c.desc} ${c.isStd ? '<span class="na-text">(Standard Contact)</span>' : '<span style="color:#d97706; font-weight:bold;">(Specialty TC/Coax Contact)</span>'}</li>`
@@ -1176,9 +1211,10 @@ function renderSolutionPairHTML(pair, index) {
     let matFlangeHtml = isAutoSport 
         ? (matIsFlange ? (matNutPlate ? `<strong>${matNutPlate.pn}</strong> Nut Plate (${matNutPlate.thread} Thread)` : `<span class="na-text">Integral 2-Hole Flange on Shell</span>`) : `<span class="na-text">N/A (Not Required for Shell Type)</span>`)
         : (matIsWall ? `${mat.flangeAcc} Sealing Gasket` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`);
+    const matFastenerInfo = mat ? getFastenerForConnector(mat.shellSize, mat.finish) : null;
     let matFastenerHtml = isAutoSport
         ? (matIsFlange ? (matNutPlate ? `2x ${matNutPlate.thread} Stainless Socket Head Screws` : `2x M3 / 4-40 Stainless Socket Head Screws`) : `<span class="na-text">N/A (Not Required for Shell Type)</span>`)
-        : ((matIsWall || matIsBox) ? `4x <a href="https://www.mcmaster.com/91737A313/" target="_blank">91737A313</a> - Fillister Head 1"` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`);
+        : ((matIsWall || matIsBox) && matFastenerInfo ? `4x <a href="${matFastenerInfo.url}" target="_blank">${matFastenerInfo.pn}</a> - ${matFastenerInfo.desc} (${matFastenerInfo.thread} x ${matFastenerInfo.length})` : `<span class="na-text">N/A (Not Required for Shell Type)</span>`);
 
     let matContactListHtml = mat ? mat.contacts.map(c => 
         `<li><strong>${c.qty}x ${c.pn}</strong> - ${c.desc} ${c.isStd ? '<span class="na-text">(Standard Contact)</span>' : '<span style="color:#d97706; font-weight:bold;">(Specialty TC/Coax Contact)</span>'}</li>`
@@ -1560,7 +1596,14 @@ function addSolutionPairToActiveList(solutionIndex) {
 
     // Primary Flange Accessory
     if (!isAutoSport && pri.shellType === 'Wall Mount') {
-        itemsToAdd.push({ pn: pri.flangeAcc, qty: 1, desc: 'M85049/95 Flange (Primary)', price: pri.unitPriceFlange });
+        const priFlange = getFlangeForConnector(pri.shellSize);
+        itemsToAdd.push({ pn: priFlange.pn, qty: 1, desc: `${priFlange.desc} (Primary)`, price: pri.unitPriceFlange || priFlange.price });
+    }
+
+    // Primary Flange Fasteners
+    if (!isAutoSport && (pri.shellType === 'Wall Mount' || pri.shellType === 'Box Mount')) {
+        const priFastener = getFastenerForConnector(pri.shellSize, pri.finish);
+        itemsToAdd.push({ pn: priFastener.pn, qty: priFastener.qty, desc: `${priFastener.desc} (${priFastener.thread} x ${priFastener.length}) (Primary)`, price: priFastener.price });
     }
 
     // Primary Nut Plate (AutoSport 2-Hole Flange)
@@ -1610,7 +1653,14 @@ function addSolutionPairToActiveList(solutionIndex) {
 
         // Mating Flange Accessory
         if (!isAutoSport && mat.shellType === 'Wall Mount') {
-            itemsToAdd.push({ pn: mat.flangeAcc, qty: 1, desc: 'M85049/95 Flange (Mating)', price: mat.unitPriceFlange });
+            const matFlange = getFlangeForConnector(mat.shellSize);
+            itemsToAdd.push({ pn: matFlange.pn, qty: 1, desc: `${matFlange.desc} (Mating)`, price: mat.unitPriceFlange || matFlange.price });
+        }
+
+        // Mating Flange Fasteners
+        if (!isAutoSport && (mat.shellType === 'Wall Mount' || mat.shellType === 'Box Mount')) {
+            const matFastener = getFastenerForConnector(mat.shellSize, mat.finish);
+            itemsToAdd.push({ pn: matFastener.pn, qty: matFastener.qty, desc: `${matFastener.desc} (${matFastener.thread} x ${matFastener.length}) (Mating)`, price: matFastener.price });
         }
 
         // Mating Nut Plate (AutoSport 2-Hole Flange)
@@ -1633,7 +1683,7 @@ function addSolutionPairToActiveList(solutionIndex) {
 
     // Merge into active list: if pn already exists, increment qty; otherwise append
     itemsToAdd.forEach(newItem => {
-        let existing = projectLists[activeListName].find(i => i.pn === newItem.pn && i.pn !== "91737A313");
+        let existing = projectLists[activeListName].find(i => i.pn === newItem.pn);
         if (existing) {
             existing.qty += newItem.qty;
             if (newItem.isConnector && !existing.isConnector) {
@@ -1644,30 +1694,6 @@ function addSolutionPairToActiveList(solutionIndex) {
             projectLists[activeListName].push({ ...newItem });
         }
     });
-
-    // Flange Fasteners calculation (sold in boxes of 100 @ $10.04, covers up to 25 flange connectors)
-    const priNeedsFasteners = pri.shellType === 'Wall Mount' || pri.shellType === 'Box Mount';
-    const matNeedsFasteners = mat && (mat.shellType === 'Wall Mount' || mat.shellType === 'Box Mount');
-    
-    if (priNeedsFasteners || matNeedsFasteners) {
-        let totalFlangeCount = projectLists[activeListName].filter(i => 
-            i.desc && (i.desc.includes("Wall Mount") || i.desc.includes("Box Mount"))
-        ).length;
-        let requiredBoxes = Math.max(1, Math.ceil((totalFlangeCount * 4) / 100));
-
-        let fastenerItem = projectLists[activeListName].find(i => i.pn === "91737A313");
-        if (fastenerItem) {
-            fastenerItem.qty = requiredBoxes;
-            fastenerItem.desc = `Flange Fasteners, Fillister Head 1" (Box of 100 - covers up to ${requiredBoxes * 25} connectors)`;
-        } else {
-            projectLists[activeListName].push({ 
-                pn: "91737A313", 
-                qty: requiredBoxes, 
-                desc: `Flange Fasteners, Fillister Head 1" (Box of 100 - covers up to ${requiredBoxes * 25} connectors)`, 
-                price: 10.04 
-            });
-        }
-    }
 
     saveAndRefresh();
 }
@@ -1759,22 +1785,6 @@ function updateItemPrice(idx, val) {
 function removeItem(idx) {
     let activeListName = document.getElementById('projectListSelect').value;
     projectLists[activeListName].splice(idx, 1);
-
-    // Recalculate fastener boxes needed after removal
-    let fastenerItem = projectLists[activeListName].find(i => i.pn === "91737A313");
-    if (fastenerItem) {
-        let flangeCount = projectLists[activeListName].filter(i => 
-            i.desc && (i.desc.includes("Wall Mount") || i.desc.includes("Box Mount"))
-        ).length;
-        if (flangeCount === 0) {
-            let fIdx = projectLists[activeListName].indexOf(fastenerItem);
-            projectLists[activeListName].splice(fIdx, 1);
-        } else {
-            let requiredBoxes = Math.max(1, Math.ceil((flangeCount * 4) / 100));
-            fastenerItem.qty = requiredBoxes;
-            fastenerItem.desc = `Flange Fasteners, Fillister Head 1" (Box of 100 - covers up to ${requiredBoxes * 25} connectors)`;
-        }
-    }
     saveAndRefresh();
 }
 
