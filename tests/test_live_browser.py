@@ -131,8 +131,10 @@ def main():
         print("[PASS] SkyCAD BOM export button verified present.")
 
         print("\n--- Check 3: Calculation & Solution Card DOM Verification ---")
-        cdp_eval(ws, "document.querySelector('#groups .val').value = '20';")
-        cdp_eval(ws, "document.querySelector('#groups .qty').value = '3';")
+        cdp_eval(ws, "window.alert = function(msg) { console.warn('INTERCEPTED ALERT:', msg); };")
+        cdp_eval(ws, "document.querySelector('#groups .val').value = '22D';")
+        cdp_eval(ws, "document.querySelector('#groups .qty').value = '37';")
+        cdp_eval(ws, "document.getElementById('filterArrangement').value = '15-35';")
         cdp_eval(ws, "calculate();")
         time.sleep(1)
 
@@ -159,6 +161,16 @@ def main():
         assert "Connector P/N:" not in mat_card_text, "Redundant Connector P/N line found on mating card!"
         assert "total contacts" in pri_card_text.lower(), "Total Contacts missing from primary card KC grid!"
         assert "contact size(s)" in pri_card_text.lower(), "Contact Size(s) missing from primary card KC grid!"
+
+        # Check Finish row between Shell Type and Shell Size
+        pri_kc_labels = cdp_eval(ws, "[...document.querySelectorAll('.primary-card .card-kc-grid .kc-label')].map(el => el.textContent.trim())")
+        print(f"Primary Card KC Labels: {pri_kc_labels}")
+        assert "Finish:" in pri_kc_labels, f"Finish label missing from primary card: {pri_kc_labels}"
+        idx_type = pri_kc_labels.index("Shell Type:")
+        idx_finish = pri_kc_labels.index("Finish:")
+        idx_size = pri_kc_labels.index("Shell Size:")
+        assert idx_type < idx_finish < idx_size, f"Finish is not between Shell Type and Shell Size: {pri_kc_labels}"
+        print("[PASS] Verified Finish is rendered between Shell Type and Shell Size!")
 
         has_contacts_block = cdp_eval(ws, "document.querySelector('.primary-card .contacts-tooling-block') !== null")
         has_accessories_block = cdp_eval(ws, "document.querySelector('.primary-card .accessories-block') !== null")

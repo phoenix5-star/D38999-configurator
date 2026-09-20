@@ -1268,6 +1268,7 @@ function renderSolutionPairHTML(pair, index) {
                 
                 <div class="card-kc-grid">
                     <div class="kc-item"><span class="kc-label">Shell Type:</span> <span class="kc-value">${pri.shellType}</span></div>
+                    <div class="kc-item"><span class="kc-label">Finish:</span> <span class="kc-value">${(() => { const f = finishes.find(fin => fin.code === pri.finish); return f ? `${f.name} (${f.code})` : (pri.finish || 'N/A'); })()}</span></div>
                     <div class="kc-item"><span class="kc-label">Shell Size:</span> <span class="kc-value">${pri.shellSize}${pri.letterCode ? ` (${pri.letterCode})` : ''}</span></div>
                     <div class="kc-item"><span class="kc-label">Arrangement:</span> <span class="kc-value">${pri.arrangement}</span></div>
                     <div class="kc-item"><span class="kc-label">Total Contacts:</span> <span class="kc-value">${priStats.total}</span></div>
@@ -1374,6 +1375,7 @@ function renderSolutionPairHTML(pair, index) {
                         <span class="kc-label">Shell Type:</span>
                         ${matShellTypeHtml}
                     </div>
+                    <div class="kc-item"><span class="kc-label">Finish:</span> <span class="kc-value">${mat ? (() => { const f = finishes.find(fin => fin.code === mat.finish); return f ? `${f.name} (${f.code})` : (mat.finish || 'N/A'); })() : 'N/A'}</span></div>
                     <div class="kc-item"><span class="kc-label">Shell Size:</span> <span class="kc-value">${mat ? mat.shellSize : 'N/A'}${mat && mat.letterCode ? ` (${mat.letterCode})` : ''}</span></div>
                     <div class="kc-item"><span class="kc-label">Arrangement:</span> <span class="kc-value">${mat ? mat.arrangement : 'N/A'}</span></div>
                     <div class="kc-item"><span class="kc-label">Total Contacts:</span> <span class="kc-value">${matStats.total}</span></div>
