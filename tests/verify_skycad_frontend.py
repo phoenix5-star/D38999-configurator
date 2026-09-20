@@ -661,6 +661,123 @@ def main():
         assert "Gender: 'Jack'" in load_128_proc.stdout, f"Gender mismatch: {load_128_proc.stdout}"
         print("[PASS] SkyCAD Kernel verified STREAM_SUCCESS and LOAD_SUCCESS for 128-pin 20FJ35SN!")
 
+        print("\n--- Check 5d: Live Dynamic Harness Accessory Verification ---")
+        # 1. Test standard M85049/38 backshell (20WD35PN -> M85049/38-15W)
+        cdp_eval(ws, """
+            document.getElementById('pnDecodeInput').value = '20WD35PN';
+            liveDecodePN('20WD35PN');
+            applyDecodedPN();
+        """)
+        time.sleep(1)
+
+        b64_zip_acc1 = cdp_eval(ws, """
+            (async () => {
+                const pair = currentCalculatedSolutions[0];
+                const formatted = SkyCadExporter.formatConnectorData(pair.primary, pair, true);
+                const blob = await SkyCadExporter.generatePackageBlob(formatted);
+                return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        resolve(reader.result.split(',')[1]);
+                    };
+                    reader.readAsDataURL(blob);
+                });
+            })()
+        """)
+        assert b64_zip_acc1, "Failed to generate package for 20WD35PN!"
+        zip_bytes_acc1 = base64.b64decode(b64_zip_acc1)
+        with zipfile.ZipFile(io.BytesIO(zip_bytes_acc1), 'r') as zf:
+            f_names = zf.namelist()
+            acc_files = [f for f in f_names if "Harness accessory" in f]
+            assert len(acc_files) == 1, f"Expected 1 accessory file, found: {acc_files}"
+            assert "M85049_38-15W.SkyCadFile" in acc_files[0], f"Expected M85049_38-15W.SkyCadFile, got {acc_files[0]}"
+            print(f"[PASS] Dynamic accessory file verified in ZIP: {acc_files[0]}")
+
+        # Test in SkyCadKernel
+        out_acc1_pkg = os.path.join(PROJECT_DIR, "scratch", "browser_exported_20wd35pn_acc38.SkyCadPackage")
+        with open(out_acc1_pkg, "wb") as f:
+            f.write(zip_bytes_acc1)
+        test_acc1_cmd = ["powershell", "-ExecutionPolicy", "Bypass", "-File", "tools/test_package_load.ps1", "-PackagePath", out_acc1_pkg]
+        test_acc1_proc = subprocess.run(test_acc1_cmd, capture_output=True, text=True)
+        assert "STREAM_SUCCESS" in test_acc1_proc.stdout, f"Kernel stream failure: {test_acc1_proc.stdout}"
+        assert "LOAD_SUCCESS" in test_acc1_proc.stdout, f"Kernel load failure: {test_acc1_proc.stdout}"
+
+        # Test accessory stream with PackageTester
+        acc_path_1 = r"C:\SkyCAD Environments\browser_exported_20wd35pn_acc38_Package\Catalogue\Harness accessory\M85049_38-15W.SkyCadFile"
+        test_acc_stream_cmd = ["powershell", "-ExecutionPolicy", "Bypass", "-Command", f"""
+            Add-Type -Path 'C:\\Program Files\\SkyCAD Electrical\\SkyCadKernel.dll'
+            . ./tools/test_package_load.ps1 -PackagePath '{out_acc1_pkg}'
+            $res = [PackageTester]::TestStream('{acc_path_1}')
+            $props = [PackageTester]::InspectStreamProperties('{acc_path_1}')
+            Write-Host "ACC_STREAM: $res"
+            Write-Host "ACC_DESC: $($props['Description'])"
+            Write-Host "ACC_MFR: $($props['Manufacturer'])"
+        """]
+        acc_stream_proc = subprocess.run(test_acc_stream_cmd, capture_output=True, text=True)
+        assert "ACC_STREAM: STREAM_SUCCESS" in acc_stream_proc.stdout, f"Accessory stream failed: {acc_stream_proc.stdout}"
+        assert "M85049/38" in acc_stream_proc.stdout, f"Description mismatch: {acc_stream_proc.stdout}"
+        print("[PASS] Dynamic M85049/38-15W accessory stream verified with STREAM_SUCCESS!")
+
+        # 2. Switch backshell to M85049/88 via card UI and verify
+        cdp_eval(ws, "updateCardBackshell(0, true, 'M85049/88');")
+        time.sleep(0.5)
+
+        b64_zip_acc2 = cdp_eval(ws, """
+            (async () => {
+                const pair = currentCalculatedSolutions[0];
+                const formatted = SkyCadExporter.formatConnectorData(pair.primary, pair, true);
+                const blob = await SkyCadExporter.generatePackageBlob(formatted);
+                return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        resolve(reader.result.split(',')[1]);
+                    };
+                    reader.readAsDataURL(blob);
+                });
+            })()
+        """)
+        zip_bytes_acc2 = base64.b64decode(b64_zip_acc2)
+        with zipfile.ZipFile(io.BytesIO(zip_bytes_acc2), 'r') as zf:
+            f_names = zf.namelist()
+            acc_files = [f for f in f_names if "Harness accessory" in f]
+            assert len(acc_files) == 1, f"Expected 1 accessory file, found: {acc_files}"
+            assert "M85049_88-15W02.SkyCadFile" in acc_files[0], f"Expected M85049_88-15W02.SkyCadFile, got {acc_files[0]}"
+            print(f"[PASS] Switched backshell verified: {acc_files[0]}")
+
+        # 3. Switch backshell to NONE via card UI and verify clean omit
+        cdp_eval(ws, "updateCardBackshell(0, true, 'NONE');")
+        time.sleep(0.5)
+
+        b64_zip_acc3 = cdp_eval(ws, """
+            (async () => {
+                const pair = currentCalculatedSolutions[0];
+                const formatted = SkyCadExporter.formatConnectorData(pair.primary, pair, true);
+                const blob = await SkyCadExporter.generatePackageBlob(formatted);
+                return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        resolve(reader.result.split(',')[1]);
+                    };
+                    reader.readAsDataURL(blob);
+                });
+            })()
+        """)
+        zip_bytes_acc3 = base64.b64decode(b64_zip_acc3)
+        with zipfile.ZipFile(io.BytesIO(zip_bytes_acc3), 'r') as zf:
+            f_names = zf.namelist()
+            acc_files = [f for f in f_names if "Harness accessory" in f]
+            assert len(acc_files) == 0, f"Expected 0 accessory files for NONE, found: {acc_files}"
+            print("[PASS] NONE backshell cleanly omitted Harness accessory file from package!")
+
+        out_acc3_pkg = os.path.join(PROJECT_DIR, "scratch", "browser_exported_20wd35pn_acc_none.SkyCadPackage")
+        with open(out_acc3_pkg, "wb") as f:
+            f.write(zip_bytes_acc3)
+        test_acc3_cmd = ["powershell", "-ExecutionPolicy", "Bypass", "-File", "tools/test_package_load.ps1", "-PackagePath", out_acc3_pkg]
+        test_acc3_proc = subprocess.run(test_acc3_cmd, capture_output=True, text=True)
+        assert "STREAM_SUCCESS" in test_acc3_proc.stdout, f"Kernel stream failure on NONE: {test_acc3_proc.stdout}"
+        assert "LOAD_SUCCESS" in test_acc3_proc.stdout, f"Kernel load failure on NONE: {test_acc3_proc.stdout}"
+        print("[PASS] SkyCAD Kernel verified STREAM_SUCCESS and LOAD_SUCCESS when backshell is NONE!")
+
         print("\n--- Check 6: BOM Integration Verification ---")
         add_res = cdp_eval(ws, "addSolutionPairToActiveList(0);")
         time.sleep(0.5)
