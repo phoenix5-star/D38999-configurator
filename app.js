@@ -1,5 +1,5 @@
 // Configurator Metadata
-const CONFIG_VERSION = "V002.5.0";
+const CONFIG_VERSION = "V002.6.0";
 
 
 // Shop Tooling Inventory & Contact Ratings loaded via DataService
