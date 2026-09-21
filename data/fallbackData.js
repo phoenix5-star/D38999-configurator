@@ -4790,7 +4790,9 @@ window.CONNECTOR_DATA_FALLBACK = {
       }
     },
     "flanges": {
-      "accTemplate": "M85049/95-{dashNo} (3/4 Perimeter Flange)",
+      "accTemplate": "M85049/95-{dashNo}",
+      "descTemplate440": "3/4 Perimeter Flange Mount, #4-40 Self-Locking Clinch Nut (Size {shellSize})",
+      "descTemplate632": "3/4 Perimeter Flange Mount, #6-32 Self-Locking Clinch Nut (Size {shellSize})",
       "dashTable": {
         "9": "10A",
         "11": "12A",
@@ -4799,17 +4801,68 @@ window.CONNECTOR_DATA_FALLBACK = {
         "17": "18A",
         "19": "20A",
         "21": "22A",
-        "23": "24A",
+        "23": "24B",
         "25": "25A"
+      },
+      "threads": {
+        "10A": "#4-40",
+        "12A": "#4-40",
+        "14A": "#4-40",
+        "16A": "#4-40",
+        "18A": "#4-40",
+        "20A": "#4-40",
+        "22A": "#4-40",
+        "24B": "#6-32",
+        "25A": "#6-32"
       },
       "basePrice": 9.0,
       "sizeStep": 0.5
     },
     "fasteners": {
-      "desc": "Flange Fasteners, Fillister Head 1\" (McMaster: 91737A313, Box of 100)",
-      "url": "https://www.mcmaster.com/91737A313/",
-      "price": 10.04,
-      "qty": 4
+      "nickel": {
+        "small": {
+          "pn": "93615A111",
+          "desc": "18-8 Stainless Steel Low-Profile Socket Head Screw",
+          "thread": "#4-40",
+          "length": "3/8\"",
+          "url": "https://www.mcmaster.com/93615A111/",
+          "image": "93615A111.PNG",
+          "price": 12.50,
+          "qty": 4
+        },
+        "large": {
+          "pn": "93615A215",
+          "desc": "18-8 Stainless Steel Low-Profile Socket Head Screw",
+          "thread": "#6-32",
+          "length": "3/8\"",
+          "url": "https://www.mcmaster.com/93615A215/",
+          "image": "93615A215.PNG",
+          "price": 13.50,
+          "qty": 4
+        }
+      },
+      "cadmium": {
+        "small": {
+          "pn": "92220A122",
+          "desc": "Alloy Steel Low-Profile Socket Head Screw",
+          "thread": "#4-40",
+          "length": "3/8\"",
+          "url": "https://www.mcmaster.com/92220A122/",
+          "image": "92220A122.PNG",
+          "price": 10.50,
+          "qty": 4
+        },
+        "large": {
+          "pn": "92220A142",
+          "desc": "Alloy Steel Low-Profile Socket Head Screw",
+          "thread": "#6-32",
+          "length": "3/8\"",
+          "url": "https://www.mcmaster.com/92220A142/",
+          "image": "92220A142.PNG",
+          "price": 11.50,
+          "qty": 4
+        }
+      }
     },
     "shrinkBoots": {
       "straight": {

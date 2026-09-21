@@ -39,16 +39,32 @@ public class PackageTester {
 
     public static Dictionary<string, string> InspectStreamProperties(string filePath) {
         var result = new Dictionary<string, string>();
-        SkyCadLoadedFile loaded = new SkyCadLoadedFile(filePath, false, "");
-        SkyCadFileLoadingDictionnary dict = new SkyCadFileLoadingDictionnary();
-        int inc = 0;
-        var m = typeof(SkyCadLoadedFile).GetMethod("GetListOfPresetObjectsFromStream", 
-            System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-        object[] args = new object[] { "", false, dict, null, inc };
-        m.Invoke(loaded, args);
-        var skydict = dict.GetSkyCadDictionnary();
-        foreach (var obj in skydict.List) {
-            if (obj.GetType().Name == "SkyCadProperty") {
+        try {
+            SkyCadLoadedFile loaded = new SkyCadLoadedFile(filePath, false, "");
+            SkyCadFileLoadingDictionnary dict = new SkyCadFileLoadingDictionnary();
+            int inc = 0;
+            var m = typeof(SkyCadLoadedFile).GetMethod("GetListOfPresetObjectsFromStream", 
+                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            object[] args = new object[] { "", false, dict, null, inc };
+            m.Invoke(loaded, args);
+            var skydict = dict.GetSkyCadDictionnary();
+            int woCount = 0;
+            int linkCount = 0;
+            int pinCount = 0;
+            foreach (var obj in skydict.List) {
+            string tName = obj.GetType().Name;
+            if (tName == "SkyCadWorkObject") {
+                woCount++;
+                var fPartNum = obj.GetType().GetField("_PartNumber", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                var fWorkId = obj.GetType().GetField("_WorkID", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                string pnVal = fPartNum != null && fPartNum.GetValue(obj) != null ? fPartNum.GetValue(obj).ToString() : "";
+                string widVal = fWorkId != null && fWorkId.GetValue(obj) != null ? fWorkId.GetValue(obj).ToString() : "";
+                result["WorkObject_" + woCount] = "PN=" + pnVal + " WorkID=" + widVal + " Type=" + tName;
+            }
+            if (tName == "SkyCadCompositionLink") linkCount++;
+            if (tName == "SkyCadConnectorPin") pinCount++;
+
+            if (tName == "SkyCadProperty") {
                 var fVal = obj.GetType().GetField("_Value", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                 var fDefId = obj.GetType().GetField("_PropertyDefinitionID", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                 var val = fVal.GetValue(obj) != null ? fVal.GetValue(obj).ToString() : "";
@@ -67,7 +83,14 @@ public class PackageTester {
                 if (did.Contains("9e962f59-97d8-453e-aad5-5969d6046d2a")) result["Type"] = val;
             }
         }
+        result["WorkObjectCount"] = woCount.ToString();
+        result["CompositionLinkCount"] = linkCount.ToString();
+        result["ConnectorPinCount"] = pinCount.ToString();
         return result;
+        } catch (Exception ex) {
+            Console.WriteLine("InspectStreamProperties FAILED: " + ex.ToString());
+            return result;
+        }
     }
 }
 "@
@@ -99,10 +122,25 @@ Write-Host "  LayoutHeight: '$($props['LayoutHeight'])'"
 Write-Host "  LayoutIPX: '$($props['LayoutIPX'])'"
 Write-Host "  LayoutIPY: '$($props['LayoutIPY'])'"
 Write-Host "  LayoutImage: '$($props['LayoutImage'])'"
+Write-Host "  WorkObjectCount: '$($props['WorkObjectCount'])'"
+Write-Host "  CompositionLinkCount: '$($props['CompositionLinkCount'])'"
+Write-Host "  ConnectorPinCount: '$($props['ConnectorPinCount'])'"
+for ($i = 1; $i -le [int]$props['WorkObjectCount']; $i++) {
+    Write-Host "  WorkObject_${i}: '$($props["WorkObject_$i"])'"
+}
 
 # Check contact pin file in package
-$pkgDir = Split-Path (Split-Path (Split-Path (Split-Path (Split-Path (Split-Path $extracted -Parent) -Parent) -Parent) -Parent) -Parent) -Parent
-$contactFiles = Get-ChildItem -Path $pkgDir -Filter "*.SkyCadFile" -Recurse | Where-Object { $_.FullName -like "*Connector pin*" }
+$curr = $extracted
+while ($curr -and (Split-Path $curr -Leaf) -ne "Catalogue" -and (Split-Path $curr -Parent)) {
+    $curr = Split-Path $curr -Parent
+}
+$contactFiles = @()
+if ($curr -and (Split-Path $curr -Leaf) -eq "Catalogue") {
+    $contactDir = Join-Path $curr "Connector pin"
+    if (Test-Path $contactDir) {
+        $contactFiles = Get-ChildItem -Path $contactDir -Filter "*.SkyCadFile"
+    }
+}
 foreach ($cfile in $contactFiles) {
     Write-Host "Found Contact Pin File: $($cfile.Name)"
     $cStream = [PackageTester]::TestStream($cfile.FullName)
