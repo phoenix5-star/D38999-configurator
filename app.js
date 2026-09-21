@@ -1,5 +1,7 @@
-// Configurator Metadata
-const CONFIG_VERSION = "V002.7.0";
+/**
+ * Application Orchestrator & State Manager
+ */
+const CONFIG_VERSION = "V002.7.1";
 
 
 // Shop Tooling Inventory & Contact Ratings loaded via DataService
